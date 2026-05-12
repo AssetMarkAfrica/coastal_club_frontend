@@ -1,11 +1,15 @@
 import type { ApiResponse } from "./api";
 
 export interface RegisterPayload {
+  first_name: string;
+  last_name: string;
+  gender: string;
+  date_of_birth: string;
+  phone_number: string;
+  username: string;
   email: string;
-  name: string;
   password: string;
   password_confirm: string;
-  role?: "member" | "admin";
 }
 
 export interface OtpDelivery {
