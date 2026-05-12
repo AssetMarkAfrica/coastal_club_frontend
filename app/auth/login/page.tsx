@@ -69,12 +69,13 @@ export default function LoginPage() {
 
           {/* Brand copy */}
           <div className="relative z-10 flex flex-col items-center text-center p-12 max-w-lg animate-fade-in-up">
-            <h1
-              className="text-6xl font-bold italic tracking-tight drop-shadow-lg mb-6 text-gold-light"
+            <Link
+              href="/"
+              className="text-6xl font-bold italic tracking-tight drop-shadow-lg mb-6 text-gold-light hover:opacity-80 transition-opacity"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
               Estrella del Mar
-            </h1>
+            </Link>
             <div className="w-24 h-px mb-6 bg-gold-muted/50" />
             <p
               className="text-3xl font-semibold opacity-90 leading-snug text-cream-dark"
@@ -96,12 +97,13 @@ export default function LoginPage() {
 
             {/* Mobile brand header */}
             <div className="lg:hidden text-center mb-10">
-              <h1
-                className="text-4xl font-bold tracking-tight mb-2 text-primary"
+              <Link
+                href="/"
+                className="text-4xl font-bold tracking-tight mb-2 text-primary hover:opacity-80 transition-opacity"
                 style={{ fontFamily: "var(--font-playfair)" }}
               >
                 Estrella del Mar
-              </h1>
+              </Link>
               <p
                 className="text-base italic text-gold-muted"
                 style={{ fontFamily: "var(--font-inter)" }}
