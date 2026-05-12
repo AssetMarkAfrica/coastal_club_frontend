@@ -1,4 +1,4 @@
-# CoastalClub — Next.js Frontend Specification
+![alt text](screen.png)# CoastalClub — Next.js Frontend Specification
 
 ## Project Setup
 

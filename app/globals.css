@@ -1,26 +1,116 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* ── Fonts ── */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-playfair: var(--font-playfair);
+  --font-inter: var(--font-inter);
+
+  /* ── Brand Colours ── */
+  --color-primary:                   #022448;
+  --color-navy-deep:                 #10243F;
+  --color-primary-container:         #1e3a5f;
+  --color-on-primary:                #ffffff;
+  --color-on-primary-container:      #8aa4cf;
+  --color-primary-fixed:             #d5e3ff;
+  --color-primary-fixed-dim:         #adc8f5;
+  --color-on-primary-fixed:          #001c3b;
+  --color-on-primary-fixed-variant:  #2d486d;
+  --color-inverse-primary:           #adc8f5;
+
+  --color-secondary:                 #735c00;
+  --color-secondary-container:       #fed65b;
+  --color-on-secondary:              #ffffff;
+  --color-on-secondary-container:    #745c00;
+  --color-secondary-fixed:           #ffe088;
+  --color-secondary-fixed-dim:       #e9c349;
+  --color-on-secondary-fixed:        #241a00;
+  --color-on-secondary-fixed-variant:#574500;
+
+  --color-tertiary:                  #341f00;
+  --color-tertiary-container:        #503300;
+  --color-on-tertiary:               #ffffff;
+  --color-on-tertiary-container:     #c69b5f;
+  --color-tertiary-fixed:            #ffddb2;
+  --color-tertiary-fixed-dim:        #edbf7f;
+  --color-on-tertiary-fixed:         #291800;
+  --color-on-tertiary-fixed-variant: #60410c;
+
+  --color-gold-light:  #F1E0A6;
+  --color-gold-muted:  #B7922B;
+  --color-cream:       #F8F1DF;
+  --color-cream-dark:  #EDE3CC;
+
+  --color-surface:                    #faf9fc;
+  --color-surface-dim:                #dad9dd;
+  --color-surface-bright:             #faf9fc;
+  --color-surface-container-lowest:   #ffffff;
+  --color-surface-container-low:      #f4f3f7;
+  --color-surface-container:          #eeedf1;
+  --color-surface-container-high:     #e9e7eb;
+  --color-surface-container-highest:  #e3e2e6;
+  --color-surface-variant:            #e3e2e6;
+  --color-surface-tint:               #455f87;
+  --color-on-surface:                 #1a1c1e;
+  --color-on-surface-variant:         #43474e;
+  --color-inverse-surface:            #2f3033;
+  --color-inverse-on-surface:         #f1f0f4;
+
+  --color-background:    #faf9fc;
+  --color-on-background: #1a1c1e;
+
+  --color-outline:         #74777f;
+  --color-outline-variant: #c4c6cf;
+
+  --color-error:           #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error:        #ffffff;
+  --color-on-error-container: #93000a;
+
+  --color-text-primary:   #1A1A1A;
+  --color-text-secondary: #4A4A4A;
+  --color-text-muted:     #6B7280;
+
+  --color-success: #0F766E;
+  --color-danger:  #B42318;
+  --color-warning: #B45309;
+  --color-info:    #185FA5;
+
+  /* ── Border Radius ── */
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg:      0.5rem;
+  --radius-xl:      0.75rem;
+  --radius-full:    9999px;
+
+  /* ── Spacing tokens ── */
+  --spacing-input-padding-y: 12px;
+  --spacing-input-padding-x: 16px;
+  --spacing-card-padding:    24px;
+  --spacing-sidebar-width:   260px;
+  --spacing-topbar-height:   64px;
+  --spacing-container-margin:24px;
+  --spacing-gutter:          16px;
+
+  /* ── Keyframes ── */
+  --animate-fade-in-up: fadeInUp 1s ease-out forwards;
+  --animate-shimmer:    shimmer 1.5s infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-text-primary);
 }
