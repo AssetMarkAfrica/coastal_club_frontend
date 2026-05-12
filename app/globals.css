@@ -114,3 +114,31 @@ body {
   background: var(--color-cream);
   color: var(--color-text-primary);
 }
+
+/* ── Landing page utilities ── */
+.glass-panel {
+  background: rgba(16, 36, 63, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(to right, #F1E0A6, #B7922B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navy-gradient-bg {
+  background: linear-gradient(135deg, #10243F 0%, #1E3A5F 100%);
+}
+
+.card-hover-lift {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(16, 36, 63, 0.15);
+  border-color: rgba(212, 175, 55, 0.5);
+}
