@@ -1,0 +1,371 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  selectCurrentUser,
+  selectIsAuthenticated,
+} from "@/store/auth/authSelectors";
+import {
+  selectMembershipError,
+  selectMembershipLoading,
+  selectMembershipPlans,
+} from "@/store/membership/membershipSelectors";
+import {
+  fetchMembershipPlans,
+  submitMembershipApplication,
+} from "@/store/membership/membershipThunks";
+import { clearMembershipError } from "@/store/membership/membershipSlice";
+import { selectPendingPayment } from "@/store/payment/paymentSelectors";
+import type { MembershipPlan } from "@/types/membership";
+
+const formatMoney = (pesewas: number) =>
+  `GHc${(pesewas / 100).toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}`;
+
+const toTitleCase = (value: string) =>
+  value
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+const buildPlanHighlights = (plan: MembershipPlan) => {
+  const apiBenefits = (plan.benefits ?? []).map((benefit) => benefit.title.trim());
+
+  if (apiBenefits.length > 0) {
+    return apiBenefits;
+  }
+
+  const highlights = [
+    `${plan.guest_passes_per_visit} guest pass${
+      plan.guest_passes_per_visit === 1 ? "" : "es"
+    } per visit`,
+    `Points multiplier: x${plan.points_multiplier}`,
+    `Monthly maintenance fee: ${formatMoney(plan.club_maintenance_fee_pesewas)}`,
+    `Signup bonus credit: ${formatMoney(plan.signup_bonus_spend_credit_pesewas)}`,
+    plan.fb_minimum_pesewas > 0
+      ? `F&B minimum: ${formatMoney(plan.fb_minimum_pesewas)}`
+      : "No food and beverage minimum",
+  ];
+
+  return highlights;
+};
+
+export default function MembershipPlansPage() {
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const plans = useAppSelector(selectMembershipPlans);
+  const loading = useAppSelector(selectMembershipLoading);
+  const error = useAppSelector(selectMembershipError);
+  const pendingPayment = useAppSelector(selectPendingPayment);
+  const [submittingTier, setSubmittingTier] = useState<string | null>(null);
+
+  useEffect(() => {
+    dispatch(fetchMembershipPlans());
+  }, [dispatch]);
+
+  const sortedPlans = useMemo(
+    () => [...plans].sort((a, b) => a.annual_fee_pesewas - b.annual_fee_pesewas),
+    [plans]
+  );
+
+  const featuredPlanTier = useMemo(() => {
+    const premierPlan = sortedPlans.find((plan) => plan.tier.toLowerCase() === "premier");
+    if (premierPlan) return premierPlan.tier;
+    const highestByFee = [...sortedPlans].sort(
+      (a, b) => b.annual_fee_pesewas - a.annual_fee_pesewas
+    )[0];
+    return highestByFee?.tier ?? null;
+  }, [sortedPlans]);
+
+  const onApply = async (planTier: string) => {
+    if (!isAuthenticated) return;
+    dispatch(clearMembershipError());
+    setSubmittingTier(planTier);
+    try {
+      const callbackUrl = `${window.location.origin}/payment/callback`;
+      const response = await dispatch(
+        submitMembershipApplication({ plan_tier: planTier, callback_url: callbackUrl })
+      ).unwrap();
+      if (response.authorization_url) {
+        window.location.assign(response.authorization_url);
+      }
+    } catch {
+      // Error state is handled in the slice.
+    } finally {
+      setSubmittingTier(null);
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-cream text-text-primary antialiased">
+      <div className="flex min-h-screen">
+
+        {/* ── Sidebar ── */}
+        <aside className="hidden lg:flex w-64 shrink-0 flex-col bg-navy-deep text-cream border-r border-gold-muted/20">
+          <div className="px-6 py-8 border-b border-gold-muted/20">
+            <div className="h-14 w-14 rounded-full border-2 border-gold-muted bg-primary-container/40 mb-4" />
+            <p
+              className="text-2xl italic text-gold-muted leading-snug"
+              style={{ fontFamily: "var(--font-playfair)" }}
+            >
+              Estrella del Mar
+            </p>
+            <p
+              className="mt-2 text-[10px] font-semibold tracking-[0.22em] uppercase text-gold-light/70"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              {currentUser?.role === "admin" ? "Administrator" : "Premier Member"}
+            </p>
+          </div>
+
+          <nav className="flex-1 px-4 py-6 space-y-1">
+            {[
+              { label: "Dashboard", href: "#" },
+              { label: "Member Card", href: "#" },
+              { label: "Bookings", href: "#" },
+              { label: "Exclusive Perks", href: "#" },
+              { label: "Settings", href: "#" },
+            ].map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                className="flex items-center rounded border border-transparent px-3 py-2.5 text-sm text-cream/80 hover:bg-primary hover:border-gold-muted/30 hover:text-gold-light transition-all"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                <span className="mr-2.5 inline-block h-1.5 w-1.5 rounded-full bg-gold-muted/70" />
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="px-4 pb-8">
+            <button
+              type="button"
+              className="w-full rounded border border-gold-muted bg-primary py-2.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-gold-light hover:bg-gold-muted hover:text-primary transition-colors"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Reserve a Table
+            </button>
+          </div>
+        </aside>
+
+        {/* ── Main content ── */}
+        <div className="flex-1 flex flex-col min-w-0">
+
+          {/* Header */}
+          <header className="sticky top-0 z-30 border-b border-gold-muted/20 bg-surface-container-lowest/95 backdrop-blur">
+            <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 h-16 flex items-center justify-between gap-6">
+              <Link
+                href="/"
+                className="text-2xl font-semibold text-primary shrink-0"
+                style={{ fontFamily: "var(--font-playfair)" }}
+              >
+                Estrella del Mar
+              </Link>
+
+              <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+                {[
+                  { label: "The Club", href: "#" },
+                  { label: "Memberships", href: "/membership/plans", active: true },
+                  { label: "Events", href: "#" },
+                  { label: "Private Dining", href: "#" },
+                  { label: "Concierge", href: "#" },
+                ].map(({ label, href, active }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    className={`relative py-5 text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors ${
+                      active
+                        ? "text-gold-muted after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-gold-muted"
+                        : "text-text-primary hover:text-gold-muted"
+                    }`}
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="hidden sm:flex items-center gap-2">
+                <button
+                  type="button"
+                  className="h-8 w-8 rounded-full border border-primary/25 text-primary hover:border-gold-muted hover:text-gold-muted transition-colors flex items-center justify-center"
+                  aria-label="Notifications"
+                >
+                  <span className="text-sm leading-none">🔔</span>
+                </button>
+                <button
+                  type="button"
+                  className="h-8 w-8 rounded-full border border-primary/25 text-primary hover:border-gold-muted hover:text-gold-muted transition-colors flex items-center justify-center"
+                  aria-label="Profile"
+                >
+                  <span className="text-sm leading-none">👤</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* Page body */}
+          <section className="flex-1 px-4 py-8 sm:px-8 sm:py-12 lg:px-10">
+            <div className="mx-auto w-full max-w-[1280px]">
+
+              {/* Hero text */}
+              <div className="text-center mb-10 sm:mb-12">
+                <h1
+                  className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-primary"
+                  style={{ fontFamily: "var(--font-playfair)" }}
+                >
+                  Choose Your Membership
+                </h1>
+                <p
+                  className="mt-4 mx-auto max-w-2xl text-sm sm:text-base leading-relaxed text-text-secondary"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  Elevate your lifestyle with access to world-class amenities, exclusive
+                  culinary experiences, and a curated community of discerning individuals.
+                  Select the tier that best aligns with your aspirations.
+                </p>
+              </div>
+
+              {/* Pending payment banner */}
+              {pendingPayment?.authorization_url && (
+                <div className="mb-6 rounded border border-gold-muted/30 bg-surface-container-lowest px-4 py-3 text-sm text-text-secondary shadow-sm">
+                  <p className="font-semibold text-primary text-sm">Pending Payment Detected</p>
+                  <p className="mt-1 text-xs">
+                    Continue your payment using reference{" "}
+                    <span className="font-semibold text-primary">{pendingPayment.reference}</span>.
+                  </p>
+                  <a
+                    href={pendingPayment.authorization_url}
+                    className="mt-2 inline-flex rounded border border-gold-muted px-3 py-1.5 text-[10px] font-semibold tracking-[0.14em] uppercase text-gold-muted hover:bg-gold-muted hover:text-primary transition-colors"
+                  >
+                    Continue Payment
+                  </a>
+                </div>
+              )}
+
+              {/* Error banner */}
+              {error && (
+                <div className="mb-6 rounded border border-danger/35 bg-error-container px-4 py-3 text-sm text-danger">
+                  {error}
+                </div>
+              )}
+
+              {/* Plan cards */}
+              {loading && sortedPlans.length === 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+                  {[1, 2, 3, 4].map((key) => (
+                    <div
+                      key={key}
+                      className="h-[420px] rounded-2xl border border-gold-muted/20 bg-surface-container-lowest animate-pulse"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
+                  {sortedPlans.map((plan) => {
+                    const isFeatured = featuredPlanTier === plan.tier;
+                    const highlights = buildPlanHighlights(plan);
+                    const isSubmitting = submittingTier === plan.tier;
+
+                    return (
+                      <article
+                        key={plan.id}
+                        className={`relative flex flex-col rounded-2xl border bg-surface-container-lowest p-6 transition-all duration-300 hover:-translate-y-1 ${
+                          isFeatured
+                            ? "border-gold-muted shadow-[0_18px_44px_rgba(16,36,63,0.14)]"
+                            : "border-gold-muted/20 shadow-[0_8px_24px_rgba(16,36,63,0.08)]"
+                        }`}
+                      >
+                        {/* Featured badge */}
+                        {isFeatured && (
+                          <span
+                            className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-muted px-4 py-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-primary whitespace-nowrap"
+                            style={{ fontFamily: "var(--font-inter)" }}
+                          >
+                            Most Popular
+                          </span>
+                        )}
+
+                        {/* Tier name */}
+                        <h2
+                          className="text-xl font-semibold text-primary"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          {toTitleCase(plan.tier)}
+                        </h2>
+
+                        {/* Pricing */}
+                        <div className="mt-3 flex items-end gap-1.5">
+                          <p
+                            className="text-3xl font-semibold text-gold-muted leading-none"
+                            style={{ fontFamily: "var(--font-playfair)" }}
+                          >
+                            {formatMoney(plan.annual_fee_pesewas)}
+                          </p>
+                          <span className="pb-0.5 text-sm text-text-secondary">/ year</span>
+                        </div>
+
+                        <p className="mt-1 text-xs text-text-secondary">
+                          {formatMoney(plan.initiation_fee_pesewas)} Initiation Fee
+                        </p>
+
+                        <div className="my-4 h-px w-full bg-gold-muted/20" />
+
+                        {/* Highlights */}
+                        <ul className="space-y-2.5 flex-1">
+                          {highlights.slice(0, 5).map((highlight, index) => (
+                            <li key={`${plan.id}-${index}`} className="flex items-start gap-2">
+                              <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-gold-muted text-gold-muted text-[10px]">
+                                ✓
+                              </span>
+                              <span className="text-xs text-text-primary leading-relaxed">{highlight}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* CTA */}
+                        <div className="mt-6">
+                          {isAuthenticated ? (
+                            <button
+                              type="button"
+                              onClick={() => onApply(plan.tier)}
+                              disabled={isSubmitting || loading}
+                              className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
+                                isFeatured
+                                  ? "border-gold-muted bg-primary text-gold-light hover:bg-gold-muted hover:text-primary"
+                                  : "border-gold-muted text-gold-muted hover:bg-gold-muted hover:text-primary"
+                              } disabled:opacity-60 disabled:cursor-not-allowed`}
+                              style={{ fontFamily: "var(--font-inter)" }}
+                            >
+                              {isSubmitting ? "Processing…" : `Apply for ${toTitleCase(plan.tier)}`}
+                            </button>
+                          ) : (
+                            <p className="text-xs text-text-secondary text-center">
+                              <Link
+                                href="/auth/login"
+                                className="text-gold-muted font-semibold hover:text-primary transition-colors"
+                              >
+                                Sign in
+                              </Link>{" "}
+                              to apply for this plan.
+                            </p>
+                          )}
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}
