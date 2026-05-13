@@ -32,6 +32,15 @@ const toTitleCase = (value: string) =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
 
+const APPLICATION_FEE_LABEL = "$100";
+
+const APPLICATION_PROCESS_STEPS = [
+  "Pay the application fee to submit your membership application.",
+  "Your application joins the waiting list while the admin team reviews it within 48 hours.",
+  "If approved, you will receive an email with your membership contract.",
+  "Accept the contract terms before paying your membership dues.",
+];
+
 const buildPlanHighlights = (plan: MembershipPlan) => {
   const apiBenefits = (plan.benefits ?? []).map((benefit) => benefit.title.trim());
 
@@ -63,6 +72,7 @@ export default function MembershipPlansPage() {
   const error = useAppSelector(selectMembershipError);
   const pendingPayment = useAppSelector(selectPendingPayment);
   const [submittingTier, setSubmittingTier] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null);
 
   useEffect(() => {
     dispatch(fetchMembershipPlans());
@@ -82,8 +92,15 @@ export default function MembershipPlansPage() {
     return highestByFee?.tier ?? null;
   }, [sortedPlans]);
 
-  const onApply = async (planTier: string) => {
-    if (!isAuthenticated) return;
+  const closeApplicationModal = () => {
+    if (submittingTier) return;
+    setSelectedPlan(null);
+  };
+
+  const onConfirmApplication = async () => {
+    if (!isAuthenticated || !selectedPlan) return;
+
+    const planTier = selectedPlan.tier;
     dispatch(clearMembershipError());
     setSubmittingTier(planTier);
     try {
@@ -98,6 +115,7 @@ export default function MembershipPlansPage() {
       // Error state is handled in the slice.
     } finally {
       setSubmittingTier(null);
+      setSelectedPlan(null);
     }
   };
 
@@ -232,6 +250,42 @@ export default function MembershipPlansPage() {
                 </p>
               </div>
 
+              {/* Application process */}
+              <section className="mb-8 border-y border-gold-muted/25 bg-surface-container-lowest px-4 py-5 sm:px-6">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="max-w-xl">
+                    <p
+                      className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
+                      style={{ fontFamily: "var(--font-inter)" }}
+                    >
+                      Application Process
+                    </p>
+                    <h2
+                      className="mt-2 text-2xl font-semibold text-primary"
+                      style={{ fontFamily: "var(--font-playfair)" }}
+                    >
+                      Apply once, then let the club review your fit.
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                      The application fee is {APPLICATION_FEE_LABEL}. After payment,
+                      prospective members are placed on the waiting list while admin reviews
+                      the application within the next 48 hours.
+                    </p>
+                  </div>
+
+                  <ol className="grid gap-3 text-sm text-text-primary sm:grid-cols-2 lg:max-w-xl">
+                    {APPLICATION_PROCESS_STEPS.map((step, index) => (
+                      <li key={step} className="flex gap-3">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold-muted text-[11px] font-semibold text-gold-muted">
+                          {index + 1}
+                        </span>
+                        <span className="leading-relaxed">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </section>
+
               {/* Pending payment banner */}
               {pendingPayment?.authorization_url && (
                 <div className="mb-6 rounded border border-gold-muted/30 bg-surface-container-lowest px-4 py-3 text-sm text-text-secondary shadow-sm">
@@ -334,7 +388,7 @@ export default function MembershipPlansPage() {
                           {isAuthenticated ? (
                             <button
                               type="button"
-                              onClick={() => onApply(plan.tier)}
+                              onClick={() => setSelectedPlan(plan)}
                               disabled={isSubmitting || loading}
                               className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
                                 isFeatured
@@ -366,6 +420,82 @@ export default function MembershipPlansPage() {
           </section>
         </div>
       </div>
+
+      {selectedPlan && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-primary/65 px-4 py-6 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="application-confirmation-title"
+        >
+          <section className="w-full max-w-lg rounded border border-gold-muted/35 bg-surface-container-lowest shadow-[0_24px_80px_rgba(16,36,63,0.28)]">
+            <div className="border-b border-gold-muted/20 px-6 py-5">
+              <p
+                className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                Membership Application
+              </p>
+              <h2
+                id="application-confirmation-title"
+                className="mt-2 text-2xl font-semibold text-primary"
+                style={{ fontFamily: "var(--font-playfair)" }}
+              >
+                Application Fee: {APPLICATION_FEE_LABEL}. Ready to Proceed with payment?
+              </h2>
+              <p className="mt-2 text-sm text-text-secondary">
+                You are applying for the {toTitleCase(selectedPlan.tier)} membership plan.
+              </p>
+            </div>
+
+            <div className="px-6 py-5">
+              <p className="text-sm leading-relaxed text-text-secondary">
+                After payment, you will be added to the waiting list. Admin will review your
+                application within the next 48 hours. If approved, you will receive an email
+                with the contract, and you must accept its terms before making your
+                membership payment.
+              </p>
+
+              <div className="mt-5 rounded border border-gold-muted/25 bg-cream px-4 py-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                  Next steps
+                </p>
+                <ol className="mt-3 space-y-2 text-sm text-text-primary">
+                  {APPLICATION_PROCESS_STEPS.map((step, index) => (
+                    <li key={`modal-${step}`} className="flex gap-3">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-gold-light">
+                        {index + 1}
+                      </span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+
+            <div className="flex flex-col-reverse gap-3 border-t border-gold-muted/20 px-6 py-4 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={closeApplicationModal}
+                disabled={Boolean(submittingTier)}
+                className="rounded border border-primary/25 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:border-gold-muted hover:text-gold-muted disabled:opacity-60"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                Review Plans
+              </button>
+              <button
+                type="button"
+                onClick={onConfirmApplication}
+                disabled={Boolean(submittingTier)}
+                className="rounded border border-gold-muted bg-primary px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                {submittingTier ? "Preparing Payment..." : "Proceed to Payment"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
