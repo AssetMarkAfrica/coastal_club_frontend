@@ -319,7 +319,7 @@ export default function LandingPageContent() {
               Membership at Estrella del Mar is strictly by invitation or referral. Discover our tiers and begin your journey into exclusive coastal luxury.
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-              <Link href="/auth/register" className="bg-gold-light text-navy-deep border border-gold-light px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-transparent hover:text-gold-light transition-all duration-300 rounded w-full sm:w-auto shadow-lg shadow-gold-muted/20">
+              <Link href="/membership/plans" className="bg-gold-light text-navy-deep border border-gold-light px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-transparent hover:text-gold-light transition-all duration-300 rounded w-full sm:w-auto shadow-lg shadow-gold-muted/20">
                 Explore Our Tiers
               </Link>
               <button className="bg-transparent text-white border border-white/30 px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white/10 transition-all duration-300 rounded w-full sm:w-auto">
