@@ -4,12 +4,15 @@ import membershipReducer from "./membership/membershipSlice";
 import paymentReducer from "./payment/paymentSlice";
 import profileReducer from "./profile/profileSlice";
 
+import cardReducer from "./membership/cardSlice"; 
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     profile: profileReducer,
     membership: membershipReducer,
     payment: paymentReducer,
+    card: cardReducer,
   },
 });
 

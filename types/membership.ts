@@ -174,3 +174,22 @@ export interface AcceptMembershipContractData {
 }
 
 export type AcceptMembershipContractResponse = ApiResponse<AcceptMembershipContractData>;
+export interface MembershipCard {
+  id: string;
+  member_number: string;
+  member_name: string;
+  tier: MembershipPlanTier;
+  plan_name: string;
+  status: string;
+  maintenance_fee_status: string;
+  maintenance_fee_due_pesewas: number;
+  is_maintenance_fee_paid_current_month: boolean;
+  is_signup_bonus_active: boolean;
+  signup_bonus_expires_on: string | null;
+  monthly_spend_credit_pesewas: number;
+  spend_credit_remaining_pesewas: number;
+  qr_image_url: string;
+  issued_at: string;
+}
+
+export type MembershipCardResponse = ApiResponse<MembershipCard>;

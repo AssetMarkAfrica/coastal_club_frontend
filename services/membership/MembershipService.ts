@@ -7,6 +7,7 @@ import type {
   ApproveMembershipApplicationResponse,
   MembershipPlansResponse,
   MyMembershipContractResponse,
+  MyMembershipResponse,
   SubmitMembershipApplicationPayload,
   SubmitMembershipApplicationResponse,
 } from "../../types/membership";
@@ -28,7 +29,9 @@ export type {
   MembershipPlanSummary,
   MembershipPlanTier,
   MembershipPlansResponse,
+  MyMembership,
   MyMembershipContractResponse,
+  MyMembershipResponse,
   SubmitMembershipApplicationPayload,
   SubmitMembershipApplicationResponse,
 } from "../../types/membership";
@@ -45,7 +48,6 @@ export const submitMembershipApplication = (
 export const getAdminMembershipApplications = () =>
   api.get<AdminMembershipApplicationsResponse>(`${BASE}/admin/applications/`);
 
-
 export const approveMembershipApplication = (
   payload: ApproveMembershipApplicationPayload
 ) =>
@@ -54,7 +56,8 @@ export const approveMembershipApplication = (
     payload
   );
 
-  export const getMyMembership = () => api.get<MyMembershipResponse>(`${BASE}/me/`);
+export const getMyMembership = () =>
+  api.get<MyMembershipResponse>(`${BASE}/me/`);
 
 export const getMyMembershipContract = () =>
   api.get<MyMembershipContractResponse>(`${BASE}/contracts/me/`);
