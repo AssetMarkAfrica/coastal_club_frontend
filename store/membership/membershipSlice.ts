@@ -6,12 +6,14 @@ import type {
   MembershipApplicationSubmission,
   MembershipContract,
   MembershipPlan,
+  MyMembership,
 } from "../../types/membership";
 import {
   acceptMembershipContract,
   approveMembershipApplication,
   fetchAdminMembershipApplications,
   fetchMembershipPlans,
+  fetchMyMembership,
   fetchMyMembershipContract,
   submitMembershipApplication,
 } from "./membershipThunks";
@@ -22,6 +24,7 @@ export interface MembershipState {
   adminApplications: MembershipApplication[];
   approvalResult: ApproveMembershipApplicationData | null;
   myContract: MembershipContract | null;
+  myMembership: MyMembership | null;
   contractAcceptance: AcceptMembershipContractData | null;
   loading: boolean;
   error: string | null;
@@ -33,6 +36,7 @@ const initialState: MembershipState = {
   adminApplications: [],
   approvalResult: null,
   myContract: null,
+  myMembership: null,
   contractAcceptance: null,
   loading: false,
   error: null,
@@ -51,6 +55,7 @@ const membershipSlice = createSlice({
       state.adminApplications = [];
       state.approvalResult = null;
       state.myContract = null;
+      state.myMembership = null;
       state.contractAcceptance = null;
       state.loading = false;
       state.error = null;
@@ -119,6 +124,21 @@ const membershipSlice = createSlice({
         state.error =
           (action.payload as string) ??
           "Failed to approve membership application.";
+      });
+
+    builder
+      .addCase(fetchMyMembership.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMyMembership.fulfilled, (state, action) => {
+        state.loading = false;
+        state.myMembership = action.payload;
+      })
+      .addCase(fetchMyMembership.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to fetch your membership.";
       });
 
     builder

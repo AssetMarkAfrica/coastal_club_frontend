@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import * as authService from "../../services/auth/authService";
+import * as authService from "../../services/auth/AuthService";
 import type {
   LoginPayload,
   RegisterPayload,

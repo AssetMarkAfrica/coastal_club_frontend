@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import * as profileService from "../../services/profile/profileService";
+import * as profileService from "../../services/profile/ProfileService";
 import type { UpdateProfilePayload } from "../../types/profile";
 
 const getErrorMessage = (error: unknown, fallback: string) => {

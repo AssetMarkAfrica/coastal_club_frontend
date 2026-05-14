@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials, setGooglePending } from "@/store/auth/authSlice";
-import * as authService from "@/services/auth/authService";
+import * as authService from "@/services/auth/AuthService";
 import type { AuthTokenData, PendingOtpData } from "@/types/auth";
 
 export default function GoogleCallbackClient() {

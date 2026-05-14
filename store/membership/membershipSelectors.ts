@@ -10,6 +10,8 @@ export const selectMembershipApprovalResult = (state: RootState) =>
   state.membership.approvalResult;
 export const selectMyMembershipContract = (state: RootState) =>
   state.membership.myContract;
+export const selectMyMembership = (state: RootState) =>
+  state.membership.myMembership;
 export const selectMembershipContractAcceptance = (state: RootState) =>
   state.membership.contractAcceptance;
 export const selectMembershipLoading = (state: RootState) =>

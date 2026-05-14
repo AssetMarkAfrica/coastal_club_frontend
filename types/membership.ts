@@ -54,6 +54,7 @@ export interface MembershipApplicationApplicant {
   last_name: string;
 }
 
+
 export interface MembershipPlanSummary {
   id: number;
   tier: MembershipPlanTier;
@@ -116,6 +117,29 @@ export interface ApproveMembershipApplicationData {
 export type ApproveMembershipApplicationResponse = ApiResponse<ApproveMembershipApplicationData>;
 
 export type MyMembershipContractResponse = ApiResponse<MembershipContract>;
+
+export interface MyMembership {
+  id: string;
+  plan: MembershipPlan;
+  status: string;
+  is_active: boolean;
+  billing_cycle: string;
+  current_period_start: string;
+  current_period_end: string;
+  fb_spend_this_month_pesewas: number;
+  monthly_spend_credit_pesewas: number;
+  spend_credit_remaining_pesewas: number;
+  maintenance_fee_due_pesewas: number;
+  maintenance_fee_status: string;
+  is_maintenance_fee_paid_current_month: boolean;
+  is_signup_bonus_active: boolean;
+  signup_bonus_expires_on: string | null;
+  maintenance_fee_paid_through_month: string | null;
+  maintenance_fee_paid_at: string | null;
+  created_at: string;
+}
+export type MyMembershipResponse = ApiResponse<MyMembership>;
+
 
 export interface AcceptMembershipContractPayload {
   accept_terms: boolean;

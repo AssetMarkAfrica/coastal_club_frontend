@@ -10,7 +10,7 @@ import {
   selectAuthError,
   selectAuthLoading,
 } from "@/store/auth/authSelectors";
-import * as authService from "@/services/auth/authService";
+import * as authService from "@/services/auth/AuthService";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
