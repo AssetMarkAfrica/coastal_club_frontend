@@ -303,6 +303,23 @@ export default function MembershipPlansPage() {
                 </div>
               )}
 
+              <div className="mb-6 flex flex-col gap-3 rounded border border-gold-muted/25 bg-cream/60 px-4 py-4 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-semibold text-primary">Already approved?</p>
+                  <p className="mt-1 text-xs">
+                    View your membership contract, accept all required terms, and proceed
+                    to the final membership payment.
+                  </p>
+                </div>
+                <Link
+                  href="/membership/contract"
+                  className="inline-flex shrink-0 rounded border border-gold-muted px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-muted transition-colors hover:bg-gold-muted hover:text-primary"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  View Contract
+                </Link>
+              </div>
+
               {/* Error banner */}
               {error && (
                 <div className="mb-6 rounded border border-danger/35 bg-error-container px-4 py-3 text-sm text-danger">
