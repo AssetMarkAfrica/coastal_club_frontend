@@ -160,7 +160,7 @@ export default function LandingPageContent() {
                 <span className="material-symbols-outlined text-xl">{icon}</span>
               </button>
             ))}
-            <Link href="/auth/login" className="bg-primary text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
+            <Link href="/membership/plans" className="bg-primary text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
               Join the Club
             </Link>
           </div>

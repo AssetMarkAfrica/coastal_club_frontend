@@ -26,6 +26,7 @@ export interface MembershipPlan {
   fb_minimum_pesewas: number;
   points_multiplier: string;
   guest_passes_per_visit: number;
+  is_subscribed?: boolean;
   benefits?: MembershipBenefit[];
 }
 

@@ -343,6 +343,7 @@ export default function MembershipPlansPage() {
                     const isFeatured = featuredPlanTier === plan.tier;
                     const highlights = buildPlanHighlights(plan);
                     const isSubmitting = submittingTier === plan.tier;
+                    const isSubscribed = Boolean(plan.is_subscribed);
 
                     return (
                       <article
@@ -406,7 +407,7 @@ export default function MembershipPlansPage() {
                             <button
                               type="button"
                               onClick={() => setSelectedPlan(plan)}
-                              disabled={isSubmitting || loading}
+                              disabled={isSubmitting || loading || isSubscribed}
                               className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
                                 isFeatured
                                   ? "border-gold-muted bg-primary text-gold-light hover:bg-gold-muted hover:text-primary"
@@ -414,7 +415,11 @@ export default function MembershipPlansPage() {
                               } disabled:opacity-60 disabled:cursor-not-allowed`}
                               style={{ fontFamily: "var(--font-inter)" }}
                             >
-                              {isSubmitting ? "Processing…" : `Apply for ${toTitleCase(plan.tier)}`}
+                              {isSubscribed
+                                ? "Subscribed"
+                                : isSubmitting
+                                ? "Processing…"
+                                : `Apply for ${toTitleCase(plan.tier)}`}
                             </button>
                           ) : (
                             <p className="text-xs text-text-secondary text-center">
