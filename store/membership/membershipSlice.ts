@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type {
   AcceptMembershipContractData,
   ApproveMembershipApplicationData,
+  MembershipApplicationDetail,
   MembershipApplication,
   MembershipApplicationSubmission,
   MembershipContract,
@@ -12,6 +13,7 @@ import {
   acceptMembershipContract,
   approveMembershipApplication,
   fetchAdminMembershipApplications,
+  fetchAdminMembershipApplicationDetail,
   fetchMembershipPlans,
   fetchMyMembership,
   fetchMyMembershipContract,
@@ -22,6 +24,7 @@ export interface MembershipState {
   plans: MembershipPlan[];
   application: MembershipApplicationSubmission | null;
   adminApplications: MembershipApplication[];
+  adminApplicationDetail: MembershipApplicationDetail | null;
   approvalResult: ApproveMembershipApplicationData | null;
   myContract: MembershipContract | null;
   myMembership: MyMembership | null;
@@ -34,6 +37,7 @@ const initialState: MembershipState = {
   plans: [],
   application: null,
   adminApplications: [],
+  adminApplicationDetail: null,
   approvalResult: null,
   myContract: null,
   myMembership: null,
@@ -53,6 +57,7 @@ const membershipSlice = createSlice({
       state.plans = [];
       state.application = null;
       state.adminApplications = [];
+      state.adminApplicationDetail = null;
       state.approvalResult = null;
       state.myContract = null;
       state.myMembership = null;
@@ -107,6 +112,23 @@ const membershipSlice = createSlice({
         state.error =
           (action.payload as string) ??
           "Failed to fetch membership applications.";
+      });
+
+    builder
+      .addCase(fetchAdminMembershipApplicationDetail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.adminApplicationDetail = null;
+      })
+      .addCase(fetchAdminMembershipApplicationDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.adminApplicationDetail = action.payload;
+      })
+      .addCase(fetchAdminMembershipApplicationDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ??
+          "Failed to fetch membership application detail.";
       });
 
     builder

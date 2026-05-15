@@ -2,6 +2,7 @@ import api from "../utils/api";
 import type {
   AcceptMembershipContractPayload,
   AcceptMembershipContractResponse,
+  AdminMembershipApplicationDetailResponse,
   AdminMembershipApplicationsResponse,
   ApproveMembershipApplicationPayload,
   ApproveMembershipApplicationResponse,
@@ -16,7 +17,9 @@ export type {
   AcceptMembershipContractData,
   AcceptMembershipContractPayload,
   AcceptMembershipContractResponse,
+  AdminMembershipApplicationDetailResponse,
   AdminMembershipApplicationsResponse,
+  MembershipApplicationDetail,
   ApproveMembershipApplicationData,
   ApproveMembershipApplicationPayload,
   ApproveMembershipApplicationResponse,
@@ -47,6 +50,11 @@ export const submitMembershipApplication = (
 
 export const getAdminMembershipApplications = () =>
   api.get<AdminMembershipApplicationsResponse>(`${BASE}/admin/applications/`);
+
+export const getAdminMembershipApplicationDetail = (applicationId: string) =>
+  api.get<AdminMembershipApplicationDetailResponse>(
+    `${BASE}/admin/applications/${applicationId}/`
+  );
 
 export const approveMembershipApplication = (
   payload: ApproveMembershipApplicationPayload

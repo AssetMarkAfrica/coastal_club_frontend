@@ -54,6 +54,40 @@ export interface MembershipApplicationApplicant {
   last_name: string;
 }
 
+export interface MembershipApplicationApplicantProfile {
+  profile_picture: string | null;
+  gender: string;
+  date_of_birth: string | null;
+  age: number | null;
+  phone_number: string;
+  nationality: string;
+  occupation: string;
+  id_type: string;
+  id_number: string;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  region_state: string;
+  postal_code: string;
+  country: string;
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
+  bio: string;
+  is_profile_complete: boolean;
+  missing_required_fields: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MembershipApplicationApplicantDetail extends MembershipApplicationApplicant {
+  avatar_url: string;
+  auth_provider: string;
+  role: string;
+  is_verified: boolean;
+  profile: MembershipApplicationApplicantProfile;
+  created_at: string;
+}
+
 
 export interface MembershipPlanSummary {
   id: number;
@@ -75,6 +109,24 @@ export interface MembershipApplication {
 }
 
 export type AdminMembershipApplicationsResponse = ApiResponse<MembershipApplication[]>;
+
+export interface MembershipApplicationDetail {
+  id: string;
+  applicant: MembershipApplicationApplicantDetail;
+  plan: MembershipPlan;
+  status: string;
+  contract_id: string | null;
+  contract_status: string | null;
+  application_fee_reference: string;
+  application_fee_paid_at: string | null;
+  approved_at: string | null;
+  admin_notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type AdminMembershipApplicationDetailResponse =
+  ApiResponse<MembershipApplicationDetail>;
 
 export interface ApproveMembershipApplicationPayload {
   application_id: string;

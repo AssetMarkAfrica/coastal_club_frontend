@@ -6,6 +6,8 @@ export const selectMembershipApplication = (state: RootState) =>
   state.membership.application;
 export const selectAdminMembershipApplications = (state: RootState) =>
   state.membership.adminApplications;
+export const selectAdminMembershipApplicationDetail = (state: RootState) =>
+  state.membership.adminApplicationDetail;
 export const selectMembershipApprovalResult = (state: RootState) =>
   state.membership.approvalResult;
 export const selectMyMembershipContract = (state: RootState) =>

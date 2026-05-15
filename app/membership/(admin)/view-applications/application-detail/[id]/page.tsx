@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
     selectAdminMembershipApplicationDetail,
@@ -93,7 +93,6 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
 export default function ApplicationDetailPage() {
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
-    const router = useRouter();
 
     const application = useAppSelector(selectAdminMembershipApplicationDetail);
     const loading = useAppSelector(selectMembershipLoading);

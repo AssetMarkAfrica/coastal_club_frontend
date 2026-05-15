@@ -74,6 +74,21 @@ export const fetchAdminMembershipApplications = createAsyncThunk(
   }
 );
 
+export const fetchAdminMembershipApplicationDetail = createAsyncThunk(
+  "membership/fetchAdminApplicationDetail",
+  async (applicationId: string, { rejectWithValue }) => {
+    try {
+      const { data } =
+        await membershipService.getAdminMembershipApplicationDetail(applicationId);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch membership application detail.")
+      );
+    }
+  }
+);
+
 export const approveMembershipApplication = createAsyncThunk(
   "membership/approveApplication",
   async (payload: ApproveMembershipApplicationPayload, { rejectWithValue }) => {

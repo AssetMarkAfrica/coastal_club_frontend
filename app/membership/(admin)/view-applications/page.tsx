@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   selectAdminMembershipApplications,
@@ -31,6 +32,7 @@ const toTitleCase = (value: string) =>
 
 export default function AdminMembershipApplicationsPage() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const applications = useAppSelector(selectAdminMembershipApplications);
   const loading = useAppSelector(selectMembershipLoading);
   const error = useAppSelector(selectMembershipError);
@@ -131,11 +133,21 @@ export default function AdminMembershipApplicationsPage() {
             {applications.map((application) => {
               const isApproved = application.status.toLowerCase() === "approved";
               const isApproving = approvingId === application.id;
+              const detailHref = `/membership/view-applications/application-detail/${application.id}`;
 
               return (
                 <article
                   key={application.id}
-                  className="grid grid-cols-1 gap-4 border-b border-gold-muted/15 px-5 py-5 last:border-b-0 md:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr_auto] md:items-center"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => router.push(detailHref)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      router.push(detailHref);
+                    }
+                  }}
+                  className="grid cursor-pointer grid-cols-1 gap-4 border-b border-gold-muted/15 px-5 py-5 transition-colors hover:bg-cream/50 last:border-b-0 md:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr_auto] md:items-center"
                 >
                   <div>
                     <p className="text-sm font-semibold text-primary">
@@ -143,6 +155,9 @@ export default function AdminMembershipApplicationsPage() {
                     </p>
                     <p className="mt-1 text-xs text-text-secondary">
                       {application.applicant.email}
+                    </p>
+                    <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-muted">
+                      View full application
                     </p>
                   </div>
 
@@ -167,7 +182,10 @@ export default function AdminMembershipApplicationsPage() {
 
                   <button
                     type="button"
-                    onClick={() => onApprove(application.id)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onApprove(application.id);
+                    }}
                     disabled={loading || isApproved || isApproving}
                     className="rounded border border-gold-muted bg-primary px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                     style={{ fontFamily: "var(--font-inter)" }}
