@@ -79,7 +79,6 @@ export default function MemberSidebar() {
     const isActive = useIsActive();
     const currentUser = useAppSelector(selectCurrentUser);
     const membership = useAppSelector(selectMyMembership);
-
     const initials =
         [currentUser?.first_name?.[0], currentUser?.last_name?.[0]]
             .filter(Boolean)
@@ -89,6 +88,11 @@ export default function MemberSidebar() {
     const tierLabel = membership
         ? membership.plan.tier.charAt(0).toUpperCase() + membership.plan.tier.slice(1)
         : null;
+
+    const displayName =
+        currentUser?.first_name
+            ? `${currentUser.first_name} ${currentUser.last_name ?? ""}`.trim()
+            : "Member Profile";
 
     return (
         <aside
@@ -106,15 +110,11 @@ export default function MemberSidebar() {
 
                 <div className="mt-6 flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full border-2 border-gold-muted/60 bg-primary-container/60 overflow-hidden flex items-center justify-center shrink-0">
-                        <span className="text-gold-muted text-sm font-semibold">{initials}</span>
+                        <span suppressHydrationWarning className="text-gold-muted text-sm font-semibold">{initials}</span>
                     </div>
                     <div>
-                        <p className="text-sm font-semibold text-cream leading-tight">
-                            {currentUser?.first_name
-                                ? `${currentUser.first_name} ${currentUser.last_name ?? ""}`.trim()
-                                : "Member Profile"}
-                        </p>
-                        <p className="text-[11px] text-gold-muted/80 mt-0.5">
+                        <p suppressHydrationWarning className="text-sm font-semibold text-cream leading-tight">{displayName}</p>
+                        <p suppressHydrationWarning className="text-[11px] text-gold-muted/80 mt-0.5">
                             {tierLabel ? `${tierLabel} Member` : "Member"}
                         </p>
                     </div>

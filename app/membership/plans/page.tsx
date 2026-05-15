@@ -115,9 +115,9 @@ export default function MembershipPlansPage() {
   };
 
   return (
-    <main className="min-h-screen bg-cream text-text-primary antialiased">
+    <main className="flex-1 min-w-0 bg-cream text-text-primary antialiased">
       <section className="px-4 py-8 sm:px-8 sm:py-12 lg:px-10">
-        <div className="mx-auto w-full max-w-xl">
+        <div className="mx-auto w-full max-w-7xl">
 
               {/* Hero text */}
               <div className="text-center mb-10 sm:mb-12">
@@ -404,5 +404,4 @@ export default function MembershipPlansPage() {
     </main>
   );
 }
-
 

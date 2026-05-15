@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectIsAuthenticated } from "@/store/auth/authSelectors";
@@ -14,6 +14,16 @@ import {
   acceptMembershipContract,
   fetchMyMembershipContract,
 } from "@/store/membership/membershipThunks";
+import WaitlistExperience from "../dashboard/WaitlistExperience";
+
+const subscribe = () => () => {};
+
+const useHasHydrated = () =>
+  useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  );
 
 const formatContractMoney = (value: string | number) => {
   if (typeof value === "string") return value;
@@ -34,6 +44,7 @@ const formatDate = (value: string | null) => {
 };
 
 export default function MembershipContractPage() {
+  const hasHydrated = useHasHydrated();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const contract = useAppSelector(selectMyMembershipContract);
@@ -110,6 +121,24 @@ export default function MembershipContractPage() {
     }
   };
 
+  if (!hasHydrated) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-cream px-6 py-12 text-text-primary">
+        <section className="w-full max-w-lg rounded-xl border border-gold-muted/25 bg-surface-container-lowest p-8 text-center shadow-2xl">
+          <h1
+            className="text-3xl font-semibold text-primary"
+            style={{ fontFamily: "var(--font-playfair)" }}
+          >
+            Membership Agreement
+          </h1>
+          <p className="mt-3 text-sm text-text-secondary">
+            Preparing your contract workspace...
+          </p>
+        </section>
+      </main>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-cream px-6 py-12 text-text-primary">
@@ -133,6 +162,10 @@ export default function MembershipContractPage() {
         </section>
       </main>
     );
+  }
+
+  if (!loading && !contract) {
+    return <WaitlistExperience />;
   }
 
   return (
@@ -163,28 +196,6 @@ export default function MembershipContractPage() {
           {error && (
             <div className="mb-8 rounded-lg border border-danger/30 bg-error-container px-5 py-4 text-sm text-danger">
               {error}
-            </div>
-          )}
-
-          {!loading && !contract && !error && (
-            <div className="rounded-lg border border-gold-muted/25 bg-surface-container-lowest px-6 py-8 text-center">
-              <h2
-                className="text-2xl font-semibold text-primary"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                No contract is available yet.
-              </h2>
-              <p className="mt-2 text-sm text-text-secondary">
-                Contracts become available after your application fee is paid and admin
-                approves your membership application.
-              </p>
-              <Link
-                href="/membership/plans"
-                className="mt-6 inline-flex rounded-lg border border-gold-muted px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-gold-muted transition-colors hover:bg-gold-muted hover:text-primary"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Back to Plans
-              </Link>
             </div>
           )}
 
