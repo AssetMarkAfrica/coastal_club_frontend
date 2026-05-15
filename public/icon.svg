@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circular Border -->
+  <circle cx="100" cy="100" r="90" stroke="#D4AF37" stroke-width="2" />
+  <circle cx="100" cy="100" r="84" stroke="#D4AF37" stroke-width="0.5" opacity="0.5" />
+  
+  <!-- Monogram Base (M and E silhouette) -->
+  <path d="M60 140V70L100 110L140 70V140" stroke="#D4AF37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Estrella (Star) Sparkle -->
+  <path d="M100 45V65M90 55H110M93 48L107 62M93 62L107 48" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" />
+  
+  <!-- Mar (Wave) Detail -->
+  <path d="M60 140C80 130 120 150 140 140" stroke="#D4AF37" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- Horizontal 'E' Bar / Horizon -->
+  <line x1="85" y1="95" x2="115" y2="95" stroke="#D4AF37" stroke-width="2" />
+</svg>

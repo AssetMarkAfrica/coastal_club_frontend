@@ -29,6 +29,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Estrella del Mar",
   description: "Coastal Club Frontend",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
