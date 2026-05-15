@@ -2,73 +2,52 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppSelector } from "@/store/hooks";
 import {
-  selectCurrentUser,
   selectCurrentUserRole,
   selectIsAuthenticated,
 } from "@/store/auth/authSelectors";
-import { logoutUser } from "@/store/auth/authThunks";
-import Link from "next/link";
+
 import LandingPageContent from "@/components/LandingPageContent";
 
 export default function HomePage() {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const user = useAppSelector(selectCurrentUser);
   const role = useAppSelector(selectCurrentUserRole);
 
-  // Defer auth-dependent rendering until after client hydration.
-  // Server always renders the landing page (isAuthenticated = false on server),
-  // and both server + first client paint match — no hydration mismatch.
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const onLogout = async () => {
-    await dispatch(logoutUser());
-    router.replace("/auth/login");
-  };
+  // Once mounted, redirect authenticated users based on role.
+  // Runs whenever mount state or auth state changes.
+  useEffect(() => {
+    if (!mounted || !isAuthenticated) return;
 
-  // ── Unauthenticated (or not yet mounted) → public landing page ──
-  if (!mounted || !isAuthenticated) {
+    if (role === "admin") {
+      router.replace("/membership/view-applications");
+    } else {
+      // "member" or any other authenticated role
+      router.replace("/membership/dashboard");
+    }
+  }, [mounted, isAuthenticated, role, router]);
+
+  // Before hydration completes, render the landing page so server
+  // and first client paint are identical — no hydration mismatch.
+  if (!mounted) {
     return <LandingPageContent />;
   }
 
-  // ── Authenticated → member home ──
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
-      <section className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-semibold text-slate-900">Coastal Club</h1>
+  // Mounted + authenticated → show a spinner while the redirect fires.
+  if (isAuthenticated) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-300 border-t-slate-700" />
+      </main>
+    );
+  }
 
-        <p className="mt-3 text-slate-600">Welcome back, {user?.name ?? "User"}.</p>
-        <p className="mt-1 text-slate-600">
-          You are signed in as{" "}
-          <span className="font-semibold">{role ?? "member"}</span>.
-        </p>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/profile"
-            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-          >
-            Go to Profile
-          </Link>
-          <Link
-            href="/membership/plans"
-            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-          >
-            Explore Membership Plans
-          </Link>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
-          >
-            Logout
-          </button>
-        </div>
-      </section>
-    </main>
-  );
+  // Mounted + not authenticated → public landing page.
+  return <LandingPageContent />;
 }

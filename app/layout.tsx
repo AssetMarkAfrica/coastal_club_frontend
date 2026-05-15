@@ -27,7 +27,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Coastal Club",
+  title: "Estrella del Mar",
   description: "Coastal Club Frontend",
 };
 

@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAppSelector } from "@/store/hooks";
+import { usePathname, useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectCurrentUser } from "@/store/auth/authSelectors";
 import { selectMyMembership } from "@/store/membership/membershipSelectors";
+import { logoutUser } from "@/store/auth/authThunks";
 
 /* ── Icons ───────────────────────────────────────────── */
 const IconGrid = () => (
@@ -76,9 +78,12 @@ function useIsActive() {
 
 /* ── Component ───────────────────────────────────────── */
 export default function MemberSidebar() {
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const isActive = useIsActive();
     const currentUser = useAppSelector(selectCurrentUser);
     const membership = useAppSelector(selectMyMembership);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const initials =
         [currentUser?.first_name?.[0], currentUser?.last_name?.[0]]
             .filter(Boolean)
@@ -93,6 +98,19 @@ export default function MemberSidebar() {
         currentUser?.first_name
             ? `${currentUser.first_name} ${currentUser.last_name ?? ""}`.trim()
             : "Member Profile";
+
+    const onLogout = async () => {
+        if (isLoggingOut) return;
+        setIsLoggingOut(true);
+        try {
+            await dispatch(logoutUser()).unwrap();
+        } catch {
+            // Local auth state is still cleared by slice on fulfilled path.
+        } finally {
+            router.replace("/auth/login");
+            setIsLoggingOut(false);
+        }
+    };
 
     return (
         <aside
@@ -158,12 +176,14 @@ export default function MemberSidebar() {
                     >
                         <IconSupport /> Support
                     </Link>
-                    <Link
-                        href="/auth/logout"
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-cream/50 hover:text-cream/80 transition-colors"
+                    <button
+                        type="button"
+                        onClick={onLogout}
+                        disabled={isLoggingOut}
+                        className="flex w-full items-center gap-3 px-3 py-2 text-sm text-cream/50 hover:text-cream/80 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        <IconLogout /> Logout
-                    </Link>
+                        <IconLogout /> {isLoggingOut ? "Logging out..." : "Logout"}
+                    </button>
                 </div>
             </div>
         </aside>
