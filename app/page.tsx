@@ -58,7 +58,7 @@ export default function HomePage() {
             href="/membership/plans"
             className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
           >
-            ExploreMembership Plans
+            Explore Membership Plans
           </Link>
           <button
             type="button"

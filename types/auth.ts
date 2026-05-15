@@ -47,7 +47,8 @@ export type GoogleAuthorizeResponse = ApiResponse<GoogleAuthorizeData>;
 export interface User {
   id: string;
   email: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   avatar_url: string;
   auth_provider: "email" | "google";
   role: "member" | "admin";

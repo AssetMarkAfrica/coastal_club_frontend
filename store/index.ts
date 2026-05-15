@@ -3,6 +3,7 @@ import authReducer from "./auth/authSlice";
 import membershipReducer from "./membership/membershipSlice";
 import paymentReducer from "./payment/paymentSlice";
 import profileReducer from "./profile/profileSlice";
+import notificationReducer from "./notification/notificationSlice";
 
 import cardReducer from "./membership/cardSlice"; 
 
@@ -13,6 +14,7 @@ export const store = configureStore({
     membership: membershipReducer,
     payment: paymentReducer,
     card: cardReducer,
+    notification: notificationReducer,
   },
 });
 

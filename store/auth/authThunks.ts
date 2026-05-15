@@ -59,19 +59,19 @@ export const resendOtp = createAsyncThunk(
     }
   }
 );
-
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (payload: LoginPayload, { rejectWithValue }) => {
     try {
       const { data } = await authService.login(payload);
-      return data.data;
+      console.log("LOGIN data:", data);        // ← add this
+
+      return data
     } catch (error) {
       return rejectWithValue(getErrorMessage(error, "Login failed."));
     }
   }
 );
-
 export const logoutUser = createAsyncThunk<
   void,
   void,

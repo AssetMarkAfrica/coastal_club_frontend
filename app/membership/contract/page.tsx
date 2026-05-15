@@ -52,17 +52,17 @@ export default function MembershipContractPage() {
 
   const hasAcceptedContract = Boolean(
     contract?.accepted_terms &&
-      contract.accepted_privacy &&
-      contract.accepted_club_rules
+    contract.accepted_privacy &&
+    contract.accepted_club_rules
   );
 
   const canAccept = Boolean(
     contract &&
-      acceptTerms &&
-      acceptPrivacy &&
-      acceptClubRules &&
-      !loading &&
-      !hasAcceptedContract
+    acceptTerms &&
+    acceptPrivacy &&
+    acceptClubRules &&
+    !loading &&
+    !hasAcceptedContract
   );
 
   const financialRows = useMemo(() => {
@@ -204,9 +204,8 @@ export default function MembershipContractPage() {
                   {financialRows.map((row) => (
                     <div
                       key={row.label}
-                      className={`flex items-center justify-between gap-6 px-6 py-4 ${
-                        row.tone === "cream" ? "bg-cream/50" : "bg-surface-container-lowest"
-                      }`}
+                      className={`flex items-center justify-between gap-6 px-6 py-4 ${row.tone === "cream" ? "bg-cream/50" : "bg-surface-container-lowest"
+                        }`}
                     >
                       <span className="text-base leading-7 text-text-secondary">
                         {row.label}
@@ -381,7 +380,7 @@ export default function MembershipContractPage() {
                     style={{ fontFamily: "var(--font-inter)" }}
                   >
                     <span>Continue to Membership Payment</span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
+
                   </a>
                 ) : (
                   <button
@@ -396,7 +395,7 @@ export default function MembershipContractPage() {
                         ? "Accepting Contract..."
                         : "Accept Contract & Proceed to Payment"}
                     </span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
+
                   </button>
                 )}
 

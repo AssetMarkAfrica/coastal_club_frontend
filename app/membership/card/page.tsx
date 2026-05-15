@@ -49,10 +49,10 @@ export default function MemberCardPage() {
   /* ── Loading ── */
   if (loading) {
     return (
-      <main className="flex-1 md:ml-[260px] min-h-screen bg-[#F7F3EC] flex flex-col">
+      <main className="flex-1 md:ml-sidebar-width min-h-screen bg-[#F7F3EC] flex flex-col">
         <MobileHeader />
         <div className="flex-1 flex flex-col items-center justify-center gap-10 p-8">
-          <div className="w-full max-w-[420px] aspect-[1.6/1] rounded-2xl bg-navy-deep/10 animate-pulse" />
+          <div className="w-full max-w-105 aspect-[1.6/1] rounded-2xl bg-navy-deep/10 animate-pulse" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-3xl">
             <SkeletonCard />
             <SkeletonCard />
@@ -65,7 +65,7 @@ export default function MemberCardPage() {
   /* ── Error ── */
   if (error) {
     return (
-      <main className="flex-1 md:ml-[260px] min-h-screen bg-[#F7F3EC] flex flex-col">
+      <main className="flex-1 md:ml-sidebar-width min-h-screen bg-[#F7F3EC] flex flex-col">
         <MobileHeader />
         <div className="flex-1 flex flex-col items-center justify-center gap-5 p-8 text-center">
           <div className="w-14 h-14 rounded-full bg-red-50 border border-red-200 flex items-center justify-center">
@@ -99,7 +99,7 @@ export default function MemberCardPage() {
 
   return (
     <main
-      className="flex-1 md:ml-[260px] min-h-screen flex flex-col"
+      className="flex-1 md:ml-sidebar-width min-h-screen flex flex-col"
       style={{ background: "#F7F3EC" }}
     >
       <MobileHeader />
@@ -130,7 +130,7 @@ export default function MemberCardPage() {
             FLIP CARD
         ══════════════════════════════════════════ */}
         <div
-          className="relative w-full max-w-[460px] cursor-pointer select-none group"
+          className="relative w-full max-w-115 cursor-pointer select-none group"
           style={{ aspectRatio: "1.586 / 1", perspective: "2400px" }}
           onClick={() => setFlipped((f) => !f)}
           aria-label={flipped ? "Click to flip back" : "Click to reveal QR code"}
@@ -142,7 +142,7 @@ export default function MemberCardPage() {
           />
 
           <div
-            className="w-full h-full relative transition-transform duration-[900ms]"
+            className="w-full h-full relative transition-transform duration-900"
             style={{
               transformStyle: "preserve-3d",
               transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -204,12 +204,7 @@ export default function MemberCardPage() {
                       className="w-9 h-9 rounded-full border flex items-center justify-center"
                       style={{ borderColor: "rgba(201,168,76,0.4)", background: "rgba(201,168,76,0.08)" }}
                     >
-                      <span
-                        className="material-symbols-outlined text-[18px]"
-                        style={{ color: "#D4AF37", fontVariationSettings: "'FILL' 1" }}
-                      >
-                        workspace_premium
-                      </span>
+
                     </div>
                   </div>
 

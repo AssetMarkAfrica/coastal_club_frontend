@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { selectCurrentUserRole } from "@/store/auth/authSelectors";
 import { loginUser } from "@/store/auth/authThunks";
 import { clearError } from "@/store/auth/authSlice";
 import {
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const router = useRouter();
   const loading = useAppSelector(selectAuthLoading);
   const error = useAppSelector(selectAuthError);
+  const role = useAppSelector(selectCurrentUserRole);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -25,12 +27,19 @@ export default function LoginPage() {
     dispatch(clearError());
 
     try {
-      await dispatch(loginUser({ email, password })).unwrap();
-      router.push("/");
+      // unwrap() returns the fulfilled action payload — use it directly
+      const result = await dispatch(loginUser({ email, password })).unwrap();
+
+      if (result.user.role === "admin") {
+        router.push("/membership/view-applications");
+      } else {
+        router.push("/");
+      }
     } catch {
       // Slice state already contains human-readable error.
     }
   };
+
 
   const onGoogleSignIn = async () => {
     dispatch(clearError());

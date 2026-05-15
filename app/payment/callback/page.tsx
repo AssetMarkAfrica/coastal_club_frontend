@@ -146,21 +146,13 @@ export default function PaymentCallbackPage() {
               )}
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={onRetry}
-                disabled={!reference || loading}
-                className="w-full rounded border border-gold-muted bg-primary px-4 py-3 text-xs font-semibold tracking-widest uppercase text-gold-light transition-all duration-300 hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Retry Verification
-              </button>
+
               <Link
-                href="/membership/plans"
+                href="/membership/dashboard"
                 className="w-full rounded border border-primary/30 px-4 py-3 text-center text-xs font-semibold tracking-widest uppercase text-primary transition-colors hover:bg-primary/5"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
-                Back to Plans
+                Proceed to Dashboard
               </Link>
             </div>
           </div>

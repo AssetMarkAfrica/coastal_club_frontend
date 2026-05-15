@@ -3,10 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  selectCurrentUser,
-  selectIsAuthenticated,
-} from "@/store/auth/authSelectors";
+import { selectIsAuthenticated } from "@/store/auth/authSelectors";
 import {
   selectMembershipError,
   selectMembershipLoading,
@@ -49,8 +46,7 @@ const buildPlanHighlights = (plan: MembershipPlan) => {
   }
 
   const highlights = [
-    `${plan.guest_passes_per_visit} guest pass${
-      plan.guest_passes_per_visit === 1 ? "" : "es"
+    `${plan.guest_passes_per_visit} guest pass${plan.guest_passes_per_visit === 1 ? "" : "es"
     } per visit`,
     `Points multiplier: x${plan.points_multiplier}`,
     `Monthly maintenance fee: ${formatMoney(plan.club_maintenance_fee_pesewas)}`,
@@ -66,7 +62,6 @@ const buildPlanHighlights = (plan: MembershipPlan) => {
 export default function MembershipPlansPage() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const currentUser = useAppSelector(selectCurrentUser);
   const plans = useAppSelector(selectMembershipPlans);
   const loading = useAppSelector(selectMembershipLoading);
   const error = useAppSelector(selectMembershipError);
@@ -121,116 +116,8 @@ export default function MembershipPlansPage() {
 
   return (
     <main className="min-h-screen bg-cream text-text-primary antialiased">
-      <div className="flex min-h-screen">
-
-        {/* ── Sidebar ── */}
-        <aside className="hidden lg:flex w-64 shrink-0 flex-col bg-navy-deep text-cream border-r border-gold-muted/20">
-          <div className="px-6 py-8 border-b border-gold-muted/20">
-            <div className="h-14 w-14 rounded-full border-2 border-gold-muted bg-primary-container/40 mb-4" />
-            <p
-              className="text-2xl italic text-gold-muted leading-snug"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              Estrella del Mar
-            </p>
-            <p
-              className="mt-2 text-[10px] font-semibold tracking-[0.22em] uppercase text-gold-light/70"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              {currentUser?.role === "admin" ? "Administrator" : "Premier Member"}
-            </p>
-          </div>
-
-          <nav className="flex-1 px-4 py-6 space-y-1">
-            {[
-              { label: "Dashboard", href: "#" },
-              { label: "Member Card", href: "#" },
-              { label: "Bookings", href: "#" },
-              { label: "Exclusive Perks", href: "#" },
-              { label: "Settings", href: "#" },
-            ].map(({ label, href }) => (
-              <Link
-                key={label}
-                href={href}
-                className="flex items-center rounded border border-transparent px-3 py-2.5 text-sm text-cream/80 hover:bg-primary hover:border-gold-muted/30 hover:text-gold-light transition-all"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                <span className="mr-2.5 inline-block h-1.5 w-1.5 rounded-full bg-gold-muted/70" />
-                {label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="px-4 pb-8">
-            <button
-              type="button"
-              className="w-full rounded border border-gold-muted bg-primary py-2.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-gold-light hover:bg-gold-muted hover:text-primary transition-colors"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              Reserve a Table
-            </button>
-          </div>
-        </aside>
-
-        {/* ── Main content ── */}
-        <div className="flex-1 flex flex-col min-w-0">
-
-          {/* Header */}
-          <header className="sticky top-0 z-30 border-b border-gold-muted/20 bg-surface-container-lowest/95 backdrop-blur">
-            <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 h-16 flex items-center justify-between gap-6">
-              <Link
-                href="/"
-                className="text-2xl font-semibold text-primary shrink-0"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                Estrella del Mar
-              </Link>
-
-              <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-                {[
-                  { label: "The Club", href: "#" },
-                  { label: "Memberships", href: "/membership/plans", active: true },
-                  { label: "Events", href: "#" },
-                  { label: "Private Dining", href: "#" },
-                  { label: "Concierge", href: "#" },
-                ].map(({ label, href, active }) => (
-                  <Link
-                    key={label}
-                    href={href}
-                    className={`relative py-5 text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors ${
-                      active
-                        ? "text-gold-muted after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-gold-muted"
-                        : "text-text-primary hover:text-gold-muted"
-                    }`}
-                    style={{ fontFamily: "var(--font-inter)" }}
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </nav>
-
-              <div className="hidden sm:flex items-center gap-2">
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-full border border-primary/25 text-primary hover:border-gold-muted hover:text-gold-muted transition-colors flex items-center justify-center"
-                  aria-label="Notifications"
-                >
-                  <span className="text-sm leading-none">🔔</span>
-                </button>
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-full border border-primary/25 text-primary hover:border-gold-muted hover:text-gold-muted transition-colors flex items-center justify-center"
-                  aria-label="Profile"
-                >
-                  <span className="text-sm leading-none">👤</span>
-                </button>
-              </div>
-            </div>
-          </header>
-
-          {/* Page body */}
-          <section className="flex-1 px-4 py-8 sm:px-8 sm:py-12 lg:px-10">
-            <div className="mx-auto w-full max-w-[1280px]">
+      <section className="px-4 py-8 sm:px-8 sm:py-12 lg:px-10">
+        <div className="mx-auto w-full max-w-xl">
 
               {/* Hero text */}
               <div className="text-center mb-10 sm:mb-12">
@@ -333,7 +220,7 @@ export default function MembershipPlansPage() {
                   {[1, 2, 3, 4].map((key) => (
                     <div
                       key={key}
-                      className="h-[420px] rounded-2xl border border-gold-muted/20 bg-surface-container-lowest animate-pulse"
+                      className="h-105 rounded-2xl border border-gold-muted/20 bg-surface-container-lowest animate-pulse"
                     />
                   ))}
                 </div>
@@ -348,11 +235,10 @@ export default function MembershipPlansPage() {
                     return (
                       <article
                         key={plan.id}
-                        className={`relative flex flex-col rounded-2xl border bg-surface-container-lowest p-6 transition-all duration-300 hover:-translate-y-1 ${
-                          isFeatured
+                        className={`relative flex flex-col rounded-2xl border bg-surface-container-lowest p-6 transition-all duration-300 hover:-translate-y-1 ${isFeatured
                             ? "border-gold-muted shadow-[0_18px_44px_rgba(16,36,63,0.14)]"
                             : "border-gold-muted/20 shadow-[0_8px_24px_rgba(16,36,63,0.08)]"
-                        }`}
+                          }`}
                       >
                         {/* Featured badge */}
                         {isFeatured && (
@@ -408,18 +294,17 @@ export default function MembershipPlansPage() {
                               type="button"
                               onClick={() => setSelectedPlan(plan)}
                               disabled={isSubmitting || loading || isSubscribed}
-                              className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
-                                isFeatured
+                              className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${isFeatured
                                   ? "border-gold-muted bg-primary text-gold-light hover:bg-gold-muted hover:text-primary"
                                   : "border-gold-muted text-gold-muted hover:bg-gold-muted hover:text-primary"
-                              } disabled:opacity-60 disabled:cursor-not-allowed`}
+                                } disabled:opacity-60 disabled:cursor-not-allowed`}
                               style={{ fontFamily: "var(--font-inter)" }}
                             >
                               {isSubscribed
                                 ? "Subscribed"
                                 : isSubmitting
-                                ? "Processing…"
-                                : `Apply for ${toTitleCase(plan.tier)}`}
+                                  ? "Processing…"
+                                  : `Apply for ${toTitleCase(plan.tier)}`}
                             </button>
                           ) : (
                             <p className="text-xs text-text-secondary text-center">
@@ -440,8 +325,6 @@ export default function MembershipPlansPage() {
               )}
             </div>
           </section>
-        </div>
-      </div>
 
       {selectedPlan && (
         <div
@@ -521,3 +404,5 @@ export default function MembershipPlansPage() {
     </main>
   );
 }
+
+
