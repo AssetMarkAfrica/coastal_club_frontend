@@ -87,3 +87,28 @@ export const logoutUser = createAsyncThunk<
     // Local logout should still succeed even if the API call fails.
   }
 });
+
+export const passwordResetRequest = createAsyncThunk(
+  "auth/passwordResetRequest",
+  async (payload: { email: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await authService.passwordResetRequest(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error, "Failed to request password reset."));
+    }
+  }
+);
+
+export const passwordResetConfirm = createAsyncThunk(
+  "auth/passwordResetConfirm",
+  async (payload: { uid: string, token: string, new_password: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await authService.passwordResetConfirm(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error, "Failed to confirm password reset."));
+    }
+  }
+);
+

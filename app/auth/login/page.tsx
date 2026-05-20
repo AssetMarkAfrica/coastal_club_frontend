@@ -183,7 +183,7 @@ export default function LoginPage() {
                         Password
                       </label>
                       <Link
-                        href="/auth/forgot-password"
+                        href="/auth/password/reset/request"
                         className="text-sm text-gold-muted hover:text-primary transition-colors"
                         style={{ fontFamily: "var(--font-inter)" }}
                       >

@@ -46,5 +46,11 @@ export const googleCallback = (code: string) =>
     code,
   });
 
+export const passwordResetRequest = (payload: { email: string }) =>
+  api.post<{ message: string }>(`${BASE}/password-reset-request/`, payload);
+
+export const passwordResetConfirm = (payload: { uid: string, token: string, new_password: string }) =>
+  api.post<{ message: string }>(`${BASE}/password-reset-confirm/`, payload);
+
 export const logout = (refresh: string) =>
   api.post(`${BASE}/logout/`, { refresh });

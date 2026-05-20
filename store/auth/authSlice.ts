@@ -3,6 +3,8 @@ import type { AuthTokenData, OtpDelivery, User } from "../../types/auth";
 import {
   loginUser,
   logoutUser,
+  passwordResetConfirm,
+  passwordResetRequest,
   registerUser,
   resendOtp,
   verifyOtp,
@@ -214,6 +216,33 @@ const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.error = (action.payload as string) ?? "Logout request failed.";
       });
+
+    builder
+      .addCase(passwordResetRequest.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(passwordResetRequest.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(passwordResetRequest.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to request password reset.";
+      });
+
+    builder
+      .addCase(passwordResetConfirm.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(passwordResetConfirm.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(passwordResetConfirm.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to confirm password reset.";
+      });
+
   },
 });
 
