@@ -7,8 +7,10 @@ import { selectCurrentUser } from "@/store/auth/authSelectors";
 import {
   selectMembershipLoading,
   selectMyMembership,
+  selectMembershipApplication,
+  selectMyMembershipStatus,
 } from "@/store/membership/membershipSelectors";
-import { fetchMyMembership } from "@/store/membership/membershipThunks";
+import { fetchMyMembership, fetchMyMembershipStatus } from "@/store/membership/membershipThunks";
 import WaitlistExperience from "./WaitlistExperience";
 import { IconBill, IconShield, IconSpend, IconTicket, IconTrendUp } from "./icons";
 import { formatMoney, formatDate, toTitleCase, QUICK_SERVICES } from "./utils";
@@ -18,6 +20,8 @@ export default function MembershipDashboardPage() {
   const currentUser = useAppSelector(selectCurrentUser);
   const membership = useAppSelector(selectMyMembership);
   const loading = useAppSelector(selectMembershipLoading);
+  const application = useAppSelector(selectMembershipApplication);
+  const myMembershipStatus = useAppSelector(selectMyMembershipStatus);
 
   // Tracks whether the fetch has settled (fulfilled or rejected).
   // Prevents the WaitlistExperience flash on initial render where
@@ -25,7 +29,14 @@ export default function MembershipDashboardPage() {
   const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchMyMembership()).finally(() => setFetched(true));
+    const loadData = async () => {
+      await Promise.allSettled([
+        dispatch(fetchMyMembership()),
+        dispatch(fetchMyMembershipStatus()),
+      ]);
+      setFetched(true);
+    };
+    loadData();
   }, [dispatch]);
 
   const lastName = currentUser?.last_name;
@@ -46,9 +57,66 @@ export default function MembershipDashboardPage() {
     );
   }
 
-  // ── Fetch settled, no membership → waitlist ───────────────────────────────
+  // ── Fetch settled, decide what to show ───────────────────────────────────
   if (!membership) {
-    return <WaitlistExperience />;
+    const status = myMembershipStatus?.status;
+
+    if (status === "pending_fee" || status === "pending_review" || (!myMembershipStatus && application)) {
+      // User has applied and is on waiting list
+      return <WaitlistExperience />;
+    }
+
+    if (status === "approved") {
+      // User is approved, show contract signature CTA
+      return (
+        <main className="flex-1 min-h-[calc(100vh-4rem)] flex items-center justify-center bg-[#f5f0e8] px-6 py-10">
+          <section className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-gold-muted/25 bg-white shadow-[0_24px_64px_rgba(16,36,63,0.14)] text-center px-8 py-12">
+            <h2 
+              className="text-2xl font-semibold text-primary" 
+              style={{ fontFamily: "var(--font-playfair)" }}
+            >
+              Application Approved!
+            </h2>
+            <p className="mt-4 text-sm text-text-secondary leading-relaxed">
+              Your application for membership has been approved. Please review and sign your contract to complete your onboarding.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/membership/contract"
+                className="inline-block rounded-md bg-primary px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-muted focus:ring-offset-2"
+              >
+                Sign Contract
+              </Link>
+            </div>
+          </section>
+        </main>
+      );
+    }
+
+    // User has not applied yet (or status returns nothing / 404)
+    return (
+      <main className="flex-1 min-h-[calc(100vh-4rem)] flex items-center justify-center bg-[#f5f0e8] px-6 py-10">
+        <section className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-gold-muted/25 bg-white shadow-[0_24px_64px_rgba(16,36,63,0.14)] text-center px-8 py-12">
+          <h2 
+            className="text-2xl font-semibold text-primary" 
+            style={{ fontFamily: "var(--font-playfair)" }}
+          >
+            Begin Your Journey
+          </h2>
+          <p className="mt-4 text-sm text-text-secondary leading-relaxed">
+            You haven't applied for membership yet. Discover our exclusive plans and become a part of Estrella del Mar today.
+          </p>
+          <div className="mt-8">
+            <Link
+              href="/membership/plans"
+              className="inline-block rounded-md bg-primary px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-muted focus:ring-offset-2"
+            >
+              Explore Membership Plans
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
   }
 
   // ── Has membership → full dashboard ──────────────────────────────────────

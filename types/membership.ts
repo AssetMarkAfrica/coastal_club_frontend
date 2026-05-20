@@ -192,6 +192,21 @@ export interface MyMembership {
 }
 export type MyMembershipResponse = ApiResponse<MyMembership>;
 
+export interface MyMembershipStatus {
+  id: string;
+  status: string;
+  status_display: string;
+  plan: {
+    name: string;
+    tier: MembershipPlanTier;
+  };
+  application_fee_paid: boolean;
+  submitted_at: string;
+  approved_at: string | null;
+}
+
+export type MyMembershipStatusResponse = ApiResponse<MyMembershipStatus>;
+
 
 export interface AcceptMembershipContractPayload {
   accept_terms: boolean;

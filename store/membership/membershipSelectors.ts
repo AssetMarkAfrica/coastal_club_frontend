@@ -19,3 +19,5 @@ export const selectMembershipContractAcceptance = (state: RootState) =>
 export const selectMembershipLoading = (state: RootState) =>
   state.membership.loading;
 export const selectMembershipError = (state: RootState) => state.membership.error;
+export const selectMyMembershipStatus = (state: RootState) =>
+  state.membership.myMembershipStatus;

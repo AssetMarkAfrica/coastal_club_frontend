@@ -131,6 +131,20 @@ export const fetchMyMembership = createAsyncThunk(
   }
 );
 
+export const fetchMyMembershipStatus = createAsyncThunk(
+  "membership/fetchMyMembershipStatus",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getMyMembershipStatus();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch your membership status.")
+      );
+    }
+  }
+)
+
 export const acceptMembershipContract = createAsyncThunk(
   "membership/acceptContract",
   async (

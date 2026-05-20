@@ -209,8 +209,17 @@ export default function MembershipPlansPage() {
 
               {/* Error banner */}
               {error && (
-                <div className="mb-6 rounded border border-danger/35 bg-error-container px-4 py-3 text-sm text-danger">
-                  {error}
+                <div className="mb-6 rounded border border-danger/35 bg-error-container px-4 py-3 text-sm text-danger flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <span>{error}</span>
+                  {error.includes("complete your profile") && (
+                    <Link
+                      href="/profile"
+                      className="inline-flex shrink-0 rounded border border-danger px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-danger transition-colors hover:bg-danger hover:text-white"
+                      style={{ fontFamily: "var(--font-inter)" }}
+                    >
+                      Complete Profile
+                    </Link>
+                  )}
                 </div>
               )}
 

@@ -128,6 +128,7 @@ export default function ProfilePage() {
       await dispatch(updateProfile(payload)).unwrap();
       dispatch(completeOnboarding());
       setStatus("Profile updated successfully.");
+      router.push("/membership/plans");
     } catch {
       setStatus("");
     }

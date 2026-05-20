@@ -8,6 +8,7 @@ import type {
   MembershipContract,
   MembershipPlan,
   MyMembership,
+  MyMembershipStatus,
 } from "../../types/membership";
 import {
   acceptMembershipContract,
@@ -17,12 +18,14 @@ import {
   fetchMembershipPlans,
   fetchMyMembership,
   fetchMyMembershipContract,
+  fetchMyMembershipStatus,
   submitMembershipApplication,
 } from "./membershipThunks";
 
 export interface MembershipState {
   plans: MembershipPlan[];
   application: MembershipApplicationSubmission | null;
+  myMembershipStatus: MyMembershipStatus | null;
   adminApplications: MembershipApplication[];
   adminApplicationDetail: MembershipApplicationDetail | null;
   approvalResult: ApproveMembershipApplicationData | null;
@@ -36,6 +39,7 @@ export interface MembershipState {
 const initialState: MembershipState = {
   plans: [],
   application: null,
+  myMembershipStatus: null,
   adminApplications: [],
   adminApplicationDetail: null,
   approvalResult: null,
@@ -56,6 +60,7 @@ const membershipSlice = createSlice({
     clearMembershipState(state) {
       state.plans = [];
       state.application = null;
+      state.myMembershipStatus = null;
       state.adminApplications = [];
       state.adminApplicationDetail = null;
       state.approvalResult = null;
@@ -205,6 +210,24 @@ const membershipSlice = createSlice({
         state.loading = false;
         state.error =
           (action.payload as string) ?? "Failed to accept membership contract.";
+      });
+
+    builder
+      .addCase(fetchMyMembershipStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMyMembershipStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.myMembershipStatus = action.payload;
+      })
+      .addCase(fetchMyMembershipStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.myMembershipStatus = null;
+        const errorMsg = action.payload as string;
+        if (errorMsg && !errorMsg.toLowerCase().includes("no application found")) {
+          state.error = errorMsg;
+        }
       });
   },
 });
