@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Estrella del Mar - My Reservations</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Inter:wght@400;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2f3033",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001c3b",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9fc",
+                        "surface-tint": "#455f87",
+                        "danger": "#B42318",
+                        "secondary": "#735c00",
+                        "inverse-primary": "#adc8f5",
+                        "cream": "#F8F1DF",
+                        "surface-bright": "#faf9fc",
+                        "on-surface-variant": "#43474e",
+                        "on-primary-container": "#8aa4cf",
+                        "on-error": "#ffffff",
+                        "success": "#0F766E",
+                        "surface-container-high": "#e9e7eb",
+                        "text-primary": "#1A1A1A",
+                        "tertiary-fixed-dim": "#edbf7f",
+                        "warning": "#B45309",
+                        "on-secondary-container": "#745c00",
+                        "secondary-container": "#fed65b",
+                        "primary": "#022448",
+                        "on-tertiary-fixed-variant": "#60410c",
+                        "tertiary-container": "#503300",
+                        "surface-dim": "#dad9dd",
+                        "primary-fixed-dim": "#adc8f5",
+                        "secondary-fixed": "#ffe088",
+                        "surface-container": "#eeedf1",
+                        "on-tertiary-fixed": "#291800",
+                        "on-background": "#1a1c1e",
+                        "cream-dark": "#EDE3CC",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#e9c349",
+                        "primary-fixed": "#d5e3ff",
+                        "primary-container": "#1e3a5f",
+                        "on-tertiary-container": "#c69b5f",
+                        "gold-light": "#F1E0A6",
+                        "text-secondary": "#4A4A4A",
+                        "surface-container-highest": "#e3e2e6",
+                        "text-muted": "#6B7280",
+                        "inverse-on-surface": "#f1f0f4",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "surface-variant": "#e3e2e6",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c4c6cf",
+                        "surface": "#faf9fc",
+                        "on-tertiary": "#ffffff",
+                        "navy-deep": "#10243F",
+                        "surface-container-low": "#f4f3f7",
+                        "on-secondary-fixed-variant": "#574500",
+                        "gold-muted": "#B7922B",
+                        "on-surface": "#1a1c1e",
+                        "tertiary": "#341f00",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#241a00",
+                        "outline": "#74777f",
+                        "tertiary-fixed": "#ffddb2",
+                        "error-container": "#ffdad6",
+                        "info": "#185FA5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "24px",
+                        "topbar-height": "64px",
+                        "sidebar-width": "260px",
+                        "input-padding-x": "16px",
+                        "input-padding-y": "12px",
+                        "card-padding": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-uppercase": ["Inter"],
+                        "h4": ["Playfair Display"],
+                        "h3": ["Playfair Display"],
+                        "h1": ["Playfair Display"],
+                        "h2": ["Playfair Display"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-uppercase": ["13px", { "lineHeight": "1", "letterSpacing": "0.08em", "fontWeight": "600" }],
+                        "h4": ["22px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "h3": ["28px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h1": ["48px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "h2": ["36px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "1.7", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F8F1DF;
+            /* cream */
+            color: #1A1A1A;
+            /* text-primary */
+        }
+
+        /* Custom Gold Gradient for Text */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #F1E0A6 0%, #B7922B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Nav & Shell Styles - Injected from JSON */
+        .sidebar-shell {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 260px;
+            border-right: 1px solid rgba(183, 146, 43, 0.2);
+            background-color: #10243F;
+            /* navy-deep */
+            color: #F1E0A6;
+            /* gold-light */
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(16, 36, 63, 0.5);
+            /* shadow-2xl shadow-navy-deep/50 */
+            z-index: 40;
+        }
+
+        .topbar-shell {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            height: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            margin-left: 260px;
+            max-width: calc(100% - 260px);
+            background-color: rgba(250, 249, 252, 0.95);
+            /* bg-surface/95 */
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(183, 146, 43, 0.2);
+            box-shadow: 0 1px 2px 0 rgba(16, 36, 63, 0.05);
+            z-index: 30;
+        }
+
+        /* Component specific custom styles */
+        .card-navy {
+            background: linear-gradient(135deg, #10243F 0%, #1E3A5F 100%);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 4px 24px rgba(30, 58, 95, 0.08);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card-navy:hover {
+            transform: translateY(-3px);
+            border-color: rgba(212, 175, 55, 0.6);
+        }
+
+        .chiseled-text {
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.2), -1px -1px 0px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body class="antialiased font-body-lg min-h-screen">
+    <!-- TopNavBar -->
+    <header class="topbar-shell hidden md:flex">
+        <div class="flex items-center">
+            <!-- Search bar on left logic from JSON -->
+            <div class="relative focus-within:ring-2 focus-within:ring-gold-muted/40 rounded-DEFAULT">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">search</span>
+                <input
+                    class="bg-surface border border-gold-muted/20 text-navy-deep pl-10 pr-4 py-2 rounded-DEFAULT text-body-lg focus:outline-none focus:border-gold-muted w-64"
+                    placeholder="Search..." type="text" />
+            </div>
+        </div>
+        <!-- Center Brand / Empty space for layout balance if needed, but search on left -->
+        <div class="font-h3 text-h3 text-navy-deep hidden lg:block absolute left-1/2 -translate-x-1/2">
+            <!-- Not showing product name here to avoid clutter with sidebar, relying on sidebar brand -->
+        </div>
+        <div class="flex items-center space-x-6">
+            <button aria-label="notifications"
+                class="text-text-muted hover:text-navy-deep hover:text-gold-muted transition-colors duration-200">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button aria-label="history"
+                class="text-text-muted hover:text-navy-deep hover:text-gold-muted transition-colors duration-200">
+                <span class="material-symbols-outlined">history</span>
+            </button>
+            <button aria-label="chat_bubble"
+                class="text-text-muted hover:text-navy-deep hover:text-gold-muted transition-colors duration-200">
+                <span class="material-symbols-outlined">chat_bubble</span>
+            </button>
+            <div
+                class="h-8 w-8 rounded-full overflow-hidden border border-gold-muted/20 shadow-sm shadow-navy-deep/5 cursor-pointer">
+                <img alt="Admin User Profile" class="w-full h-full object-cover"
+                    data-alt="A small circular profile picture of an elegant administrator in a high-end club management interface, wearing a sharp navy suit. Soft studio lighting, professional corporate headshot style, set against a warm cream background."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv8GnDbfsHjlkovpZW3ulCCQm2cXUpicUCCaqUj4_v4yt7_uinXIaAK0vFHuPQDw92FCi3SepScQeBaGDaOLzqitXB8oAiTJUYoxCeZ6P56H-TvpW2OIyWUGuuO8xRbvIpNPQT8B_coe7rgc4pIRScIV3_pTuYYHcAqD8fazUnphhLsy-fsvjXVyzb-Aa6BoZWRnnGkkaeadd4pqLY2xK1DpFGQNAACgbCGaRvV09Sr2CCGdLf3Kc9W6p01AeVxeuvFKYkA24" />
+            </div>
+        </div>
+    </header>
+    <!-- SideNavBar -->
+    <nav class="sidebar-shell hidden md:flex">
+        <div class="mb-10 text-center">
+            <h1 class="font-h4 text-h4 text-gold-light tracking-widest uppercase mb-1">Estrella del Mar</h1>
+            <p class="font-label-uppercase text-label-uppercase text-on-primary-container/70 tracking-widest">Admin
+                Portal</p>
+        </div>
+        <div class="flex-1 space-y-2">
+            <!-- Active State Navigation (Assuming Dashboard is active for this view conceptually, or Events if it mapped to reservations, but let's use Events for Reservations context) -->
+            <a class="flex items-center px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 hover:bg-primary-container/20 transition-all duration-300 scale-102 active:scale-95"
+                href="#">
+                <span class="material-symbols-outlined mr-3">dashboard</span>
+                <span class="font-label-uppercase text-label-uppercase">Dashboard</span>
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 hover:bg-primary-container/20 transition-all duration-300 scale-102 active:scale-95"
+                href="#">
+                <span class="material-symbols-outlined mr-3">assignment_ind</span>
+                <span class="font-label-uppercase text-label-uppercase">Applications</span>
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 hover:bg-primary-container/20 transition-all duration-300 scale-102 active:scale-95"
+                href="#">
+                <span class="material-symbols-outlined mr-3">card_membership</span>
+                <span class="font-label-uppercase text-label-uppercase">Memberships</span>
+            </a>
+            <!-- Using Events as Active to map to Reservations -->
+            <a class="flex items-center px-4 py-3 rounded-DEFAULT text-gold-light border-r-2 border-gold-light bg-primary-container/30 font-bold scale-102 active:scale-95 transition-transform"
+                href="#">
+                <span class="material-symbols-outlined mr-3"
+                    style="font-variation-settings: 'FILL' 1;">event_seat</span>
+                <span class="font-label-uppercase text-label-uppercase">Events</span>
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 hover:bg-primary-container/20 transition-all duration-300 scale-102 active:scale-95"
+                href="#">
+                <span class="material-symbols-outlined mr-3">settings</span>
+                <span class="font-label-uppercase text-label-uppercase">Settings</span>
+            </a>
+        </div>
+        <div class="mt-auto">
+            <button
+                class="w-full bg-transparent border border-gold-light text-gold-light hover:bg-gold-light/10 font-label-uppercase text-label-uppercase py-3 rounded-DEFAULT transition-colors duration-300">
+                New Application
+            </button>
+        </div>
+    </nav>
+    <!-- Main Content Canvas -->
+    <main class="md:ml-[260px] pt-[64px] min-h-screen pb-20">
+        <div class="max-w-6xl mx-auto px-6 py-10">
+            <!-- Page Header -->
+            <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end">
+                <div>
+                    <p class="font-label-uppercase text-label-uppercase text-gold-muted mb-2 tracking-widest uppercase">
+                        My Experiences</p>
+                    <h2 class="font-h1 text-h1 text-navy-deep">Upcoming Reservations</h2>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <button
+                        class="bg-navy-deep text-gold-light border border-gold-muted px-6 py-2.5 rounded-DEFAULT font-label-uppercase text-label-uppercase hover:bg-gold-light hover:text-navy-deep transition-colors duration-300">
+                        Book Table
+                    </button>
+                </div>
+            </div>
+            <!-- Bento/Grid Layout for Reservations -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Reservation Card 1 -->
+                <div class="card-navy rounded-lg p-card-padding flex flex-col relative overflow-hidden group">
+                    <!-- Ornamental subtle background pattern (using gradient for now, as no data uri allowed) -->
+                    <div class="absolute inset-0 opacity-10 pointer-events-none"
+                        style="background-image: radial-gradient(#F1E0A6 1px, transparent 1px); background-size: 20px 20px;">
+                    </div>
+                    <div class="flex justify-between items-start mb-6 z-10">
+                        <div>
+                            <h3 class="font-h3 text-h3 text-on-primary mb-1">Estrella del Mar</h3>
+                            <p class="font-body-lg text-body-lg text-gold-light/80 flex items-center">
+                                <span class="material-symbols-outlined text-[18px] mr-2">restaurant</span> Main Dining
+                                Room
+                            </p>
+                        </div>
+                        <span
+                            class="bg-success/20 text-success border border-success/30 px-3 py-1 rounded-full font-label-uppercase text-[11px] uppercase tracking-wider backdrop-blur-sm">
+                            Confirmed
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-8 z-10 border-b border-gold-muted/20 pb-6">
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-gold-light/60 mb-1">Date &amp; Time
+                            </p>
+                            <p class="font-body-lg text-body-lg text-on-primary">Friday, Oct 24<br />7:30 PM (2 Guests)
+                            </p>
+                        </div>
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-gold-light/60 mb-1">Initial Deposit
+                            </p>
+                            <p class="font-body-lg text-body-lg text-on-primary">$150.00</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-auto z-10 bg-navy-deep/50 p-4 rounded-DEFAULT border border-gold-muted/10 flex justify-between items-center backdrop-blur-md">
+                        <div>
+                            <p
+                                class="font-label-uppercase text-label-uppercase text-gold-light/60 mb-1 tracking-widest">
+                                Spend Credit Available</p>
+                            <!-- Prominent Gold Chiseled Font -->
+                            <p class="font-h2 text-h2 text-gold-gradient chiseled-text tracking-tight">$350.00</p>
+                        </div>
+                        <button aria-label="View Details"
+                            class="text-gold-light hover:text-on-primary transition-colors p-2 rounded-full hover:bg-white/5">
+                            <span class="material-symbols-outlined text-[28px]">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Reservation Card 2 -->
+                <div class="card-navy rounded-lg p-card-padding flex flex-col relative overflow-hidden group">
+                    <div class="absolute inset-0 opacity-10 pointer-events-none"
+                        style="background-image: radial-gradient(#F1E0A6 1px, transparent 1px); background-size: 20px 20px;">
+                    </div>
+                    <div class="flex justify-between items-start mb-6 z-10">
+                        <div>
+                            <h3 class="font-h3 text-h3 text-on-primary mb-1">Estrella del Mar</h3>
+                            <p class="font-body-lg text-body-lg text-gold-light/80 flex items-center">
+                                <span class="material-symbols-outlined text-[18px] mr-2">wine_bar</span> The Champagne
+                                Lounge
+                            </p>
+                        </div>
+                        <span
+                            class="bg-warning/20 text-warning border border-warning/30 px-3 py-1 rounded-full font-label-uppercase text-[11px] uppercase tracking-wider backdrop-blur-sm text-[#FFD700]">
+                            Waitlisted
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-8 z-10 border-b border-gold-muted/20 pb-6">
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-gold-light/60 mb-1">Date &amp; Time
+                            </p>
+                            <p class="font-body-lg text-body-lg text-on-primary">Saturday, Oct 25<br />9:00 PM (4
+                                Guests)</p>
+                        </div>
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-gold-light/60 mb-1">Initial Deposit
+                            </p>
+                            <p class="font-body-lg text-body-lg text-on-primary">$0.00</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-auto z-10 bg-navy-deep/50 p-4 rounded-DEFAULT border border-gold-muted/10 flex justify-between items-center backdrop-blur-md opacity-60">
+                        <div>
+                            <p
+                                class="font-label-uppercase text-label-uppercase text-gold-light/60 mb-1 tracking-widest">
+                                Spend Credit Available</p>
+                            <p class="font-h2 text-h2 text-gold-gradient chiseled-text tracking-tight">$0.00</p>
+                        </div>
+                        <button aria-label="View Details"
+                            class="text-gold-light hover:text-on-primary transition-colors p-2 rounded-full hover:bg-white/5">
+                            <span class="material-symbols-outlined text-[28px]">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Past Reservations Link / Divider -->
+            <div class="mt-16 text-center border-t border-gold-muted/20 pt-8">
+                <button
+                    class="font-label-uppercase text-label-uppercase text-navy-deep hover:text-gold-muted transition-colors uppercase tracking-widest flex items-center justify-center mx-auto group">
+                    <span
+                        class="material-symbols-outlined mr-2 group-hover:-translate-x-1 transition-transform">history</span>
+                    View Past Reservations
+                </button>
+            </div>
+        </div>
+    </main>
+    <!-- Mobile BottomNavBar Placeholder (Semantic Shell Mandate check: This is a top-level destination, so nav shell is valid) -->
+    <nav
+        class="md:hidden fixed bottom-0 w-full bg-surface/95 backdrop-blur-md border-t-0 shadow-[0_-4px_24px_rgba(30,58,95,0.08)] z-40 flex justify-around items-center h-[64px]">
+        <!-- Simplified mobile nav based on SideNav tabs -->
+        <a class="flex flex-col items-center justify-center w-full h-full text-text-muted hover:text-navy-deep"
+            href="#">
+            <span class="material-symbols-outlined text-[24px]">dashboard</span>
+        </a>
+        <a class="flex flex-col items-center justify-center w-full h-full text-text-muted hover:text-navy-deep"
+            href="#">
+            <span class="material-symbols-outlined text-[24px]">card_membership</span>
+        </a>
+        <a class="flex flex-col items-center justify-center w-full h-full text-navy-deep font-bold border-t-2 border-transparent"
+            href="#">
+            <!-- Active State on Mobile -->
+            <span class="material-symbols-outlined text-[24px] text-gold-muted"
+                style="font-variation-settings: 'FILL' 1;">event_seat</span>
+        </a>
+        <a class="flex flex-col items-center justify-center w-full h-full text-text-muted hover:text-navy-deep"
+            href="#">
+            <span class="material-symbols-outlined text-[24px]">settings</span>
+        </a>
+    </nav>
+</body>
+
+</html>

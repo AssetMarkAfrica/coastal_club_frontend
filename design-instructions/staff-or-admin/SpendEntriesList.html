@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Estrella del Mar - Admin Portal - Spend Entries</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2f3033",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001c3b",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9fc",
+                        "surface-tint": "#455f87",
+                        "danger": "#B42318",
+                        "secondary": "#735c00",
+                        "inverse-primary": "#adc8f5",
+                        "cream": "#F8F1DF",
+                        "surface-bright": "#faf9fc",
+                        "on-surface-variant": "#43474e",
+                        "on-primary-container": "#8aa4cf",
+                        "on-error": "#ffffff",
+                        "success": "#0F766E",
+                        "surface-container-high": "#e9e7eb",
+                        "text-primary": "#1A1A1A",
+                        "tertiary-fixed-dim": "#edbf7f",
+                        "warning": "#B45309",
+                        "on-secondary-container": "#745c00",
+                        "secondary-container": "#fed65b",
+                        "primary": "#022448",
+                        "on-tertiary-fixed-variant": "#60410c",
+                        "tertiary-container": "#503300",
+                        "surface-dim": "#dad9dd",
+                        "primary-fixed-dim": "#adc8f5",
+                        "secondary-fixed": "#ffe088",
+                        "surface-container": "#eeedf1",
+                        "on-tertiary-fixed": "#291800",
+                        "on-background": "#1a1c1e",
+                        "cream-dark": "#EDE3CC",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#e9c349",
+                        "primary-fixed": "#d5e3ff",
+                        "primary-container": "#1e3a5f",
+                        "on-tertiary-container": "#c69b5f",
+                        "gold-light": "#F1E0A6",
+                        "text-secondary": "#4A4A4A",
+                        "surface-container-highest": "#e3e2e6",
+                        "text-muted": "#6B7280",
+                        "inverse-on-surface": "#f1f0f4",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "surface-variant": "#e3e2e6",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c4c6cf",
+                        "surface": "#faf9fc",
+                        "on-tertiary": "#ffffff",
+                        "navy-deep": "#10243F",
+                        "surface-container-low": "#f4f3f7",
+                        "on-secondary-fixed-variant": "#574500",
+                        "gold-muted": "#B7922B",
+                        "on-surface": "#1a1c1e",
+                        "tertiary": "#341f00",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#241a00",
+                        "outline": "#74777f",
+                        "tertiary-fixed": "#ffddb2",
+                        "error-container": "#ffdad6",
+                        "info": "#185FA5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "24px",
+                        "topbar-height": "64px",
+                        "sidebar-width": "260px",
+                        "input-padding-x": "16px",
+                        "input-padding-y": "12px",
+                        "card-padding": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-uppercase": ["Inter"],
+                        "h4": ["Playfair Display"],
+                        "h3": ["Playfair Display"],
+                        "h1": ["Playfair Display"],
+                        "h2": ["Playfair Display"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-uppercase": ["13px", { "lineHeight": "1", "letterSpacing": "0.08em", "fontWeight": "600" }],
+                        "h4": ["22px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "h3": ["28px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h1": ["48px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "h2": ["36px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "1.7", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 4px 24px rgba(30, 58, 95, 0.08);
+        }
+
+        .table-row-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.05);
+            border-color: rgba(212, 175, 55, 0.4);
+            z-index: 10;
+            position: relative;
+        }
+
+        .pending-row {
+            background-color: rgba(245, 158, 11, 0.03);
+            /* Subtle amber */
+            border-left: 3px solid #B45309;
+            /* warning color */
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Checkbox styling */
+        .custom-checkbox {
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 1px solid #B7922B;
+            border-radius: 0.15em;
+            transform: translateY(-0.075em);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+        }
+
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em #10243F;
+            background-color: #10243F;
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body class="bg-cream min-h-screen text-text-primary antialiased flex overflow-hidden">
+    <!-- SideNavBar -->
+    <nav
+        class="fixed left-0 top-0 h-full w-[260px] border-r border-gold-muted/20 bg-navy-deep dark:bg-navy-deep text-gold-light dark:text-gold-light shadow-2xl shadow-navy-deep/50 flex flex-col py-8 px-6 z-50 hidden md:flex">
+        <div class="mb-10">
+            <h1
+                class="font-h4 text-h4 text-gold-light tracking-widest uppercase text-center border-b border-gold-muted/30 pb-4 mb-2">
+                Estrella del Mar</h1>
+            <p class="font-label-uppercase text-label-uppercase text-gold-light/60 text-center tracking-[0.2em]">Admin
+                Portal</p>
+        </div>
+        <button
+            class="w-full bg-navy-deep text-gold-light border border-gold-muted py-3 px-4 rounded transition-all duration-300 hover:bg-gold-light hover:text-navy-deep font-label-uppercase text-label-uppercase mb-8 flex items-center justify-center gap-2 group">
+            <span class="material-symbols-outlined text-sm group-hover:rotate-90 transition-transform">add</span>
+            New Application
+        </button>
+        <ul class="flex-1 space-y-2">
+            <li>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 transition-colors font-label-uppercase text-label-uppercase w-full text-left scale-102 active:scale-95 transition-transform group"
+                    href="#">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 transition-colors font-label-uppercase text-label-uppercase w-full text-left scale-102 active:scale-95 transition-transform group"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined group-hover:scale-110 transition-transform">assignment_ind</span>
+                    Applications
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 transition-colors font-label-uppercase text-label-uppercase w-full text-left scale-102 active:scale-95 transition-transform group"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined group-hover:scale-110 transition-transform">card_membership</span>
+                    Memberships
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-DEFAULT text-gold-light border-r-2 border-gold-light bg-primary-container/30 font-bold font-label-uppercase text-label-uppercase w-full text-left scale-102 active:scale-95 transition-transform group"
+                    href="#">
+                    <span class="material-symbols-outlined icon-fill">receipt_long</span>
+                    Spend Entries
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 transition-colors font-label-uppercase text-label-uppercase w-full text-left scale-102 active:scale-95 transition-transform group"
+                    href="#">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">event_seat</span>
+                    Events
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-DEFAULT text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 transition-colors font-label-uppercase text-label-uppercase w-full text-left scale-102 active:scale-95 transition-transform group"
+                    href="#">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">settings</span>
+                    Settings
+                </a>
+            </li>
+        </ul>
+        <div class="mt-auto border-t border-gold-muted/20 pt-6">
+            <div class="flex items-center gap-3 px-4">
+                <img alt="Estrella del Mar Crest"
+                    class="w-10 h-10 rounded-full border border-gold-muted/50 object-cover"
+                    data-alt="A small, professional avatar image of an admin user in a high-end luxury setting. Warm lighting, formal attire."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9UNS7a7DGpJ9ODE-zfxrNUOPQIIExtR-rwv4jqEJ2pgpXJGSU1ENmshfapPDBIHxDwTVVqoZgxmFAW3LrWBD367g6f-CEcIrweQOzqz0qcNO_kc0-jocxQEXqsy74vtg1wlKS97o4DoZrtSrf8pAHD6FvB8JSNphnsSm8jEWKVGCi_Mf9gBcQuG84IHZuQyYJ8UejbnxH9ytznrCJWpuIynlsNBNtkLbF2ZLoroE0nIxcjxNgjFGlYVVCaFSV49rtYBY-4h8" />
+                <div>
+                    <p class="font-label-uppercase text-label-uppercase text-gold-light">J. Sterling</p>
+                    <p class="text-xs text-gold-light/50">System Admin</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content Canvas -->
+    <div class="flex-1 flex flex-col md:ml-[260px] h-screen overflow-hidden">
+        <!-- TopNavBar -->
+        <header
+            class="docked full-width top-0 h-[64px] border-b border-gold-muted/20 bg-surface/95 backdrop-blur-md shadow-sm shadow-navy-deep/5 flex justify-between items-center w-full px-8 z-40">
+            <div
+                class="flex items-center bg-cream-dark/30 rounded-full px-4 py-1.5 border border-gold-muted/20 focus-within:ring-2 focus-within:ring-gold-muted/40 transition-all w-64">
+                <span class="material-symbols-outlined text-text-muted mr-2 text-sm">search</span>
+                <input
+                    class="bg-transparent border-none outline-none text-sm w-full font-body-lg placeholder-text-muted/70 text-navy-deep"
+                    placeholder="Search entries..." type="text" />
+            </div>
+            <div class="flex items-center gap-6">
+                <button class="text-text-muted hover:text-gold-muted transition-colors duration-200 relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-warning rounded-full border border-surface"></span>
+                </button>
+                <button class="text-text-muted hover:text-gold-muted transition-colors duration-200">
+                    <span class="material-symbols-outlined">history</span>
+                </button>
+                <button class="text-text-muted hover:text-gold-muted transition-colors duration-200">
+                    <span class="material-symbols-outlined">chat_bubble</span>
+                </button>
+                <!-- Mobile Menu Toggle -->
+                <button class="md:hidden text-navy-deep">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+        </header>
+        <!-- Page Content -->
+        <main class="flex-1 overflow-y-auto p-container-margin pb-24">
+            <!-- Page Header & Filters -->
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
+                <div>
+                    <h2 class="font-h2 text-h2 text-navy-deep mb-1">Spend Entries</h2>
+                    <p class="font-body-lg text-body-lg text-text-muted">Review and manage all on-property transactions.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Date Filter -->
+                    <div
+                        class="bg-white border border-gold-muted/20 rounded-DEFAULT px-3 py-2 flex items-center gap-2 shadow-sm text-sm text-navy-deep">
+                        <span class="material-symbols-outlined text-gold-muted text-sm">calendar_today</span>
+                        <span>Today</span>
+                        <span
+                            class="material-symbols-outlined text-text-muted text-sm ml-2 cursor-pointer">expand_more</span>
+                    </div>
+                    <!-- Customer Type Filter -->
+                    <div
+                        class="bg-white border border-gold-muted/20 rounded-DEFAULT px-3 py-2 flex items-center gap-2 shadow-sm text-sm text-navy-deep">
+                        <span class="material-symbols-outlined text-gold-muted text-sm">group</span>
+                        <select
+                            class="bg-transparent border-none outline-none cursor-pointer pr-4 font-body-lg appearance-none">
+                            <option value="all">All Types</option>
+                            <option value="member">Members</option>
+                            <option value="guest">Guests</option>
+                            <option value="corporate">Corporate</option>
+                        </select>
+                        <span
+                            class="material-symbols-outlined text-text-muted text-sm -ml-6 pointer-events-none">expand_more</span>
+                    </div>
+                    <!-- Status Filter -->
+                    <div
+                        class="bg-white border border-gold-muted/20 rounded-DEFAULT px-3 py-2 flex items-center gap-2 shadow-sm text-sm text-navy-deep">
+                        <span class="material-symbols-outlined text-gold-muted text-sm">filter_list</span>
+                        <select
+                            class="bg-transparent border-none outline-none cursor-pointer pr-4 font-body-lg appearance-none">
+                            <option value="all">All Statuses</option>
+                            <option value="settled">Settled</option>
+                            <option value="pending">Pending Shortfall</option>
+                            <option value="refunded">Refunded</option>
+                        </select>
+                        <span
+                            class="material-symbols-outlined text-text-muted text-sm -ml-6 pointer-events-none">expand_more</span>
+                    </div>
+                    <button
+                        class="bg-white border border-gold-muted/20 rounded-DEFAULT p-2 text-navy-deep hover:bg-cream-dark transition-colors shadow-sm ml-2"
+                        title="Export CSV">
+                        <span class="material-symbols-outlined text-sm">download</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Data Table Card -->
+            <div class="glass-card rounded-xl overflow-hidden bg-white">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[1000px]">
+                        <thead>
+                            <tr
+                                class="bg-navy-deep text-gold-light border-b-2 border-gold-muted font-label-uppercase text-label-uppercase">
+                                <th class="py-4 px-6 font-semibold w-12">
+                                    <input class="custom-checkbox border-gold-light" type="checkbox" />
+                                </th>
+                                <th
+                                    class="py-4 px-6 font-semibold cursor-pointer hover:text-white transition-colors group">
+                                    Date/Time
+                                    <span
+                                        class="material-symbols-outlined text-[10px] align-middle opacity-50 group-hover:opacity-100">arrow_downward</span>
+                                </th>
+                                <th class="py-4 px-6 font-semibold">Customer</th>
+                                <th class="py-4 px-6 font-semibold">Staff Member</th>
+                                <th class="py-4 px-6 font-semibold text-right">Amount Spent</th>
+                                <th class="py-4 px-6 font-semibold text-right">Credit Applied</th>
+                                <th class="py-4 px-6 font-semibold text-right">Shortfall Due</th>
+                                <th class="py-4 px-6 font-semibold text-center">Status</th>
+                                <th class="py-4 px-6 font-semibold text-right w-16"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="font-body-lg text-body-lg divide-y divide-cream-dark/50">
+                            <!-- Row 1: Settled (Member) -->
+                            <tr class="bg-white hover:bg-cream/50 transition-all table-row-hover">
+                                <td class="py-4 px-6 border-l-[3px] border-transparent">
+                                    <input class="custom-checkbox" type="checkbox" />
+                                </td>
+                                <td class="py-4 px-6 text-sm">
+                                    <div class="text-navy-deep font-medium">Oct 24, 2023</div>
+                                    <div class="text-text-muted text-xs">14:30 PM</div>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-navy-deep/10 flex items-center justify-center text-navy-deep font-h4 text-sm font-bold">
+                                            EC
+                                        </div>
+                                        <div>
+                                            <div class="text-navy-deep font-medium">Eleanor Vance</div>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-xs text-gold-muted font-label-uppercase">Premier
+                                                    Member</span>
+                                                <span class="text-[10px] text-text-muted">• #M-4921</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-6 text-sm text-text-secondary">
+                                    M. Rossi (Dining)
+                                </td>
+                                <td class="py-4 px-6 text-right font-medium text-navy-deep">
+                                    $450.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-success">
+                                    -$450.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-text-muted">
+                                    $0.00
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-xs font-medium border border-success/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                                        Settled
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-right">
+                                    <button
+                                        class="text-text-muted hover:text-navy-deep p-1 rounded hover:bg-cream-dark/50 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 2: Pending Shortfall (Guest) - HIGHLIGHTED -->
+                            <tr class="pending-row hover:bg-amber-50/50 transition-all table-row-hover">
+                                <td class="py-4 px-6">
+                                    <input class="custom-checkbox" type="checkbox" />
+                                </td>
+                                <td class="py-4 px-6 text-sm">
+                                    <div class="text-navy-deep font-medium">Oct 24, 2023</div>
+                                    <div class="text-text-muted text-xs">11:15 AM</div>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-surface-tint/10 flex items-center justify-center text-surface-tint font-h4 text-sm font-bold border border-surface-tint/20">
+                                            TR
+                                        </div>
+                                        <div>
+                                            <div class="text-navy-deep font-medium">Thomas Reed</div>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-xs text-text-muted font-label-uppercase">Guest</span>
+                                                <span class="text-[10px] text-text-muted">• Host: E. Vance</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-6 text-sm text-text-secondary">
+                                    J. Smith (Spa)
+                                </td>
+                                <td class="py-4 px-6 text-right font-medium text-navy-deep">
+                                    $825.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-success">
+                                    -$500.00
+                                </td>
+                                <td class="py-4 px-6 text-right font-semibold text-warning">
+                                    $325.00
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-warning/10 text-warning text-xs font-medium border border-warning/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-warning"></span>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-right">
+                                    <button
+                                        class="text-text-muted hover:text-navy-deep p-1 rounded hover:bg-cream-dark/50 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 3: Settled (Corporate) -->
+                            <tr class="bg-cream/20 hover:bg-cream/50 transition-all table-row-hover">
+                                <td class="py-4 px-6 border-l-[3px] border-transparent">
+                                    <input class="custom-checkbox" type="checkbox" />
+                                </td>
+                                <td class="py-4 px-6 text-sm">
+                                    <div class="text-navy-deep font-medium">Oct 23, 2023</div>
+                                    <div class="text-text-muted text-xs">20:45 PM</div>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-navy-deep/10 flex items-center justify-center text-navy-deep font-h4 text-sm font-bold">
+                                            AW
+                                        </div>
+                                        <div>
+                                            <div class="text-navy-deep font-medium">Alistair Wright</div>
+                                            <div class="flex items-center gap-1">
+                                                <span
+                                                    class="text-xs text-navy-deep font-label-uppercase">Corporate</span>
+                                                <span class="text-[10px] text-text-muted">• Nexus Inc.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-6 text-sm text-text-secondary">
+                                    L. Chen (Events)
+                                </td>
+                                <td class="py-4 px-6 text-right font-medium text-navy-deep">
+                                    $2,150.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-success">
+                                    -$2,150.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-text-muted">
+                                    $0.00
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-xs font-medium border border-success/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                                        Settled
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-right">
+                                    <button
+                                        class="text-text-muted hover:text-navy-deep p-1 rounded hover:bg-cream-dark/50 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 4: Pending Shortfall (Member) - HIGHLIGHTED -->
+                            <tr class="pending-row hover:bg-amber-50/50 transition-all table-row-hover">
+                                <td class="py-4 px-6">
+                                    <input class="custom-checkbox" type="checkbox" />
+                                </td>
+                                <td class="py-4 px-6 text-sm">
+                                    <div class="text-navy-deep font-medium">Oct 23, 2023</div>
+                                    <div class="text-text-muted text-xs">09:30 AM</div>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-navy-deep/10 flex items-center justify-center text-navy-deep font-h4 text-sm font-bold">
+                                            DP
+                                        </div>
+                                        <div>
+                                            <div class="text-navy-deep font-medium">Diana Prince</div>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-xs text-gold-muted font-label-uppercase">Standard
+                                                    Member</span>
+                                                <span class="text-[10px] text-text-muted">• #M-1024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-6 text-sm text-text-secondary">
+                                    A. Davies (Golf)
+                                </td>
+                                <td class="py-4 px-6 text-right font-medium text-navy-deep">
+                                    $180.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-success">
+                                    -$50.00
+                                </td>
+                                <td class="py-4 px-6 text-right font-semibold text-warning">
+                                    $130.00
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-warning/10 text-warning text-xs font-medium border border-warning/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-warning"></span>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-right">
+                                    <button
+                                        class="text-text-muted hover:text-navy-deep p-1 rounded hover:bg-cream-dark/50 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 5: Settled (Member) -->
+                            <tr class="bg-white hover:bg-cream/50 transition-all table-row-hover border-b-0">
+                                <td class="py-4 px-6 border-l-[3px] border-transparent">
+                                    <input class="custom-checkbox" type="checkbox" />
+                                </td>
+                                <td class="py-4 px-6 text-sm">
+                                    <div class="text-navy-deep font-medium">Oct 22, 2023</div>
+                                    <div class="text-text-muted text-xs">19:00 PM</div>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <img alt="Member Avatar"
+                                            class="w-8 h-8 rounded-full object-cover border border-gold-muted/30"
+                                            data-alt="Small avatar photo of a distinguished gentleman member in a tuxedo, soft high-key lighting."
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiRxMAGzrCSVMd3jMMriHP1O30ap8yXH6USCzEzgD_Q8xTVvN6hsJrcrsU4D8DW5d1hkTAmAB9QVdpobZ_JD7svd62loGswxqmgSEZmAMCGfU1t1ZDd6VcfsZZX6W5zDg6FZrlnQgwFuIWmNnrYolFjCVTxvZhWfuCqTg3o55Wn74G4mQMICQCZvCa1AQGCwcGg7sQNIPSQvEehgvFQ27CfVValcPQIro_SGLZNR0R84wOgTNZzLQ8rTO5zgtRUaFWOqrVm8Y" />
+                                        <div>
+                                            <div class="text-navy-deep font-medium">Richard Sterling</div>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-xs text-gold-muted font-label-uppercase">Founding
+                                                    Member</span>
+                                                <span class="text-[10px] text-text-muted">• #M-0004</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-6 text-sm text-text-secondary">
+                                    M. Rossi (Dining)
+                                </td>
+                                <td class="py-4 px-6 text-right font-medium text-navy-deep">
+                                    $1,250.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-success">
+                                    -$1,250.00
+                                </td>
+                                <td class="py-4 px-6 text-right text-text-muted">
+                                    $0.00
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-xs font-medium border border-success/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                                        Settled
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-right">
+                                    <button
+                                        class="text-text-muted hover:text-navy-deep p-1 rounded hover:bg-cream-dark/50 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination Footer -->
+                <div class="bg-surface border-t border-gold-muted/20 px-6 py-4 flex items-center justify-between">
+                    <span class="text-sm text-text-muted font-body-lg">Showing 1-5 of 124 entries</span>
+                    <div class="flex items-center gap-2">
+                        <button
+                            class="p-1 border border-gold-muted/30 rounded text-text-muted hover:text-navy-deep hover:bg-cream disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span>
+                        </button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded bg-navy-deep text-gold-light text-sm font-medium">1</button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded text-navy-deep hover:bg-cream-dark/50 text-sm font-medium">2</button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded text-navy-deep hover:bg-cream-dark/50 text-sm font-medium">3</button>
+                        <span class="text-text-muted">...</span>
+                        <button
+                            class="p-1 border border-gold-muted/30 rounded text-text-muted hover:text-navy-deep hover:bg-cream">
+                            <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Quick Action Floating Panel for Pending Items -->
+            <div class="mt-6 flex justify-end">
+                <div class="bg-navy-deep rounded-lg shadow-lg p-4 flex items-center gap-6 border border-gold-muted/30">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-warning">warning</span>
+                        <div>
+                            <p class="text-white text-sm font-medium">2 Pending Shortfalls Selected</p>
+                            <p class="text-gold-light/70 text-xs">Total: $455.00</p>
+                        </div>
+                    </div>
+                    <div class="h-8 w-px bg-gold-muted/30"></div>
+                    <div class="flex gap-3">
+                        <button
+                            class="px-4 py-1.5 text-sm font-label-uppercase text-label-uppercase text-gold-light bg-transparent border border-gold-light rounded hover:bg-gold-light/10 transition-colors">
+                            Send Reminders
+                        </button>
+                        <button
+                            class="px-4 py-1.5 text-sm font-label-uppercase text-label-uppercase text-navy-deep bg-gold-light border border-gold-light rounded hover:bg-white transition-colors">
+                            Process Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

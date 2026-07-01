@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL,GRAD,opsz@100..700,0..1,0..1,20..48&display=swap");
 @import "tailwindcss";
 
 @theme inline {
@@ -141,6 +142,22 @@ body {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(16, 36, 63, 0.15);
   border-color: rgba(212, 175, 55, 0.5);
+}
+
+.card-navy {
+  background: linear-gradient(135deg, #10243F 0%, #1E3A5F 100%);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 4px 24px rgba(30, 58, 95, 0.08);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.card-navy:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+.chiseled-text {
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.2), -1px -1px 0px rgba(0, 0, 0, 0.5);
 }
 
 /* ── Scroll-triggered animation base states ── */

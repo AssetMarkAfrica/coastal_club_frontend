@@ -1,0 +1,43 @@
+import api from "../utils/api";
+import type { ApiResponse } from "../../types/api";
+import type {
+  Reservation,
+  SpendEntry,
+  CreateReservationPayload,
+  CreateReservationResponse,
+  VerifyReservationPayload,
+  LogSpendPayload,
+  VerifySpendPayload,
+} from "../../types/booking";
+
+const BASE = process.env.NEXT_PUBLIC_BOOKING_API;
+
+export const createReservation = (payload: CreateReservationPayload) =>
+  api.post<ApiResponse<CreateReservationResponse>>(`${BASE}/non-members/`, payload);
+
+export const verifyReservationPayment = (payload: VerifyReservationPayload) =>
+  api.post<ApiResponse<Reservation>>(`${BASE}/non-members/verify/`, payload);
+
+export const getMyReservations = () =>
+  api.get<ApiResponse<Reservation[]>>(`${BASE}/non-members/me/`);
+
+export const getMyReservationById = (id: string) =>
+  api.get<ApiResponse<Reservation>>(`${BASE}/non-members/me/${id}/`);
+
+export const getAllReservations = (params?: Record<string, string>) =>
+  api.get<ApiResponse<Reservation[]>>(`${BASE}/staff/reservations/`, { params });
+
+export const getReservationById = (id: string) =>
+  api.get<ApiResponse<Reservation>>(`${BASE}/staff/reservations/${id}/`);
+
+export const getAllSpendEntries = (params?: Record<string, string>) =>
+  api.get<ApiResponse<SpendEntry[]>>(`${BASE}/staff/spend-entries/`, { params });
+
+export const getSpendEntryById = (id: string) =>
+  api.get<ApiResponse<SpendEntry>>(`${BASE}/staff/spend-entries/${id}/`);
+
+export const logSpendEntry = (payload: LogSpendPayload) =>
+  api.post<ApiResponse<SpendEntry>>(`${BASE}/staff/spend/`, payload);
+
+export const verifySpendPayment = (payload: VerifySpendPayload) =>
+  api.post<ApiResponse<SpendEntry>>(`${BASE}/staff/spend/verify/`, payload);
