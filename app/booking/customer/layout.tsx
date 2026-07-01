@@ -1,4 +1,5 @@
 import CustomerBottomNav from "../components/CustomerBottomNav";
+import RoleGuard from "../components/RoleGuard";
 import { ReactNode } from "react";
 
 export default function CustomerBookingLayout({
@@ -7,9 +8,11 @@ export default function CustomerBookingLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="bg-cream font-body-lg text-text-primary antialiased min-h-screen flex flex-col pb-[calc(64px+env(safe-area-inset-bottom)+24px)] md:pb-0">
-      {children}
-      <CustomerBottomNav />
-    </div>
+    <RoleGuard allowedRoles={["member"]}>
+      <div className="bg-cream font-body-lg text-text-primary antialiased min-h-screen flex flex-col pb-[calc(64px+env(safe-area-inset-bottom)+24px)] md:pb-0">
+        {children}
+        <CustomerBottomNav />
+      </div>
+    </RoleGuard>
   );
 }

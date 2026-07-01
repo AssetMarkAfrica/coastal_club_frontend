@@ -23,9 +23,6 @@ export default function MembershipDashboardPage() {
   const application = useAppSelector(selectMembershipApplication);
   const myMembershipStatus = useAppSelector(selectMyMembershipStatus);
 
-  // Tracks whether the fetch has settled (fulfilled or rejected).
-  // Prevents the WaitlistExperience flash on initial render where
-  // loading=false and membership=null before the thunk even fires.
   const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
@@ -48,7 +45,6 @@ export default function MembershipDashboardPage() {
   const guestPasses = membership?.plan.guest_passes_per_visit ?? null;
   const memberSince = membership ? formatDate(membership.created_at) : null;
 
-  // ── Still fetching — show spinner ─────────────────────────────────────────
   if (!fetched || loading) {
     return (
       <main className="flex-1 flex items-center justify-center bg-[#f5f0e8]">
@@ -57,22 +53,24 @@ export default function MembershipDashboardPage() {
     );
   }
 
-  // ── Fetch settled, decide what to show ───────────────────────────────────
   if (!membership) {
     const status = myMembershipStatus?.status;
 
     if (status === "pending_fee" || status === "pending_review" || (!myMembershipStatus && application)) {
-      // User has applied and is on waiting list
       return <WaitlistExperience />;
     }
 
     if (status === "approved") {
-      // User is approved, show contract signature CTA
       return (
         <main className="flex-1 min-h-[calc(100vh-4rem)] flex items-center justify-center bg-[#f5f0e8] px-6 py-10">
           <section className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-gold-muted/25 bg-white shadow-[0_24px_64px_rgba(16,36,63,0.14)] text-center px-8 py-12">
-            <h2 
-              className="text-2xl font-semibold text-primary" 
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2">
+                <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h2
+              className="text-2xl font-semibold text-primary"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
               Application Approved!
@@ -93,25 +91,121 @@ export default function MembershipDashboardPage() {
       );
     }
 
-    // User has not applied yet (or status returns nothing / 404)
+    // ── User has not applied yet — split-path hero ──────────────────────
     return (
       <main className="flex-1 min-h-[calc(100vh-4rem)] flex items-center justify-center bg-[#f5f0e8] px-6 py-10">
-        <section className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-gold-muted/25 bg-white shadow-[0_24px_64px_rgba(16,36,63,0.14)] text-center px-8 py-12">
-          <h2 
-            className="text-2xl font-semibold text-primary" 
-            style={{ fontFamily: "var(--font-playfair)" }}
-          >
-            Begin Your Journey
-          </h2>
-          <p className="mt-4 text-sm text-text-secondary leading-relaxed">
-            You haven't applied for membership yet. Discover our exclusive plans and become a part of Estrella del Mar today.
-          </p>
-          <div className="mt-8">
+        <section className="w-full max-w-4xl">
+          {/* Intro */}
+          <div className="text-center mb-10">
+            <span
+              className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-gold-muted mb-3"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Estrella del Mar
+            </span>
+            <h1
+              className="text-3xl sm:text-4xl font-bold text-primary"
+              style={{ fontFamily: "var(--font-playfair)" }}
+            >
+              Begin Your Journey
+            </h1>
+            <p className="mt-3 text-sm text-text-secondary leading-relaxed max-w-md mx-auto">
+              Reserve a table today, or become a member for unlimited access to every
+              privilege the club offers.
+            </p>
+          </div>
+
+          {/* Two paths */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch">
+            {/* Membership — featured */}
             <Link
               href="/membership/plans"
-              className="inline-block rounded-md bg-primary px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-muted focus:ring-offset-2"
+              className="group relative overflow-hidden rounded-2xl px-8 py-10 flex flex-col shadow-[0_24px_64px_rgba(16,36,63,0.28)] transition-transform duration-200 hover:-translate-y-1"
+              style={{
+                background: "linear-gradient(135deg, #0d1f3c 0%, #162847 55%, #1c3259 100%)",
+              }}
             >
-              Explore Membership Plans
+              <div
+                className="pointer-events-none absolute inset-0 opacity-[0.06]"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(45deg, #c9a84c 0px, #c9a84c 1px, transparent 1px, transparent 40px)",
+                }}
+              />
+              <span className="absolute top-5 right-5 rounded-full border border-gold-muted/50 bg-gold-muted/10 px-3 py-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-gold-muted">
+                Recommended
+              </span>
+
+              <div className="relative flex h-11 w-11 items-center justify-center rounded-full bg-gold-muted/15 text-gold-muted mb-6">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 3l2.7 5.9L21 9.7l-4.6 4.3 1.2 6.4L12 17.6l-5.6 2.8 1.2-6.4L3 9.7l6.3-.8L12 3z" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              <h3
+                className="relative text-2xl font-semibold text-white"
+                style={{ fontFamily: "var(--font-playfair)" }}
+              >
+                Become a Member
+              </h3>
+              <p className="relative mt-3 text-sm text-cream/70 leading-relaxed flex-1">
+                Unlock spend credit, guest passes, priority reservations and exclusive
+                events reserved only for members.
+              </p>
+
+              <span className="relative mt-8 inline-flex items-center gap-2 text-sm font-medium text-gold-muted">
+                Explore Membership Plans
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </Link>
+
+            {/* Booking — secondary */}
+            <Link
+              href="/booking/customer/create"
+              className="group relative overflow-hidden rounded-2xl border border-gold-muted/25 bg-white px-8 py-10 flex flex-col shadow-[0_12px_32px_rgba(16,36,63,0.08)] transition-all duration-200 hover:-translate-y-1 hover:border-gold-muted/50 hover:shadow-[0_20px_48px_rgba(16,36,63,0.14)]"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/5 text-primary mb-6">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M8 3v4M16 3v4M3 10h18" strokeLinecap="round" />
+                </svg>
+              </div>
+
+              <h3
+                className="text-2xl font-semibold text-primary"
+                style={{ fontFamily: "var(--font-playfair)" }}
+              >
+                Book a Table
+              </h3>
+              <p className="mt-3 text-sm text-text-secondary leading-relaxed flex-1">
+                No membership required. Reserve a table and experience Estrella del
+                Mar as our guest.
+              </p>
+
+              <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-primary">
+                Make a Reservation
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
             </Link>
           </div>
         </section>
@@ -119,11 +213,9 @@ export default function MembershipDashboardPage() {
     );
   }
 
-  // ── Has membership → full dashboard ──────────────────────────────────────
+  // ── Has membership → full dashboard (unchanged) ─────────────────────────
   return (
     <main className="flex-1 flex flex-col min-w-0 bg-[#f5f0e8]">
-
-      {/* ── Hero welcome banner ── */}
       <section
         className="relative overflow-hidden px-8 py-8 text-cream"
         style={{
@@ -137,7 +229,6 @@ export default function MembershipDashboardPage() {
               "repeating-linear-gradient(45deg, #c9a84c 0px, #c9a84c 1px, transparent 1px, transparent 40px)",
           }}
         />
-
         <div className="relative flex items-start justify-between gap-6">
           <div>
             <h1
@@ -150,7 +241,6 @@ export default function MembershipDashboardPage() {
               The concierge is available for any arrangements you may need.
             </p>
           </div>
-
           <div className="hidden sm:flex flex-col items-end shrink-0">
             {tierLabel && (
               <div className="flex items-center gap-2 rounded-full border border-gold-muted/50 bg-gold-muted/10 px-4 py-1.5">
@@ -170,7 +260,6 @@ export default function MembershipDashboardPage() {
         </div>
       </section>
 
-      {/* ── Stat cards ── */}
       <section className="grid grid-cols-2 xl:grid-cols-4 gap-4 px-8 py-6 bg-[#f5f0e8]">
         {[
           {
@@ -235,13 +324,8 @@ export default function MembershipDashboardPage() {
         ))}
       </section>
 
-      {/* ── Lower grid: Quick Services + Member Card  |  Recent Updates ── */}
       <section className="flex-1 grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-6 px-8 pb-8 bg-[#f5f0e8]">
-
-        {/* Left column */}
         <div className="flex flex-col gap-6">
-
-          {/* Quick Services */}
           <div>
             <h2
               className="text-xl font-semibold text-primary mb-4"
@@ -267,7 +351,6 @@ export default function MembershipDashboardPage() {
             </div>
           </div>
 
-          {/* Member Card */}
           <div>
             <Link
               href="/membership/card"
@@ -279,10 +362,7 @@ export default function MembershipDashboardPage() {
                 background: "linear-gradient(135deg, #0d1f3c 0%, #1a3058 50%, #0d1f3c 100%)",
               }}
             >
-              {/* Hover overlay */}
               <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors duration-200 z-10 rounded-2xl" />
-
-              {/* Geometric diamond pattern */}
               <div
                 className="absolute inset-0 opacity-20"
                 style={{
@@ -290,14 +370,12 @@ export default function MembershipDashboardPage() {
                     "repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(201,168,76,0.15) 18px, rgba(201,168,76,0.15) 20px), repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(201,168,76,0.15) 18px, rgba(201,168,76,0.15) 20px)",
                 }}
               />
-
               <p
                 className="absolute top-5 left-6 text-xl italic text-gold-muted"
                 style={{ fontFamily: "var(--font-playfair)" }}
               >
                 Estrella
               </p>
-
               <div className="absolute top-5 right-6 text-gold-muted/60">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" opacity=".3" />
@@ -305,7 +383,6 @@ export default function MembershipDashboardPage() {
                   <circle cx="12" cy="12" r="1" fill="currentColor" />
                 </svg>
               </div>
-
               <div className="absolute bottom-6 left-6 right-6">
                 <p
                   className="text-[9px] font-semibold tracking-[0.22em] uppercase text-gold-muted/70 mb-1"
@@ -328,7 +405,6 @@ export default function MembershipDashboardPage() {
           </div>
         </div>
 
-        {/* Right column – Recent Updates */}
         <div>
           <h2
             className="text-xl font-semibold text-primary mb-4"

@@ -3,7 +3,7 @@ export interface Reservation {
   user_id?: string;
   user_email?: string;
   reservation_date: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: 'pending_payment' | 'confirmed' | 'cancelled' | 'expired';
   intended_spend_pesewas: number;
   spend_credit_remaining_pesewas: number;
   paystack_reference: string | null;

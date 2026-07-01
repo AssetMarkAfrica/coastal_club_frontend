@@ -8,11 +8,14 @@ import type { RootState } from "../../../../store";
 import {
   Utensils,
   ArrowRight,
-  History,
   Loader2,
   Calendar,
   Banknote,
   AlertCircle,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  TimerOff,
 } from "lucide-react";
 
 export default function MyReservationsPage() {
@@ -30,30 +33,36 @@ export default function MyReservationsPage() {
     router.push("/booking/customer/create");
   };
 
-  const handleViewPast = () => {
-    router.push("/booking/customer/reservations/past");
-  };
-
   const getStatusBadge = (status: string) => {
     const base =
-      "px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider border backdrop-blur-sm";
+      "inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider border backdrop-blur-sm";
     switch (status?.toLowerCase()) {
       case "confirmed":
         return (
           <span className={`${base} bg-emerald-500/10 text-emerald-400 border-emerald-500/30`}>
+            <CheckCircle2 className="w-3 h-3" />
             Confirmed
           </span>
         );
-      case "pending":
+      case "pending_payment":
         return (
           <span className={`${base} bg-amber-500/10 text-amber-400 border-amber-500/30`}>
-            Pending
+            <Clock className="w-3 h-3" />
+            Pending Payment
           </span>
         );
       case "cancelled":
         return (
           <span className={`${base} bg-rose-500/10 text-rose-400 border-rose-500/30`}>
+            <XCircle className="w-3 h-3" />
             Cancelled
+          </span>
+        );
+      case "expired":
+        return (
+          <span className={`${base} bg-slate-500/10 text-slate-400 border-slate-500/30`}>
+            <TimerOff className="w-3 h-3" />
+            Expired
           </span>
         );
       default:
@@ -74,7 +83,7 @@ export default function MyReservationsPage() {
             My Experiences
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-navy-deep tracking-tight">
-            Upcoming Reservations
+            My Reservations
           </h1>
         </div>
         <button
@@ -113,7 +122,7 @@ export default function MyReservationsPage() {
             No Reservations Yet
           </h2>
           <p className="text-text-secondary max-w-md mx-auto mb-8">
-            You haven’t made any upcoming reservations. Explore our dining experiences and secure
+            You haven't made any upcoming reservations. Explore our dining experiences and secure
             your table.
           </p>
           <button
@@ -158,7 +167,7 @@ export default function MyReservationsPage() {
                 <div className="flex justify-between items-start mb-6 z-10">
                   <div>
                     <h3 className="text-xl font-bold text-on-primary mb-1">
-                      {reservation.restaurant_name ?? "Estrella del Mar"}
+                      Estrella del Mar
                     </h3>
                     <p className="text-sm text-gold-light/70 flex items-center gap-1.5">
                       <Utensils className="w-4 h-4" />
@@ -205,7 +214,7 @@ export default function MyReservationsPage() {
                     </p>
                   </div>
                   <button
-                    aria-label={`View details for ${reservation.restaurant_name ?? "Reservation"}`}
+                    aria-label={`View details for reservation`}
                     className="inline-flex items-center gap-2 text-gold-light hover:text-white transition-all px-3 py-2 rounded-full hover:bg-white/5 active:scale-95 text-sm font-semibold"
                     onClick={() => router.push(`/booking/customer/reservations/${reservation.id}`)}
                   >
@@ -218,8 +227,6 @@ export default function MyReservationsPage() {
           })}
         </div>
       )}
-
-
     </div>
   );
 }

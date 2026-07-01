@@ -8,7 +8,7 @@ import NotificationDropDown from "@/app/notification/NotificationDropDown";
 const PAGE_TITLES: Record<string, string> = {
     "/membership": "Dashboard",
     "/membership/card": "Member Card",
-    "/membership/bookings": "Bookings",
+    "/booking/customer/reservations": "Bookings",
     "/membership/perks": "Exclusive Perks",
     "/membership/settings": "Settings",
     "/membership/plans": "Membership Plans",
