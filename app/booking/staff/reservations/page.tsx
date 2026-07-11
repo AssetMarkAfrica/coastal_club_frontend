@@ -222,8 +222,8 @@ export default function StaffReservationsPage() {
                         }`}
                       >
                         <td className="py-3.5 px-5">
-                          <div className="font-medium text-[#10243F] text-sm">{r.user_email ?? "—"}</div>
-                          <div className="text-xs text-[#6B7280] font-mono">{r.id.slice(0, 8)}…</div>
+                          <div className="font-medium text-[#10243F] text-sm">{r.user_full_name ?? r.user_email ?? "—"}</div>
+                          <div className="text-xs text-[#6B7280]">{r.user_full_name ? (r.user_email ?? "") : r.id.slice(0, 8) + "…"}</div>
                         </td>
                         <td className="py-3.5 px-5 text-sm text-[#4A4A4A]">{formatDate(r.reservation_date)}</td>
                         <td className="py-3.5 px-5">{getStatusBadge(r.status)}</td>
@@ -277,12 +277,15 @@ export default function StaffReservationsPage() {
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 rounded-full overflow-hidden bg-[#EDE3CC] flex-shrink-0 flex items-center justify-center text-[#10243F] font-medium uppercase font-serif">
-                            {r.user_email ? r.user_email[0] : "—"}
+                            {r.user_full_name ? r.user_full_name[0] : r.user_email ? r.user_email[0] : "—"}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-[#10243F] text-sm leading-tight break-all" style={{ fontFamily: "'Playfair Display', serif" }}>
-                              {r.user_email ?? "No Email"}
+                            <h3 className="font-semibold text-[#10243F] text-sm leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+                              {r.user_full_name ?? r.user_email ?? "No Email"}
                             </h3>
+                            {r.user_full_name && (
+                              <p className="text-[#6B7280] text-xs mt-0.5">{r.user_email}</p>
+                            )}
                             <p className="text-[#6B7280] text-xs mt-0.5 font-mono">
                               ID: {r.id.slice(0, 8)}
                             </p>

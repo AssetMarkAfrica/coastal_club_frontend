@@ -89,8 +89,8 @@ export default function StaffSpendEntriesPage() {
     };
   };
 
-  const getInitials = (email: string) =>
-    email?.split("@")[0]?.slice(0, 2).toUpperCase() ?? "?";
+  const getInitials = (nameOrEmail: string) =>
+    nameOrEmail?.split(" ")[0]?.slice(0, 1).toUpperCase() + (nameOrEmail?.split(" ")[1]?.slice(0, 1).toUpperCase() ?? nameOrEmail?.split("@")[0]?.slice(1, 2).toUpperCase() ?? "") || "?";
 
   return (
     <div className="min-h-screen bg-[#F8F1DF]">
@@ -227,12 +227,15 @@ export default function StaffSpendEntriesPage() {
                         <td className="py-4 px-5">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-[#10243F]/10 flex items-center justify-center text-[#10243F] text-xs font-bold flex-shrink-0">
-                              {getInitials(entry.customer_email ?? "")}
+                              {getInitials(entry.customer_full_name ?? entry.customer_email ?? "")}
                             </div>
                             <div>
                               <div className="text-[#10243F] font-medium text-sm">
-                                {entry.customer_email ?? "—"}
+                                {entry.customer_full_name ?? entry.customer_email ?? "—"}
                               </div>
+                              {entry.customer_full_name && (
+                                <div className="text-[#6B7280] text-xs">{entry.customer_email}</div>
+                              )}
                               <div className="flex items-center gap-1">
                                 <span className="text-[10px] text-[#B7922B] font-semibold uppercase tracking-wider">
                                   {entry.customer_type === "non_member" ? "Non-Member" : "Member"}
@@ -242,7 +245,8 @@ export default function StaffSpendEntriesPage() {
                           </div>
                         </td>
                         <td className="py-4 px-5 text-sm text-[#4A4A4A]">
-                          {entry.staff_user_email ?? "—"}
+                          <div>{entry.staff_full_name ?? entry.staff_user_email ?? "—"}</div>
+                          {entry.staff_full_name && <div className="text-xs text-[#6B7280]">{entry.staff_user_email}</div>}
                         </td>
                         <td className="py-4 px-5 text-right font-medium text-[#10243F] text-sm">
                           GHS {(entry.amount_spent_pesewas / 100).toFixed(2)}
@@ -292,19 +296,22 @@ export default function StaffSpendEntriesPage() {
                         <div className="flex justify-between items-start gap-3 mb-4">
                           <div className="flex items-center space-x-3 min-w-0">
                             <div className="w-10 h-10 rounded-full overflow-hidden bg-[#EDE3CC] flex-shrink-0 flex items-center justify-center text-[#10243F] font-medium uppercase font-serif">
-                              {getInitials(entry.customer_email ?? "")}
+                              {getInitials(entry.customer_full_name || entry.customer_email || "")}
                             </div>
-                            <div className="min-w-0">
-                              <h3
-                                className="font-semibold text-[#10243F] text-sm leading-tight break-all"
-                                style={{ fontFamily: "'Playfair Display', serif" }}
-                              >
-                                {entry.customer_email ?? "No Email"}
-                              </h3>
-                              <p className="text-[10px] text-[#B7922B] font-semibold uppercase tracking-wider mt-0.5">
-                                {entry.customer_type === "non_member" ? "Non-Member" : "Member"}
-                              </p>
-                            </div>
+                              <div className="min-w-0">
+                                <h3
+                                  className="font-semibold text-[#10243F] text-sm leading-tight"
+                                  style={{ fontFamily: "'Playfair Display', serif" }}
+                                >
+                                  {entry.customer_full_name ?? entry.customer_email ?? "No Email"}
+                                </h3>
+                                {entry.customer_full_name && (
+                                  <p className="text-[#6B7280] text-xs mt-0.5 break-all">{entry.customer_email}</p>
+                                )}
+                                <p className="text-[10px] text-[#B7922B] font-semibold uppercase tracking-wider mt-0.5">
+                                  {entry.customer_type === "non_member" ? "Non-Member" : "Member"}
+                                </p>
+                              </div>
                           </div>
                           <div className="flex-shrink-0">{getStatusBadge(entry.status)}</div>
                         </div>
@@ -325,8 +332,11 @@ export default function StaffSpendEntriesPage() {
                               Staff
                             </p>
                             <p className="text-sm text-[#10243F] font-medium break-all">
-                              {entry.staff_user_email ?? "â€”"}
+                              {entry.staff_full_name ?? entry.staff_user_email ?? "—"}
                             </p>
+                            {entry.staff_full_name && (
+                              <p className="text-xs text-[#6B7280] break-all">{entry.staff_user_email}</p>
+                            )}
                           </div>
                         </div>
                       </div>

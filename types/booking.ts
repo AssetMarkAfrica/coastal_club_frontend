@@ -2,6 +2,7 @@ export interface Reservation {
   id: string;
   user_id?: string;
   user_email?: string;
+  user_full_name?: string;
   reservation_date: string;
   status: 'pending_payment' | 'confirmed' | 'cancelled' | 'expired';
   intended_spend_pesewas: number;
@@ -19,8 +20,10 @@ export interface SpendEntry {
   customer_type: 'member' | 'non_member';
   customer_id?: string;
   customer_email?: string;
+  customer_full_name?: string;
   staff_user_id: string;
   staff_user_email: string;
+  staff_full_name?: string;
   member_subscription: string | null;
   non_member_reservation: string | null;
   amount_spent_pesewas: number;
