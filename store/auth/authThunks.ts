@@ -64,7 +64,7 @@ export const loginUser = createAsyncThunk(
   async (payload: LoginPayload, { rejectWithValue }) => {
     try {
       const { data } = await authService.login(payload);
-      return data.data;
+      return data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error, "Login failed."));
     }

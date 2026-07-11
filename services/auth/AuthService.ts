@@ -1,5 +1,6 @@
 import api from "../utils/api";
 import type {
+  AuthTokenData,
   AuthTokenResponse,
   GoogleAuthorizeResponse,
   LoginPayload,
@@ -36,7 +37,7 @@ export const resendOtp = (payload: ResendOtpPayload) =>
   api.post(`${BASE}/resend-otp/`, payload);
 
 export const login = (payload: LoginPayload) =>
-  api.post<AuthTokenResponse>(`${BASE}/login/`, payload);
+  api.post<AuthTokenData>(`${BASE}/login/`, payload);
 
 export const getGoogleAuthorizeUrl = () =>
   api.get<GoogleAuthorizeResponse>(`${BASE}/google/`);
