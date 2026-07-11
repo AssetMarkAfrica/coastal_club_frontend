@@ -8,9 +8,9 @@ import type { RootState } from "../../../../store";
 import {
   Loader2,
   AlertCircle,
+  Calendar,
   ChevronLeft,
   ChevronRight,
-  CheckCircle2,
   Clock,
   SlidersHorizontal,
   ExternalLink,
@@ -108,7 +108,7 @@ export default function StaffSpendEntriesPage() {
           </div>
           <button
             onClick={() => router.push("/booking/staff/spend-entries/create")}
-            className="inline-flex items-center gap-2 bg-[#10243F] text-[#F1E0A6] border border-[#B7922B] px-5 py-2.5 rounded text-xs font-semibold uppercase tracking-widest hover:bg-[#F1E0A6] hover:text-[#10243F] transition-all duration-300 active:scale-95"
+            className="inline-flex items-center gap-2 bg-[#10243F] text-[#F1E0A6] border border-[#B7922B] px-5 py-2.5 rounded text-xs font-semibold uppercase tracking-widest hover:bg-[#F1E0A6] hover:text-[#10243F] transition-all duration-300 active:scale-95 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Log Spend Entry
@@ -124,9 +124,9 @@ export default function StaffSpendEntriesPage() {
         )}
 
         {/* Filters */}
-        <div className="bg-white border border-[#B7922B]/25 rounded-lg p-5 mb-6 shadow-sm flex flex-wrap gap-4 items-end">
+        <div className="bg-white border border-[#B7922B]/25 rounded-lg p-5 mb-8 shadow-sm flex flex-wrap gap-4 items-end">
           <SlidersHorizontal className="w-5 h-5 text-[#B7922B] self-center hidden sm:block" />
-          <div className="flex-1 min-w-[140px]">
+          <div className="flex-1 min-w-[160px]">
             <label className="block text-xs font-semibold uppercase tracking-widest text-[#10243F] mb-1.5">
               Status
             </label>
@@ -135,7 +135,7 @@ export default function StaffSpendEntriesPage() {
                 id="se-status-filter"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-[#F8F1DF] border border-[#EDE3CC] px-3 py-2.5 rounded text-sm appearance-none focus:outline-none focus:border-[#10243F] focus:ring-1 focus:ring-[#10243F]/30 text-[#1A1A1A] pr-8"
+                className="w-full bg-[#F8F1DF] border border-[#EDE3CC] px-3 py-2.5 rounded text-sm appearance-none focus:outline-none focus:border-[#10243F] focus:ring-1 focus:ring-[#10243F]/30 text-[#1A1A1A] transition-all pr-8"
               >
                 <option value="">All Statuses</option>
                 <option value="settled">Settled</option>
@@ -144,7 +144,7 @@ export default function StaffSpendEntriesPage() {
               <ChevronRight className="w-4 h-4 rotate-90 absolute right-2 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
             </div>
           </div>
-          <div className="flex-1 min-w-[140px]">
+          <div className="flex-1 min-w-[160px]">
             <label className="block text-xs font-semibold uppercase tracking-widest text-[#10243F] mb-1.5">
               Customer Type
             </label>
@@ -153,7 +153,7 @@ export default function StaffSpendEntriesPage() {
                 id="se-type-filter"
                 value={customerTypeFilter}
                 onChange={(e) => setCustomerTypeFilter(e.target.value)}
-                className="w-full bg-[#F8F1DF] border border-[#EDE3CC] px-3 py-2.5 rounded text-sm appearance-none focus:outline-none focus:border-[#10243F] focus:ring-1 focus:ring-[#10243F]/30 text-[#1A1A1A] pr-8"
+                className="w-full bg-[#F8F1DF] border border-[#EDE3CC] px-3 py-2.5 rounded text-sm appearance-none focus:outline-none focus:border-[#10243F] focus:ring-1 focus:ring-[#10243F]/30 text-[#1A1A1A] transition-all pr-8"
               >
                 <option value="">All Types</option>
                 <option value="non_member">Non-Member</option>
@@ -178,8 +178,9 @@ export default function StaffSpendEntriesPage() {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white border border-[#B7922B]/25 rounded-xl overflow-hidden shadow-[0_4px_24px_rgba(30,58,95,0.08)]">
+        {/* Table Card */}
+        <div className="bg-white border border-[#B7922B]/25 rounded-lg overflow-hidden shadow-[0_4px_24px_rgba(30,58,95,0.08)]">
+          <div className="h-1 w-full bg-gradient-to-r from-[#10243F] to-[#455f87]" />
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-10 h-10 animate-spin mb-4 text-[#B7922B]" />
@@ -192,8 +193,10 @@ export default function StaffSpendEntriesPage() {
               <p className="text-sm text-[#6B7280]">Try adjusting your filters or log a new entry.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[900px]">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse min-w-[900px]">
                 <thead>
                   <tr className="bg-[#10243F] text-[#F1E0A6] border-b-2 border-[#B7922B] text-xs font-semibold uppercase tracking-wider">
                     <th className="py-4 px-5">Date / Time</th>
@@ -268,8 +271,102 @@ export default function StaffSpendEntriesPage() {
                     );
                   })}
                 </tbody>
-              </table>
-            </div>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden grid grid-cols-1 gap-4 p-4 pb-6">
+                {paged.map((entry) => {
+                  const dt = formatDateTime(entry.created_at);
+                  return (
+                    <div
+                      key={entry.id}
+                      onClick={() => router.push(`/booking/staff/spend-entries/${entry.id}`)}
+                      className={`bg-white rounded-lg border p-5 transition-transform hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(30,58,95,0.12)] hover:border-[#B7922B]/50 flex flex-col justify-between cursor-pointer ${
+                        entry.status === "pending_payment"
+                          ? "border-[#B45309]/40"
+                          : "border-[#B7922B]/25"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex justify-between items-start gap-3 mb-4">
+                          <div className="flex items-center space-x-3 min-w-0">
+                            <div className="w-10 h-10 rounded-full overflow-hidden bg-[#EDE3CC] flex-shrink-0 flex items-center justify-center text-[#10243F] font-medium uppercase font-serif">
+                              {getInitials(entry.customer_email ?? "")}
+                            </div>
+                            <div className="min-w-0">
+                              <h3
+                                className="font-semibold text-[#10243F] text-sm leading-tight break-all"
+                                style={{ fontFamily: "'Playfair Display', serif" }}
+                              >
+                                {entry.customer_email ?? "No Email"}
+                              </h3>
+                              <p className="text-[10px] text-[#B7922B] font-semibold uppercase tracking-wider mt-0.5">
+                                {entry.customer_type === "non_member" ? "Non-Member" : "Member"}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex-shrink-0">{getStatusBadge(entry.status)}</div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 mb-4 bg-[#F8F1DF]/50 rounded p-3 border border-[#EDE3CC]">
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] mb-1">
+                              Date / Time
+                            </p>
+                            <p className="text-sm text-[#10243F] font-medium flex items-center">
+                              <Calendar className="w-4 h-4 mr-1.5 text-[#B7922B]" />
+                              {dt.date}
+                              <span className="text-[#6B7280] font-normal ml-2">{dt.time}</span>
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] mb-1">
+                              Staff
+                            </p>
+                            <p className="text-sm text-[#10243F] font-medium break-all">
+                              {entry.staff_user_email ?? "â€”"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-[#EDE3CC] pt-4 mt-2 grid grid-cols-3 gap-3 items-start">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] mb-1">
+                            Spent
+                          </p>
+                          <p className="text-sm text-[#10243F] font-medium">
+                            GHS {(entry.amount_spent_pesewas / 100).toFixed(2)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#0F766E] mb-1">
+                            Credit
+                          </p>
+                          <p className="text-sm text-[#0F766E] font-medium">
+                            -GHS {(entry.credit_applied_pesewas / 100).toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#B7922B] mb-1">
+                            Due
+                          </p>
+                          <p
+                            className={`text-base font-bold ${
+                              entry.amount_due_pesewas > 0 ? "text-[#B45309]" : "text-[#10243F]"
+                            }`}
+                            style={{ fontFamily: "'Playfair Display', serif" }}
+                          >
+                            GHS {(entry.amount_due_pesewas / 100).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
 
           {/* Pagination */}

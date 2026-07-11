@@ -32,7 +32,11 @@ export default function LoginPage() {
 
       if (result.user.role === "admin") {
         router.push("/membership/view-applications");
-      } else {
+      }
+      else if (result.user.role === "staff") {
+        router.push("/booking/staff/reservations")
+      }
+      else {
         router.push("/");
       }
     } catch {

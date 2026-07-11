@@ -62,7 +62,7 @@ function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-export default function LandingPageContent() {
+export default function LandingPageContent({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
   return (
     <>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
@@ -160,6 +160,15 @@ export default function LandingPageContent() {
                 <span className="material-symbols-outlined text-xl">{icon}</span>
               </button>
             ))}
+            {isAuthenticated ? (
+              <Link href="/membership/dashboard" className="bg-primary text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
+                My Portal
+              </Link>
+            ) : (
+              <Link href="/auth/login" className="bg-transparent text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
+                Login
+              </Link>
+            )}
             <Link href="/membership/plans" className="bg-primary text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
               Join the Club
             </Link>

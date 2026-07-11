@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>All Reservations - Estrella del Mar Admin Portal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e9e7eb",
+                        "primary-container": "#1e3a5f",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#8aa4cf",
+                        "inverse-on-surface": "#f1f0f4",
+                        "secondary-fixed": "#ffe088",
+                        "outline": "#74777f",
+                        "outline-variant": "#c4c6cf",
+                        "text-secondary": "#4A4A4A",
+                        "on-secondary-fixed": "#241a00",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "error-container": "#ffdad6",
+                        "text-primary": "#1A1A1A",
+                        "on-secondary-container": "#745c00",
+                        "surface-dim": "#dad9dd",
+                        "warning": "#B45309",
+                        "on-surface": "#1a1c1e",
+                        "danger": "#B42318",
+                        "inverse-surface": "#2f3033",
+                        "cream": "#F8F1DF",
+                        "info": "#185FA5",
+                        "secondary": "#735c00",
+                        "background": "#faf9fc",
+                        "on-error": "#ffffff",
+                        "primary": "#022448",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#c69b5f",
+                        "navy-deep": "#10243F",
+                        "surface": "#faf9fc",
+                        "success": "#0F766E",
+                        "on-background": "#1a1c1e",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#503300",
+                        "text-muted": "#6B7280",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e3e2e6",
+                        "gold-light": "#F1E0A6",
+                        "tertiary": "#341f00",
+                        "tertiary-fixed-dim": "#edbf7f",
+                        "on-primary-fixed": "#001c3b",
+                        "surface-container": "#eeedf1",
+                        "secondary-container": "#fed65b",
+                        "on-secondary-fixed-variant": "#574500",
+                        "gold-muted": "#B7922B",
+                        "primary-fixed": "#d5e3ff",
+                        "on-tertiary-fixed": "#291800",
+                        "on-tertiary-fixed-variant": "#60410c",
+                        "tertiary-fixed": "#ffddb2",
+                        "surface-container-highest": "#e3e2e6",
+                        "secondary-fixed-dim": "#e9c349",
+                        "inverse-primary": "#adc8f5",
+                        "cream-dark": "#EDE3CC",
+                        "on-surface-variant": "#43474e",
+                        "surface-tint": "#455f87",
+                        "primary-fixed-dim": "#adc8f5",
+                        "surface-container-low": "#f4f3f7",
+                        "surface-bright": "#faf9fc",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "topbar-height": "64px",
+                        "card-padding": "24px",
+                        "input-padding-x": "16px",
+                        "input-padding-y": "12px",
+                        "sidebar-width": "260px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "h2": [
+                            "Playfair Display"
+                        ],
+                        "h3": [
+                            "Playfair Display"
+                        ],
+                        "body-lg": [
+                            "Inter"
+                        ],
+                        "label-uppercase": [
+                            "Inter"
+                        ],
+                        "h4": [
+                            "Playfair Display"
+                        ],
+                        "h1": [
+                            "Playfair Display"
+                        ]
+                    },
+                    "fontSize": {
+                        "h2": [
+                            "36px",
+                            {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "h3": [
+                            "28px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "body-lg": [
+                            "16px",
+                            {
+                                "lineHeight": "1.7",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "label-uppercase": [
+                            "13px",
+                            {
+                                "lineHeight": "1",
+                                "letterSpacing": "0.08em",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "h4": [
+                            "22px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "h1": [
+                            "48px",
+                            {
+                                "lineHeight": "1.2",
+                                "fontWeight": "700"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F8F1DF;
+            /* cream */
+        }
+
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #EDE3CC;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #B7922B;
+        }
+
+        .gold-hairline {
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+
+        .lift-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .lift-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(30, 58, 95, 0.12);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .nav-gradient {
+            background: linear-gradient(135deg, #10243F 0%, #1E3A5F 100%);
+        }
+
+        /* Mobile specific hiding */
+        @media (min-width: 768px) {
+            .mobile-only {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .desktop-only {
+                display: none !important;
+            }
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="text-text-primary font-body-lg antialiased flex flex-col min-h-screen">
+    <!-- Top Navigation (Mobile Optimized) -->
+    <header
+        class="bg-surface border-b border-gold-muted/20 bg-surface/95 backdrop-blur-md shadow-sm shadow-navy-deep/5 sticky top-0 z-50 h-[64px] flex justify-between items-center w-full px-4 md:px-8 md:ml-[260px] md:max-w-[calc(100%-260px)]">
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden text-navy-deep p-2 -ml-2 rounded-full hover:bg-cream-dark transition-colors">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <!-- Brand / Title -->
+        <div class="flex items-center space-x-3">
+            <h1 class="font-h3 text-h3 text-navy-deep tracking-tight">Estrella del Mar</h1>
+        </div>
+        <!-- Actions -->
+        <div class="flex items-center space-x-2 md:space-x-4">
+            <button
+                class="text-text-muted hover:text-navy-deep transition-colors duration-200 p-2 rounded-full hover:bg-cream-dark hidden sm:block">
+                <span class="material-symbols-outlined">search</span>
+            </button>
+            <button
+                class="text-text-muted hover:text-navy-deep transition-colors duration-200 p-2 rounded-full hover:bg-cream-dark relative">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full border-2 border-surface"></span>
+            </button>
+            <div class="h-8 w-8 rounded-full overflow-hidden border border-gold-muted/30 ml-2">
+                <img alt="Admin Profile" class="w-full h-full object-cover"
+                    data-alt="A professional headshot of a luxury hotel administrator in a sharp navy suit, set against a softly lit, lavish champagne-colored background. The lighting is elegant and flattering, highlighting a welcoming expression. The overall style is modern editorial, fitting a premium private club environment."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOldHfQc3RV2-IvJx8bibq3xUA7Dpv-VxvUD1jTF4cFb6_GCl6tzgiJjM_v9k_4XdHIVL63n0IrhWTYgMU9_1Ixy80nVbjBAEAMiJKDovEpILvkNOybmUJEzVwkTelV2WNQlTtd_JnGiLoetizEFFQAcI0nYFfDRRsmMRvprb-vefrhA4u1_P5pISsVgnn4Lw5tGVrs9Jj9KJts-okiSRxcY-GwDa6PXeX9AS0u-sQGmZ6-sUs" />
+            </div>
+        </div>
+    </header>
+    <!-- Desktop Sidebar (Hidden on mobile) -->
+    <nav
+        class="desktop-only fixed left-0 top-0 h-full w-[260px] border-r border-gold-muted/20 bg-navy-deep text-gold-light shadow-2xl shadow-navy-deep/50 z-40">
+        <div class="flex flex-col h-screen py-8 px-6">
+            <!-- Brand -->
+            <div class="mb-10 px-2">
+                <div class="flex items-center space-x-3 mb-2">
+                    <span class="material-symbols-outlined text-3xl">star</span>
+                    <h2 class="font-h4 text-h4 tracking-widest uppercase">Estrella</h2>
+                </div>
+                <p class="text-on-primary-container/70 font-label-uppercase text-label-uppercase tracking-widest pl-10">
+                    Admin Portal</p>
+            </div>
+            <!-- CTA -->
+            <button
+                class="mb-8 w-full bg-navy-deep text-gold-light border border-gold-light rounded py-3 px-4 font-label-uppercase text-label-uppercase tracking-wider hover:bg-gold-light hover:text-navy-deep transition-colors duration-300 flex items-center justify-center space-x-2">
+                <span class="material-symbols-outlined text-sm">add</span>
+                <span>New Application</span>
+            </button>
+            <!-- Nav Links -->
+            <div class="flex-1 space-y-2">
+                <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="font-label-uppercase text-label-uppercase">Dashboard</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-3 rounded text-on-primary-container/70 hover:text-gold-light hover:bg-primary-container/10 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined">assignment_ind</span>
+                    <span class="font-label-uppercase text-label-uppercase">Applications</span>
+                </a>
+                <!-- Active State Example (if this was the active page) -->
+                <!-- <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded text-gold-light border-r-2 border-gold-light bg-primary-container/30 font-bold">
+                    <span class="material-symbols-outlined">event_seat</span>
+                    <span class="font-label-uppercase text-label-uppercase">Events</span>
+                </a> -->
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content Canvas -->
+    <main class="flex-1 md:ml-[260px] p-4 md:p-8 bg-cream">
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 space-y-4 sm:space-y-0">
+            <div>
+                <p class="font-label-uppercase text-label-uppercase text-text-muted mb-1 tracking-widest">Management</p>
+                <h2 class="font-h2 text-h2 text-navy-deep">All Reservations</h2>
+            </div>
+            <button
+                class="bg-navy-deep text-gold-light border border-gold-muted py-2.5 px-5 rounded flex items-center space-x-2 hover:bg-gold-light hover:text-navy-deep transition-colors duration-300 shadow-sm w-full sm:w-auto justify-center">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">add</span>
+                <span class="font-label-uppercase text-label-uppercase">New Reservation</span>
+            </button>
+        </div>
+        <!-- Search & Filters (Mobile Collapsible style via details/summary or stacked) -->
+        <div class="bg-surface rounded-lg gold-hairline p-4 mb-6 shadow-sm shadow-navy-deep/5">
+            <div class="flex flex-col md:flex-row gap-4 items-center">
+                <!-- Search -->
+                <div class="relative w-full md:w-1/3">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">search</span>
+                    <input
+                        class="w-full bg-cream border border-cream-dark rounded pl-10 pr-4 py-2 focus:outline-none focus:border-navy-deep focus:ring-1 focus:ring-gold-muted/60 transition-colors font-body-lg text-body-lg text-text-primary placeholder-text-muted"
+                        placeholder="Search guests..." type="text" />
+                </div>
+                <!-- Filters -->
+                <div class="flex flex-row w-full md:w-auto gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                    <select
+                        class="bg-cream border border-cream-dark rounded px-4 py-2 focus:outline-none focus:border-navy-deep focus:ring-1 focus:ring-gold-muted/60 font-body-lg text-body-lg text-text-primary min-w-[140px] appearance-none cursor-pointer">
+                        <option value="">Any Date</option>
+                        <option value="today">Today</option>
+                        <option value="tomorrow">Tomorrow</option>
+                        <option value="upcoming">Upcoming Week</option>
+                    </select>
+                    <select
+                        class="bg-cream border border-cream-dark rounded px-4 py-2 focus:outline-none focus:border-navy-deep focus:ring-1 focus:ring-gold-muted/60 font-body-lg text-body-lg text-text-primary min-w-[140px] appearance-none cursor-pointer">
+                        <option value="">All Statuses</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="pending">Pending</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                    <button
+                        class="bg-transparent border border-gold-muted text-gold-muted px-4 py-2 rounded hover:bg-gold-light/10 transition-colors flex items-center space-x-2 whitespace-nowrap">
+                        <span class="material-symbols-outlined text-sm">filter_list</span>
+                        <span class="font-label-uppercase text-label-uppercase">More Filters</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Reservations List (Cards) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 pb-20 md:pb-8">
+            <!-- Card 1: Confirmed -->
+            <div class="bg-surface rounded-lg gold-hairline p-5 lift-hover flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full overflow-hidden bg-cream-dark flex-shrink-0">
+                                <img alt="Arthur Pendelton" class="w-full h-full object-cover"
+                                    data-alt="A candid profile portrait of an affluent gentleman in his 50s, wearing a tailored linen suit. The background is softly out of focus, suggesting a sunlit terrace of a luxury estate. Warm, natural lighting enhances the modern editorial aesthetic with high contrast and sharp details."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuABRm-qAHuRNB8-jAL9amJlfIvHb6tvOJibuhfIGmOBdkjJO-NkI1BwvmIC3DREheR1uTJs2iv73rEQfDxZBkFATkXEKsvKMvkGujlitWsQFaqTjPzGP2I2wasRc2HgylAqCUz-G_542BbviovVcKic9amULeMjLGfgsVChYA1DCjVyiOTrAEqV15cR4u_c6Jg3EzsdOc439ArbaksJp-n25-G0MBWiW6rVocdpGptqUUbhk7xB" />
+                            </div>
+                            <div>
+                                <h3 class="font-h4 text-h4 text-navy-deep leading-tight">Arthur Pendelton</h3>
+                                <p class="text-text-muted text-sm flex items-center mt-0.5">
+                                    <span class="material-symbols-outlined text-[16px] mr-1">star</span> Premier Member
+                                </p>
+                            </div>
+                        </div>
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success border border-success/20">
+                            Confirmed
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4 bg-cream/50 rounded p-3 border border-cream-dark">
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Date
+                                &amp; Time</p>
+                            <p class="font-body-lg text-body-lg text-text-primary font-medium flex items-center">
+                                <span
+                                    class="material-symbols-outlined text-[16px] mr-1 text-gold-muted">calendar_today</span>
+                                Oct 24, 19:30
+                            </p>
+                        </div>
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Party
+                                Size</p>
+                            <p class="font-body-lg text-body-lg text-text-primary font-medium flex items-center">
+                                <span class="material-symbols-outlined text-[16px] mr-1 text-gold-muted">group</span> 4
+                                Guests
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-cream-dark pt-4 mt-2 flex justify-between items-center">
+                    <div>
+                        <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Intended
+                            Spend</p>
+                        <p class="font-body-lg text-body-lg text-text-primary">$1,200</p>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="font-label-uppercase text-label-uppercase text-gold-muted text-[10px] mb-1 tracking-widest">
+                            Remaining Credit</p>
+                        <p class="font-h4 text-h4 text-navy-deep font-bold">$4,500</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 2: Pending -->
+            <div
+                class="bg-surface rounded-lg gold-hairline p-5 lift-hover flex flex-col justify-between border-t-4 border-t-warning">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 rounded-full overflow-hidden bg-cream-dark flex-shrink-0 flex items-center justify-center text-navy-deep font-h4">
+                                ES
+                            </div>
+                            <div>
+                                <h3 class="font-h4 text-h4 text-navy-deep leading-tight">Eleanor Vance</h3>
+                                <p class="text-text-muted text-sm flex items-center mt-0.5">
+                                    <span
+                                        class="material-symbols-outlined text-[16px] mr-1 text-surface-tint">card_membership</span>
+                                    Corporate
+                                </p>
+                            </div>
+                        </div>
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning border border-warning/20">
+                            Pending
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4 bg-cream/50 rounded p-3 border border-cream-dark">
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Date
+                                &amp; Time</p>
+                            <p class="font-body-lg text-body-lg text-text-primary font-medium flex items-center">
+                                <span
+                                    class="material-symbols-outlined text-[16px] mr-1 text-gold-muted">calendar_today</span>
+                                Oct 25, 12:00
+                            </p>
+                        </div>
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Party
+                                Size</p>
+                            <p class="font-body-lg text-body-lg text-text-primary font-medium flex items-center">
+                                <span class="material-symbols-outlined text-[16px] mr-1 text-gold-muted">group</span> 12
+                                Guests
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-cream-dark pt-4 mt-2 flex justify-between items-center">
+                    <div>
+                        <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Intended
+                            Spend</p>
+                        <p class="font-body-lg text-body-lg text-text-primary">$3,500</p>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="font-label-uppercase text-label-uppercase text-gold-muted text-[10px] mb-1 tracking-widest">
+                            Remaining Credit</p>
+                        <p class="font-h4 text-h4 text-navy-deep font-bold">$12,000</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 3: Expired -->
+            <div class="bg-surface rounded-lg gold-hairline p-5 lift-hover flex flex-col justify-between opacity-80">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full overflow-hidden bg-cream-dark flex-shrink-0">
+                                <img alt="Victoria Chen" class="w-full h-full object-cover"
+                                    data-alt="A portrait of an elegant woman in her 40s wearing minimal, chic gold jewelry. The backdrop is a deep, luxurious navy, providing high contrast and emphasizing a sophisticated, modern editorial club environment."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8d9rl9RzRSYRJz2AQehCV1jtnGNTV2QNRq2QOgMz0xRVgSXwfx3qV9KONLJWANZUdkZsTOpoOciWxyhWOJguCNi0UwJ1S9sMXG-LtApy-IDzsf--gxh1zp_K-cJsVaxPtvU4IrAotIOeu6cSKbVDhFfXcDicWFkY7P07irTELCLmiJDi7uTr8XLgvDBjnlb8O6SawO3N2jO8mMLCoemhIlRFSVd5Jvzz1c1XrHWRblcKK_L-T" />
+                            </div>
+                            <div>
+                                <h3 class="font-h4 text-h4 text-navy-deep leading-tight">Victoria Chen</h3>
+                                <p class="text-text-muted text-sm flex items-center mt-0.5">
+                                    <span class="material-symbols-outlined text-[16px] mr-1">star</span> Premier Member
+                                </p>
+                            </div>
+                        </div>
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-outline/10 text-outline border border-outline/20">
+                            Expired
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4 bg-cream/50 rounded p-3 border border-cream-dark">
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Date
+                                &amp; Time</p>
+                            <p class="font-body-lg text-body-lg text-text-muted line-through flex items-center">
+                                <span class="material-symbols-outlined text-[16px] mr-1">calendar_today</span> Oct 20,
+                                14:00
+                            </p>
+                        </div>
+                        <div>
+                            <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Party
+                                Size</p>
+                            <p class="font-body-lg text-body-lg text-text-muted flex items-center">
+                                <span class="material-symbols-outlined text-[16px] mr-1">group</span> 2 Guests
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-cream-dark pt-4 mt-2 flex justify-between items-center">
+                    <div>
+                        <p class="font-label-uppercase text-label-uppercase text-text-muted text-[10px] mb-1">Intended
+                            Spend</p>
+                        <p class="font-body-lg text-body-lg text-text-muted">$400</p>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="font-label-uppercase text-label-uppercase text-gold-muted text-[10px] mb-1 tracking-widest">
+                            Remaining Credit</p>
+                        <p class="font-h4 text-h4 text-navy-deep font-bold text-opacity-80">$850</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Bottom Navigation Bar (Mobile Only) -->
+    <nav
+        class="mobile-only fixed bottom-0 left-0 w-full bg-surface border-t border-gold-muted/20 shadow-[0_-4px_24px_rgba(30,58,95,0.08)] z-50 px-6 py-3 flex justify-between items-center">
+        <a class="flex flex-col items-center text-text-muted hover:text-navy-deep transition-colors" href="#">
+            <span class="material-symbols-outlined mb-1">dashboard</span>
+            <span class="text-[10px] font-label-uppercase text-label-uppercase">Home</span>
+        </a>
+        <a class="flex flex-col items-center text-navy-deep font-bold" href="#">
+            <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">event_seat</span>
+            <span class="text-[10px] font-label-uppercase text-label-uppercase">Reservations</span>
+            <div class="w-1 h-1 bg-gold-muted rounded-full mt-1"></div>
+        </a>
+        <a class="flex flex-col items-center text-text-muted hover:text-navy-deep transition-colors" href="#">
+            <span class="material-symbols-outlined mb-1">card_membership</span>
+            <span class="text-[10px] font-label-uppercase text-label-uppercase">Members</span>
+        </a>
+        <a class="flex flex-col items-center text-text-muted hover:text-navy-deep transition-colors" href="#">
+            <span class="material-symbols-outlined mb-1">settings</span>
+            <span class="text-[10px] font-label-uppercase text-label-uppercase">Settings</span>
+        </a>
+    </nav>
+</body>
+
+</html>

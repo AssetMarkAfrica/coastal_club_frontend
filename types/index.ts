@@ -4,3 +4,4 @@ export * from "./profile";
 export * from "./membership";
 export * from "./payment";
 export * from "./notification";
+export * from "./search";

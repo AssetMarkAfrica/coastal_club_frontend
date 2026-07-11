@@ -199,52 +199,146 @@ export default function StaffReservationsPage() {
               <p className="text-sm text-[#6B7280]">Try adjusting your filters.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto w-full">
-              <table className="w-full text-left border-collapse min-w-[820px]">
-                <thead>
-                  <tr className="bg-[#10243F] text-[#F1E0A6] border-b border-[#B7922B]/50">
-                    <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider">Guest</th>
-                    <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider">Date</th>
-                    <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider">Status</th>
-                    <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-right">Intended Spend</th>
-                    <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-right">Credit Remaining</th>
-                    <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paged.map((r, i) => (
-                    <tr
-                      key={r.id}
-                      className={`border-b border-[#EDE3CC] group hover:-translate-y-[1px] hover:shadow-[0_4px_12px_rgba(30,58,95,0.08)] transition-all duration-150 ${
-                        i % 2 === 0 ? "bg-white" : "bg-[#F8F1DF]/50"
-                      }`}
-                    >
-                      <td className="py-3.5 px-5">
-                        <div className="font-medium text-[#10243F] text-sm">{r.user_email ?? "—"}</div>
-                        <div className="text-xs text-[#6B7280] font-mono">{r.id.slice(0, 8)}…</div>
-                      </td>
-                      <td className="py-3.5 px-5 text-sm text-[#4A4A4A]">{formatDate(r.reservation_date)}</td>
-                      <td className="py-3.5 px-5">{getStatusBadge(r.status)}</td>
-                      <td className="py-3.5 px-5 text-right text-sm font-medium text-[#10243F]">
-                        GHS {(r.intended_spend_pesewas / 100).toFixed(2)}
-                      </td>
-                      <td className="py-3.5 px-5 text-right text-sm text-[#4A4A4A]">
-                        GHS {(r.spend_credit_remaining_pesewas / 100).toFixed(2)}
-                      </td>
-                      <td className="py-3.5 px-5 text-center">
-                        <button
-                          onClick={() => router.push(`/booking/staff/reservations/${r.id}`)}
-                          className="inline-flex items-center gap-1.5 text-xs text-[#B7922B] group-hover:text-[#10243F] font-semibold uppercase tracking-wider transition-colors hover:underline"
-                        >
-                          View
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse min-w-[820px]">
+                  <thead>
+                    <tr className="bg-[#10243F] text-[#F1E0A6] border-b border-[#B7922B]/50">
+                      <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider">Guest</th>
+                      <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider">Date</th>
+                      <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider">Status</th>
+                      <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-right">Intended Spend</th>
+                      <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-right">Credit Remaining</th>
+                      <th className="py-4 px-5 text-xs font-semibold uppercase tracking-wider text-center">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {paged.map((r, i) => (
+                      <tr
+                        key={r.id}
+                        className={`border-b border-[#EDE3CC] group hover:-translate-y-[1px] hover:shadow-[0_4px_12px_rgba(30,58,95,0.08)] transition-all duration-150 ${
+                          i % 2 === 0 ? "bg-white" : "bg-[#F8F1DF]/50"
+                        }`}
+                      >
+                        <td className="py-3.5 px-5">
+                          <div className="font-medium text-[#10243F] text-sm">{r.user_email ?? "—"}</div>
+                          <div className="text-xs text-[#6B7280] font-mono">{r.id.slice(0, 8)}…</div>
+                        </td>
+                        <td className="py-3.5 px-5 text-sm text-[#4A4A4A]">{formatDate(r.reservation_date)}</td>
+                        <td className="py-3.5 px-5">{getStatusBadge(r.status)}</td>
+                        <td className="py-3.5 px-5 text-right text-sm font-medium text-[#10243F]">
+                          GHS {(r.intended_spend_pesewas / 100).toFixed(2)}
+                        </td>
+                        <td className="py-3.5 px-5 text-right text-sm text-[#4A4A4A]">
+                          GHS {(r.spend_credit_remaining_pesewas / 100).toFixed(2)}
+                        </td>
+                        <td className="py-3.5 px-5 text-right">
+                          <div className="flex items-center justify-end gap-4">
+                            {r.status === "confirmed" && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/booking/staff/spend-entries/create?reservationId=${r.id}`);
+                                }}
+                                className="inline-flex items-center gap-1.5 text-xs text-[#10243F] hover:text-[#B7922B] font-semibold uppercase tracking-wider transition-colors hover:underline"
+                              >
+                                <Receipt className="w-3.5 h-3.5" />
+                                Log Spend
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/booking/staff/reservations/${r.id}`);
+                              }}
+                              className="inline-flex items-center gap-1.5 text-xs text-[#B7922B] group-hover:text-[#10243F] font-semibold uppercase tracking-wider transition-colors hover:underline"
+                            >
+                              View
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden grid grid-cols-1 gap-4 p-4 pb-6">
+                {paged.map((r) => (
+                  <div
+                    key={r.id}
+                    onClick={() => router.push(`/booking/staff/reservations/${r.id}`)}
+                    className="bg-white rounded-lg border border-[#B7922B]/25 p-5 transition-transform hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(30,58,95,0.12)] hover:border-[#B7922B]/50 flex flex-col justify-between cursor-pointer"
+                  >
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 rounded-full overflow-hidden bg-[#EDE3CC] flex-shrink-0 flex items-center justify-center text-[#10243F] font-medium uppercase font-serif">
+                            {r.user_email ? r.user_email[0] : "—"}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-[#10243F] text-sm leading-tight break-all" style={{ fontFamily: "'Playfair Display', serif" }}>
+                              {r.user_email ?? "No Email"}
+                            </h3>
+                            <p className="text-[#6B7280] text-xs mt-0.5 font-mono">
+                              ID: {r.id.slice(0, 8)}
+                            </p>
+                          </div>
+                        </div>
+                        {getStatusBadge(r.status)}
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 mb-4 bg-[#F8F1DF]/50 rounded p-3 border border-[#EDE3CC]">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] mb-1">
+                            Date
+                          </p>
+                          <p className="text-sm text-[#10243F] font-medium flex items-center">
+                            <Calendar className="w-4 h-4 mr-1.5 text-[#B7922B]" />
+                            {formatDate(r.reservation_date)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="border-t border-[#EDE3CC] pt-4 mt-2 flex flex-col gap-3">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#6B7280] mb-1">
+                            Intended Spend
+                          </p>
+                          <p className="text-sm text-[#10243F] font-medium">
+                            GHS {(r.intended_spend_pesewas / 100).toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#B7922B] mb-1">
+                            Remaining Credit
+                          </p>
+                          <p className="text-base text-[#10243F] font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
+                            GHS {(r.spend_credit_remaining_pesewas / 100).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {r.status === "confirmed" && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/booking/staff/spend-entries/create?reservationId=${r.id}`);
+                          }}
+                          className="w-full mt-1 inline-flex items-center justify-center gap-2 bg-[#10243F] text-[#F1E0A6] px-4 py-3 rounded text-xs font-semibold uppercase tracking-wider hover:bg-[#1E3A5F] transition-colors"
+                        >
+                          <Receipt className="w-4 h-4" />
+                          Log Spend Entry
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
 
           {/* Pagination */}

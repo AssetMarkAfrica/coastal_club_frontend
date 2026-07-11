@@ -4,13 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "../../../../../store/hooks";
 import {
-  getAllReservations,
   logSpendEntry,
   verifySpendPayment,
 } from "../../../../../store/booking/bookingThunks";
 import { clearCurrentSpendEntry } from "../../../../../store/booking/bookingSlice";
 import type { RootState } from "../../../../../store";
-import type { Reservation } from "../../../../../types/booking";
+import type { ReservationSearchResult } from "../../../../../types/search";
+import { getReservationSearchDetail } from "../../../../../store/search/searchThunks";
+import ReservationSearchInput from "../../../../../components/search/ReservationSearchInput";
 import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeft,
@@ -196,52 +197,43 @@ export default function LogSpendEntryPage() {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
-  const { reservations, currentSpendEntry, loading, error } = useAppSelector(
+  const { currentSpendEntry, loading, error } = useAppSelector(
     (state: RootState) => state.booking,
   );
 
   /* ── local state ── */
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+  const [selectedReservation, setSelectedReservation] = useState<ReservationSearchResult | null>(null);
   const [inputString, setInputString] = useState("0");
   const [showShortfallModal, setShowShortfallModal] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   /* ── pre-select reservation from URL param ── */
   useEffect(() => {
     dispatch(clearCurrentSpendEntry());
-    dispatch(getAllReservations({ status: "confirmed" }));
   }, [dispatch]);
 
   useEffect(() => {
     const rid = searchParams?.get("reservationId");
-    if (rid && reservations.length > 0) {
-      const found = reservations.find((r) => r.id === rid);
-      if (found) setSelectedReservation(found);
+    if (rid) {
+      dispatch(getReservationSearchDetail(rid)).then((res) => {
+        if (getReservationSearchDetail.fulfilled.match(res)) {
+          setSelectedReservation(res.payload);
+        }
+      });
     }
-  }, [searchParams, reservations]);
+  }, [searchParams, dispatch]);
 
   /* ── derived values ── */
   const amountGhs = parseFloat(inputString || "0");
   const creditGhs = selectedReservation
-    ? selectedReservation.spend_credit_remaining_pesewas / 100
+    ? selectedReservation.payment.spend_credit_remaining_pesewas / 100
     : 0;
   const appliedCredit = Math.min(amountGhs, creditGhs);
   const shortfall = Math.max(0, amountGhs - creditGhs);
   const hasShortfall = shortfall > 0;
   const canSubmit = amountGhs > 0 && !!selectedReservation;
-
-  /* ── filter reservations by search ── */
-  const filteredReservations = reservations.filter(
-    (r) =>
-      r.status === "confirmed" &&
-      (!searchQuery ||
-        r.user_email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.id.toLowerCase().includes(searchQuery.toLowerCase())),
-  );
 
   /* ── keypad handlers ── */
   const appendNumber = useCallback((num: string) => {
@@ -276,7 +268,7 @@ export default function LogSpendEntryPage() {
     const result = await dispatch(
       logSpendEntry({
         customer_type: "non_member",
-        reservation_id: selectedReservation!.id,
+        reservation_id: selectedReservation!.reservation_id,
         amount_spent_pesewas: Math.round(amountGhs * 100),
         callback_url: callbackUrl,
       }),
@@ -388,73 +380,24 @@ export default function LogSpendEntryPage() {
 
           {/* Search section */}
           <section className="flex flex-col gap-3">
-            <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B7280] group-focus-within:text-[#10243F] transition-colors" />
-              <input
-                ref={searchRef}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-[#EDE3CC] rounded-lg py-4 pl-12 pr-4 text-[#1A1A1A] placeholder-[#6B7280] outline-none focus:border-[#10243F] focus:ring-1 focus:ring-[#10243F]/30 shadow-sm transition-all text-sm"
-                placeholder="Search by guest email or reservation ID…"
-                type="text"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#10243F]"
-                >
-                  <XCircle className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Search results */}
-            {searchQuery && (
-              <div className="bg-white border border-[#EDE3CC] rounded-lg shadow-md max-h-52 overflow-y-auto">
-                {filteredReservations.length === 0 ? (
-                  <p className="text-center text-sm text-[#6B7280] py-4">No confirmed reservations found.</p>
-                ) : (
-                  filteredReservations.map((r) => (
-                    <button
-                      key={r.id}
-                      onClick={() => {
-                        setSelectedReservation(r);
-                        setSearchQuery("");
-                      }}
-                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F8F1DF] transition-colors border-b border-[#EDE3CC] last:border-0 text-left"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-[#10243F]">{r.user_email}</p>
-                        <p className="text-xs text-[#6B7280] font-mono">{r.id.slice(0, 12)}…</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-[#6B7280] uppercase tracking-wider mb-0.5">Credit</p>
-                        <p className="text-sm font-bold text-[#0F766E]">
-                          GHS {(r.spend_credit_remaining_pesewas / 100).toFixed(2)}
-                        </p>
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
-            )}
+            <ReservationSearchInput onSelect={setSelectedReservation} />
 
             {/* Selected reservation card */}
             {selectedReservation && (
               <div className="bg-white border border-[#F1E0A6]/40 rounded-xl p-4 flex items-center justify-between shadow-sm hover:-translate-y-[2px] transition-transform duration-300">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-[#10243F] flex items-center justify-center text-[#F1E0A6] font-bold text-sm flex-shrink-0">
-                    {selectedReservation.user_email?.slice(0, 2).toUpperCase() ?? "?"}
+                    {(selectedReservation.full_name || selectedReservation.email)?.slice(0, 2).toUpperCase() ?? "?"}
                   </div>
                   <div>
-                    <h3 className="text-[#10243F] font-semibold">{selectedReservation.user_email}</h3>
-                    <p className="text-xs text-[#6B7280] font-mono">{selectedReservation.id.slice(0, 12)}…</p>
+                    <h3 className="text-[#10243F] font-semibold">{selectedReservation.full_name || selectedReservation.email}</h3>
+                    <p className="text-xs text-[#6B7280] font-mono">{selectedReservation.reservation_id.slice(0, 12)}…</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-[#6B7280] uppercase tracking-wider mb-1">Available Credit</p>
                   <p className="text-xl font-bold text-[#0F766E]">
-                    GHS {(selectedReservation.spend_credit_remaining_pesewas / 100).toFixed(2)}
+                    GHS {(selectedReservation.payment.spend_credit_remaining_pesewas / 100).toFixed(2)}
                   </p>
                 </div>
               </div>

@@ -27,6 +27,8 @@ export default function HomePage() {
 
     if (role === "admin") {
       router.replace("/membership/view-applications");
+    } else if (role === "staff") {
+      router.replace("/booking/staff/reservations");
     } else {
       // "member" or any other authenticated role
       router.replace("/membership/dashboard");
@@ -36,7 +38,7 @@ export default function HomePage() {
   // Before hydration completes, render the landing page so server
   // and first client paint are identical — no hydration mismatch.
   if (!mounted) {
-    return <LandingPageContent />;
+    return <LandingPageContent isAuthenticated={false} />;
   }
 
   // Mounted + authenticated → show a spinner while the redirect fires.
@@ -49,5 +51,5 @@ export default function HomePage() {
   }
 
   // Mounted + not authenticated → public landing page.
-  return <LandingPageContent />;
+  return <LandingPageContent isAuthenticated={false} />;
 }

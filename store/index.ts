@@ -5,6 +5,7 @@ import paymentReducer from "./payment/paymentSlice";
 import profileReducer from "./profile/profileSlice";
 import notificationReducer from "./notification/notificationSlice";
 import bookingReducer from "./booking/bookingSlice";
+import searchReducer from "./search/searchSlice";
 
 import cardReducer from "./membership/cardSlice"; 
 
@@ -17,6 +18,7 @@ export const store = configureStore({
     card: cardReducer,
     notification: notificationReducer,
     booking: bookingReducer,
+    search: searchReducer,
   },
 });
 

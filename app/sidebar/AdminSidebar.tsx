@@ -62,69 +62,108 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="hidden lg:flex w-sidebar-width shrink-0 flex-col border-r border-gold-muted/25 bg-linear-to-b from-navy-deep to-primary py-8 text-cream shadow-2xl shadow-navy-deep/40">
-      <div className="px-6 mb-8">
-        <h1 className="text-2xl italic text-gold-muted" style={{ fontFamily: "var(--font-playfair)" }}>
-          Estrella del Mar
-        </h1>
+    <>
+      {/* ── Desktop sidebar ───────────────────────────────── */}
+      <aside className="hidden lg:flex w-sidebar-width shrink-0 flex-col border-r border-gold-muted/25 bg-linear-to-b from-navy-deep to-primary py-8 text-cream shadow-2xl shadow-navy-deep/40">
+        <div className="px-6 mb-8">
+          <h1 className="text-2xl italic text-gold-muted" style={{ fontFamily: "var(--font-playfair)" }}>
+            Estrella del Mar
+          </h1>
 
-        <div className="mt-4 flex items-center gap-3">
-          <div className="h-10 w-10 overflow-hidden rounded-full border border-gold-muted/30 bg-gold-muted/20 flex items-center justify-center">
-            {user?.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={user.avatar_url} alt="Admin avatar" className="h-full w-full object-cover" />
-            ) : (
-              <span className="text-sm font-semibold text-gold-light">{initials}</span>
-            )}
-          </div>
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.14em] font-semibold text-gold-light">
-              Admin Portal
-            </p>
-            <p className="text-xs text-cream/60">System Administrator</p>
+          <div className="mt-4 flex items-center gap-3">
+            <div className="h-10 w-10 overflow-hidden rounded-full border border-gold-muted/30 bg-gold-muted/20 flex items-center justify-center">
+              {user?.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={user.avatar_url} alt="Admin avatar" className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-sm font-semibold text-gold-light">{initials}</span>
+              )}
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.14em] font-semibold text-gold-light">
+                Admin Portal
+              </p>
+              <p className="text-xs text-cream/60">System Administrator</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <nav className="flex-1">
+        <nav className="flex-1">
+          {navItems.map((item) => {
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex items-center gap-4 px-6 py-4 transition-all ${
+                  active
+                    ? "border-r-4 border-gold-muted bg-gold-muted/10 text-gold-light"
+                    : "text-cream/70 hover:bg-primary-container/50 hover:text-gold-light"
+                }`}
+              >
+                {iconMap[item.icon]}
+                <span className="text-[11px] uppercase tracking-[0.12em] font-semibold">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-auto border-t border-gold-muted/20 px-6 pt-6">
+          <Link href="#" className="flex items-center gap-3 py-3 text-cream/70 hover:text-gold-light">
+            <span className="text-sm">?</span>
+            <span className="text-[11px] uppercase tracking-[0.12em] font-semibold">Support</span>
+          </Link>
+          <button
+            type="button"
+            onClick={onLogout}
+            disabled={isLoggingOut}
+            className="flex w-full items-center gap-3 py-3 text-cream/70 hover:text-gold-light disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <span className="text-sm">↩</span>
+            <span className="text-[11px] uppercase tracking-[0.12em] font-semibold">
+              {isLoggingOut ? "Logging out..." : "Logout"}
+            </span>
+          </button>
+        </div>
+      </aside>
+
+      {/* ── Mobile bottom nav ─────────────────────────────── */}
+      <nav
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 bg-navy-deep border-t border-gold-muted/25 shadow-[0_-4px_24px_rgba(16,36,63,0.35)]"
+        style={{ fontFamily: "var(--font-inter)", paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         {navItems.map((item) => {
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-
           return (
             <Link
               key={item.label}
               href={item.href}
-              className={`flex items-center gap-4 px-6 py-4 transition-all ${
-                active
-                  ? "border-r-4 border-gold-muted bg-gold-muted/10 text-gold-light"
-                  : "text-cream/70 hover:bg-primary-container/50 hover:text-gold-light"
-              }`}
+              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 transition-all duration-200 active:scale-90 ${active ? "text-gold-light scale-105" : "text-cream/45 hover:text-cream/80"
+                }`}
             >
-              {iconMap[item.icon]}
-              <span className="text-[11px] uppercase tracking-[0.12em] font-semibold">{item.label}</span>
+              <span className={`transition-colors ${active ? "text-gold-muted" : "text-cream/40"}`}>
+                {iconMap[item.icon]}
+              </span>
+              <span className="text-[9px] font-semibold tracking-widest uppercase leading-none">
+                {item.label}
+              </span>
             </Link>
           );
         })}
-      </nav>
-
-      <div className="mt-auto border-t border-gold-muted/20 px-6 pt-6">
-        <Link href="#" className="flex items-center gap-3 py-3 text-cream/70 hover:text-gold-light">
-          <span className="text-sm">?</span>
-          <span className="text-[11px] uppercase tracking-[0.12em] font-semibold">Support</span>
-        </Link>
+        {/* Logout shortcut */}
         <button
           type="button"
           onClick={onLogout}
           disabled={isLoggingOut}
-          className="flex w-full items-center gap-3 py-3 text-cream/70 hover:text-gold-light disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 text-cream/45 hover:text-cream/80 transition-all active:scale-90 disabled:opacity-40"
         >
           <span className="text-sm">↩</span>
-          <span className="text-[11px] uppercase tracking-[0.12em] font-semibold">
-            {isLoggingOut ? "Logging out..." : "Logout"}
+          <span className="text-[9px] font-semibold tracking-widest uppercase leading-none">
+            {isLoggingOut ? "..." : "Logout"}
           </span>
         </button>
-      </div>
-    </aside>
+      </nav>
+    </>
   );
 }
-
