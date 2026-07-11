@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -25,7 +25,7 @@ const isMembershipActivation = (
   isRecord(value.plan) &&
   typeof value.plan.name === "string";
 
-export default function PaymentCallbackPage() {
+function PaymentCallbackContent() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const loading = useAppSelector(selectPaymentLoading);
@@ -159,5 +159,13 @@ export default function PaymentCallbackPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function PaymentCallbackPage() {
+  return (
+    <Suspense fallback={<div>Loading payment callback...</div>}>
+      <PaymentCallbackContent />
+    </Suspense>
   );
 }

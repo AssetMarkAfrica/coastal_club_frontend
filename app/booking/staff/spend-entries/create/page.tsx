@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "../../../../../store/hooks";
 import {
@@ -192,7 +192,7 @@ function ShortfallPaymentModal({
 /* ─────────────────────────────────────────────────────────────────────────── */
 /*  LogSpendEntryPage                                                           */
 /* ─────────────────────────────────────────────────────────────────────────── */
-export default function LogSpendEntryPage() {
+function LogSpendEntryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
@@ -544,5 +544,13 @@ export default function LogSpendEntryPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function LogSpendEntryPage() {
+  return (
+    <Suspense fallback={<div>Loading spend entry...</div>}>
+      <LogSpendEntryContent />
+    </Suspense>
   );
 }

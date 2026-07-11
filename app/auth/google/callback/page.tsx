@@ -1,7 +1,7 @@
 // app/auth/google/callback/GoogleCallbackClient.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
@@ -146,7 +146,7 @@ function ErrorView({ message }: { message: string }) {
 }
 
 /* ── Main client component ── */
-export default function GoogleCallbackClient() {
+function GoogleCallbackContent() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -196,4 +196,12 @@ export default function GoogleCallbackClient() {
   }
 
   return <LoadingView message={message} />;
+}
+
+export default function GoogleCallbackPage() {
+  return (
+    <Suspense fallback={<LoadingView message="Verifying authorization..." />}>
+      <GoogleCallbackContent />
+    </Suspense>
+  );
 }

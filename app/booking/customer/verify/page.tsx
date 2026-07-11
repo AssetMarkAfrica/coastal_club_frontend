@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "../../../../store/hooks";
 import { verifyReservationPayment } from "../../../../store/booking/bookingThunks";
 import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 
-export default function VerifyPaymentPage() {
+function VerifyPaymentContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
@@ -104,5 +104,13 @@ export default function VerifyPaymentPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function VerifyPaymentPage() {
+    return (
+        <Suspense fallback={<div>Loading verification...</div>}>
+            <VerifyPaymentContent />
+        </Suspense>
     );
 }
