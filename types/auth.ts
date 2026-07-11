@@ -51,7 +51,7 @@ export interface User {
   last_name: string;
   avatar_url: string;
   auth_provider: "email" | "google";
-  role: "member" | "admin";
+  role: "member" | "admin" | "staff";
   is_verified: boolean;
   profile: UserProfile;
   created_at: string;

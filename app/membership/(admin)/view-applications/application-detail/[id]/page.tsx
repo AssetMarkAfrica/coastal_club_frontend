@@ -82,8 +82,8 @@ export default function ApplicationDetailPage() {
     const directAvatar = applicant?.avatar_url?.trim();
     const profilePicture = applicant?.profile?.profile_picture?.trim();
     const genericAvatar =
-      typeof (applicant as Record<string, unknown> | undefined)?.avatar === "string"
-        ? ((applicant as Record<string, unknown>).avatar as string).trim()
+      typeof (applicant as unknown as Record<string, unknown> | undefined)?.avatar === "string"
+        ? ((applicant as unknown as Record<string, unknown>).avatar as string).trim()
         : "";
     return directAvatar || profilePicture || genericAvatar || null;
   }, [applicant]);
@@ -186,7 +186,7 @@ export default function ApplicationDetailPage() {
                     {showAvatar ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={avatarUrl}
+                        src={avatarUrl ?? undefined}
                         alt={`${applicant?.first_name ?? "Applicant"} ${applicant?.last_name ?? ""}`.trim()}
                         className="h-full w-full object-cover"
                         referrerPolicy="no-referrer"
