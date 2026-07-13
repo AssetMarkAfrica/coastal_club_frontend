@@ -260,3 +260,36 @@ export interface MembershipCard {
 }
 
 export type MembershipCardResponse = ApiResponse<MembershipCard>;
+
+// ---------------------------------------------------------------------------
+// Staff: subscriptions
+// ---------------------------------------------------------------------------
+
+export interface SubscriptionMember {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface SubscriptionListItem {
+  id: string;
+  status: string;
+  is_active: boolean;
+  plan: MembershipPlanSummary;
+  member: SubscriptionMember;
+  spend_credit_remaining_pesewas: number;
+  monthly_spend_credit_pesewas: number;
+  fb_spend_this_month_pesewas: number;
+  maintenance_fee_status: string;
+  current_period_end: string;
+  created_at: string;
+}
+
+export type SubscriptionsListResponse = ApiResponse<SubscriptionListItem[]>;
+
+// The staff subscription detail payload has the same shape as a member's own
+// `MyMembership` record (same fields, same nested `plan` with benefits), so
+// we reuse that type instead of redefining an identical interface.
+export type SubscriptionDetail = MyMembership;
+
+export type SubscriptionDetailResponse = ApiResponse<SubscriptionDetail>;

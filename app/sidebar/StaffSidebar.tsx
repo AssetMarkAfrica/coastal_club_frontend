@@ -58,6 +58,11 @@ const NAV_ITEMS = [
         icon: <IconPlus />,
         href: "/booking/staff/spend-entries/create",
     },
+    {
+        label: "Manage Subscriptions",
+        icon: <IconPlus />,
+        href: "/membership/members/subscriptions",
+    }
 ] as const;
 
 /* ── Active-tab helper ───────────────────────────────── */

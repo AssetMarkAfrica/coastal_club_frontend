@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import MemberSidebar from "@/app/sidebar/MemberSidebar";
 import AdminSidebar from "@/app/sidebar/AdminSidebar";
+import StaffSidebar from "@/app/sidebar/StaffSidebar";
 import MemberNavbar from "@/app/navbar/MemberNavbar";
 import AdminNavbar from "@/app/navbar/AdminNavbar";
 import RoleGuard from "@/components/guards/RoleGuard";
@@ -14,9 +15,10 @@ export default function MembershipShell({
 }) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/membership/view-applications");
+  const isStaffRoute = pathname.startsWith("/membership/members/subscriptions");
 
   // Admin-only for admin pages; staff is never allowed in the membership app
-  const allowedRoles = isAdminRoute ? ["admin"] : ["member"];
+  const allowedRoles = isAdminRoute ? ["admin"] : isStaffRoute ? ["staff"] : ["member"];
 
   return (
     <RoleGuard allowedRoles={allowedRoles}>
@@ -24,10 +26,10 @@ export default function MembershipShell({
         className="flex min-h-screen bg-cream antialiased"
         style={{ fontFamily: "var(--font-inter)" }}
       >
-        {isAdminRoute ? <AdminSidebar /> : <MemberSidebar />}
+        {isAdminRoute ? <AdminSidebar /> : isStaffRoute ? <StaffSidebar /> : <MemberSidebar />}
 
         <div className="flex-1 flex flex-col min-w-0">
-          {isAdminRoute ? <AdminNavbar /> : <MemberNavbar />}
+          {isAdminRoute ? <AdminNavbar /> : isStaffRoute ? <AdminNavbar /> : <MemberNavbar />}
           {children}
         </div>
       </div>

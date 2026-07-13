@@ -8,6 +8,7 @@ import type {
   AcceptMembershipContractPayload,
   ApproveMembershipApplicationPayload,
   SubmitMembershipApplicationPayload,
+
 } from "../../types/membership";
 
 const getErrorMessage = (error: unknown, fallback: string) => {
@@ -181,6 +182,36 @@ export const acceptMembershipContract = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         getErrorMessage(error, "Failed to accept membership contract.")
+      );
+    }
+  }
+);
+
+export const fetchSubscriptions = createAsyncThunk(
+  "membership/fetchSubscriptions",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getSubscriptions();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch subscriptions.")
+      );
+    }
+  }
+);
+
+export const fetchSubscriptionDetail = createAsyncThunk(
+  "membership/fetchSubscriptionDetail",
+  async (subscriptionId: string, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getSubscriptionDetail(
+        subscriptionId
+      );
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch subscription detail.")
       );
     }
   }

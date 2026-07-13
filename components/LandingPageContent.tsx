@@ -205,8 +205,8 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
               An exclusive enclave of luxury, dining, and unparalleled social experiences on the pristine shores of Accra.
             </p>
             <div style={{ animation: "wordDrop 0.6s ease 1100ms both" }}>
-              <Link href="/auth/register" className="glass-panel text-gold-light px-8 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-navy-deep transition-all duration-300 rounded shadow-2xl flex items-center group">
-                Request Invitation
+              <Link href="/auth/login" className="glass-panel text-gold-light px-8 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-navy-deep transition-all duration-300 rounded shadow-2xl flex items-center group">
+                Book Reservation Now
                 <span className="material-symbols-outlined ml-3 group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
               </Link>
             </div>

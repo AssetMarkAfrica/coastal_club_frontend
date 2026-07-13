@@ -9,6 +9,9 @@ import type {
   MembershipPlan,
   MyMembership,
   MyMembershipStatus,
+  SubscriptionDetail,
+  SubscriptionListItem,
+
 } from "../../types/membership";
 import {
   acceptMembershipContract,
@@ -19,7 +22,10 @@ import {
   fetchMyMembership,
   fetchMyMembershipContract,
   fetchMyMembershipStatus,
+  fetchSubscriptions,
+  fetchSubscriptionDetail,
   submitMembershipApplication,
+
 } from "./membershipThunks";
 
 export interface MembershipState {
@@ -32,6 +38,8 @@ export interface MembershipState {
   myContract: MembershipContract | null;
   myMembership: MyMembership | null;
   contractAcceptance: AcceptMembershipContractData | null;
+  subscriptions: SubscriptionListItem[];
+  subscriptionDetail: SubscriptionDetail | null;
   loading: boolean;
   error: string | null;
 }
@@ -46,6 +54,8 @@ const initialState: MembershipState = {
   myContract: null,
   myMembership: null,
   contractAcceptance: null,
+  subscriptions: [],
+  subscriptionDetail: null,
   loading: false,
   error: null,
 };
@@ -67,6 +77,8 @@ const membershipSlice = createSlice({
       state.myContract = null;
       state.myMembership = null;
       state.contractAcceptance = null;
+      state.subscriptions = [];
+      state.subscriptionDetail = null;
       state.loading = false;
       state.error = null;
     },
@@ -228,6 +240,37 @@ const membershipSlice = createSlice({
         if (errorMsg && !errorMsg.toLowerCase().includes("no application found")) {
           state.error = errorMsg;
         }
+      });
+
+    builder
+      .addCase(fetchSubscriptions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSubscriptions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subscriptions = action.payload;
+      })
+      .addCase(fetchSubscriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to fetch subscriptions.";
+      });
+
+    builder
+      .addCase(fetchSubscriptionDetail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.subscriptionDetail = null;
+      })
+      .addCase(fetchSubscriptionDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subscriptionDetail = action.payload;
+      })
+      .addCase(fetchSubscriptionDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to fetch subscription detail.";
       });
   },
 });

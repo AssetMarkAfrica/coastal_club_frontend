@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Subscription Detail - Mobile</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#8aa4cf",
+                        "surface-container-low": "#f4f3f7",
+                        "inverse-on-surface": "#f1f0f4",
+                        "surface-container-high": "#e9e7eb",
+                        "text-secondary": "#4A4A4A",
+                        "secondary-fixed": "#ffe088",
+                        "tertiary-fixed": "#ffddb2",
+                        "secondary-container": "#fed65b",
+                        "on-primary": "#ffffff",
+                        "primary": "#022448",
+                        "primary-fixed": "#d5e3ff",
+                        "on-surface-variant": "#43474e",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#503300",
+                        "primary-container": "#1e3a5f",
+                        "error": "#ba1a1a",
+                        "on-surface": "#1a1c1e",
+                        "danger": "#B42318",
+                        "navy-deep": "#10243F",
+                        "surface": "#faf9fc",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "outline": "#74777f",
+                        "surface-container-highest": "#e3e2e6",
+                        "gold-light": "#F1E0A6",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-variant": "#e3e2e6",
+                        "surface-container": "#eeedf1",
+                        "gold-muted": "#B7922B",
+                        "cream-dark": "#EDE3CC",
+                        "surface-dim": "#dad9dd",
+                        "secondary": "#735c00",
+                        "on-secondary-fixed-variant": "#574500",
+                        "on-secondary-container": "#745c00",
+                        "on-tertiary-fixed-variant": "#60410c",
+                        "on-error": "#ffffff",
+                        "cream": "#F8F1DF",
+                        "warning": "#B45309",
+                        "text-muted": "#6B7280",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#341f00",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "success": "#0F766E",
+                        "surface-bright": "#faf9fc",
+                        "info": "#185FA5",
+                        "text-primary": "#1A1A1A",
+                        "outline-variant": "#c4c6cf",
+                        "inverse-surface": "#2f3033",
+                        "surface-tint": "#455f87",
+                        "on-tertiary-container": "#c69b5f",
+                        "on-primary-fixed": "#001c3b",
+                        "on-background": "#1a1c1e",
+                        "on-tertiary-fixed": "#291800",
+                        "background": "#faf9fc",
+                        "tertiary-fixed-dim": "#edbf7f",
+                        "secondary-fixed-dim": "#e9c349",
+                        "primary-fixed-dim": "#adc8f5",
+                        "inverse-primary": "#adc8f5",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "input-padding-x": "16px",
+                        "topbar-height": "64px",
+                        "card-padding": "24px",
+                        "container-margin": "24px",
+                        "input-padding-y": "12px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Playfair Display"],
+                        "h3": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "h4": ["Playfair Display"],
+                        "h1": ["Playfair Display"],
+                        "label-uppercase": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["36px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "h3": ["28px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "1.7", "fontWeight": "400" }],
+                        "h4": ["22px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "h1": ["48px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-uppercase": ["13px", { "lineHeight": "1", "letterSpacing": "0.08em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-border-hairline {
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+
+        .navy-shadow-soft {
+            box-shadow: 0 4px 24px rgba(30, 58, 95, 0.08);
+        }
+
+        .bg-navy-gradient {
+            background: linear-gradient(135deg, #10243F 0%, #1E3A5F 100%);
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-cream min-h-screen text-text-primary antialiased font-body-lg md:hidden pb-24">
+    <!-- Top App Bar (Task Focused, no nav shell) -->
+    <header
+        class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md border-b gold-border-hairline h-topbar-height flex justify-between items-center px-4 shadow-sm shadow-navy-deep/5 w-full">
+        <button class="text-navy-deep p-2 -ml-2 rounded-full hover:bg-gold-muted/10 transition-colors">
+            <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+        </button>
+        <h1 class="font-h4 text-h4 text-navy-deep">Subscription Details</h1>
+        <div class="w-10"></div> <!-- Spacer -->
+    </header>
+    <main class="p-4 space-y-6">
+        <!-- Header Profile & Status -->
+        <section class="flex flex-col items-center text-center space-y-4 pt-4">
+            <div class="relative">
+                <img class="w-24 h-24 rounded-full object-cover gold-border-hairline shadow-lg"
+                    data-alt="A close up, high quality studio portrait of a sophisticated middle aged man with silver hair, wearing a dark navy tailored suit jacket over a crisp white shirt. The background is a soft, out of focus warm grey. The lighting is soft and flattering, creating a premium and trustworthy mood suitable for a luxury private club member profile."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO0PRnWjqYm459war7faCteTGygekh5Cu1w_FerrydWf813uNheIze3a-4PxuKvR97NZSeYfO0l7L2ogJAvnzyy9f3lMurV99zV08_YfhjhzfNvtCpwITiTojqLZEtjczpNx2XJ_K_yJXn-iyVKCT_vLVlw9fnSSnKjl9hg2Zd6dW9FxcG2HFbuySQtfZM64og0Tgg1U4RFX7_GSm0ID7B0Ua6vU21ln_0Heexc4Nu5lgFBPJh" />
+                <div
+                    class="absolute -bottom-2 -right-2 bg-success text-on-primary font-label-uppercase text-[10px] px-2 py-1 rounded-full border-2 border-cream">
+                    ACTIVE</div>
+            </div>
+            <div>
+                <h2 class="font-h3 text-h3 text-navy-deep mb-1">Alexander Vance</h2>
+                <p class="font-body-lg text-body-lg text-text-muted">ID: #EDM-8492-AX</p>
+            </div>
+            <div class="flex gap-2 justify-center">
+                <span
+                    class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container/20 text-secondary-container font-label-uppercase text-label-uppercase gold-border-hairline">
+                    <span class="material-symbols-outlined text-[14px] mr-1"
+                        style="font-variation-settings: 'FILL' 1;">stars</span>
+                    Premier Tier
+                </span>
+            </div>
+        </section>
+        <!-- Metric Cards Grid -->
+        <section class="grid grid-cols-2 gap-4">
+            <div
+                class="bg-surface rounded-lg p-4 gold-border-hairline navy-shadow-soft flex flex-col justify-between h-32 border-t-4 border-t-gold-muted">
+                <p class="font-label-uppercase text-label-uppercase text-text-muted">Remaining Credit</p>
+                <p class="font-h3 text-h3 text-navy-deep">$1,250</p>
+            </div>
+            <div
+                class="bg-surface rounded-lg p-4 gold-border-hairline navy-shadow-soft flex flex-col justify-between h-32">
+                <p class="font-label-uppercase text-label-uppercase text-text-muted">Maintenance</p>
+                <div>
+                    <p class="font-h4 text-h4 text-navy-deep mb-1">Paid</p>
+                    <p class="text-sm text-success flex items-center"><span
+                            class="material-symbols-outlined text-[14px] mr-1">check_circle</span> Until Dec '24</p>
+                </div>
+            </div>
+        </section>
+        <!-- Plan Details -->
+        <section class="bg-surface rounded-lg gold-border-hairline navy-shadow-soft overflow-hidden">
+            <div class="bg-navy-gradient p-4 text-on-primary">
+                <h3 class="font-h4 text-h4 mb-1">Premier Individual Plan</h3>
+                <p class="text-sm text-gold-light/80">Started: Jan 15, 2021</p>
+            </div>
+            <div class="p-4 space-y-4">
+                <div class="flex justify-between items-center border-b border-cream-dark pb-3">
+                    <span class="font-body-lg text-body-lg text-text-muted">Billing Cycle</span>
+                    <span class="font-body-lg text-body-lg text-navy-deep font-medium">Annually</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-cream-dark pb-3">
+                    <span class="font-body-lg text-body-lg text-text-muted">Next Invoice</span>
+                    <span class="font-body-lg text-body-lg text-navy-deep font-medium">$5,000 (Jan 15, 2024)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-body-lg text-body-lg text-text-muted">Payment Method</span>
+                    <span class="font-body-lg text-body-lg text-navy-deep flex items-center">
+                        <span class="material-symbols-outlined text-[18px] mr-2">credit_card</span>
+                        •••• 4242
+                    </span>
+                </div>
+            </div>
+        </section>
+        <!-- Benefits List -->
+        <section class="bg-surface rounded-lg gold-border-hairline navy-shadow-soft p-4">
+            <h3 class="font-h4 text-h4 text-navy-deep mb-4 border-b border-cream-dark pb-2">Active Benefits</h3>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="bg-cream-dark p-2 rounded-full mr-3 text-gold-muted mt-1">
+                        <span class="material-symbols-outlined text-[20px]">pool</span>
+                    </div>
+                    <div>
+                        <p class="font-body-lg text-body-lg text-navy-deep font-medium">Unlimited Spa &amp; Pool Access
+                        </p>
+                        <p class="text-sm text-text-muted">Includes up to 2 guests per visit.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <div class="bg-cream-dark p-2 rounded-full mr-3 text-gold-muted mt-1">
+                        <span class="material-symbols-outlined text-[20px]">restaurant</span>
+                    </div>
+                    <div>
+                        <p class="font-body-lg text-body-lg text-navy-deep font-medium">Priority Dining Reservations</p>
+                        <p class="text-sm text-text-muted">48-hour advance booking window.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <div class="bg-cream-dark p-2 rounded-full mr-3 text-gold-muted mt-1">
+                        <span class="material-symbols-outlined text-[20px]">directions_car</span>
+                    </div>
+                    <div>
+                        <p class="font-body-lg text-body-lg text-navy-deep font-medium">Complimentary Valet</p>
+                        <p class="text-sm text-text-muted">Valid at main entrance only.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+        <section class="flex flex-col gap-3 py-4">
+            <button
+                class="w-full bg-surface border border-gold-muted text-gold-muted font-label-uppercase text-label-uppercase py-3 rounded hover:bg-gold-muted/10 transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined mr-2 text-[18px]">receipt_long</span> View Invoices
+            </button>
+        </section>
+    </main>
+    <!-- Sticky Footer Actions -->
+    <div
+        class="fixed bottom-0 left-0 w-full bg-surface/95 backdrop-blur-md border-t gold-border-hairline p-4 shadow-[0_-4px_24px_rgba(30,58,95,0.08)] z-50">
+        <div class="flex gap-3">
+            <button
+                class="flex-1 bg-surface border border-danger text-danger font-label-uppercase text-label-uppercase py-3 rounded hover:bg-danger/10 transition-colors">
+                Suspend
+            </button>
+            <button
+                class="flex-1 bg-navy-deep border border-gold-muted text-gold-light font-label-uppercase text-label-uppercase py-3 rounded hover:bg-gold-muted hover:text-navy-deep transition-colors">
+                Edit Plan
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

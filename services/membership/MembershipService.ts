@@ -12,6 +12,9 @@ import type {
   MyMembershipStatusResponse,
   SubmitMembershipApplicationPayload,
   SubmitMembershipApplicationResponse,
+
+  SubscriptionDetailResponse,
+  SubscriptionsListResponse
 } from "../../types/membership";
 
 export type {
@@ -85,4 +88,9 @@ export const acceptMembershipContract = (
     payload
   );
 
+export const getSubscriptions = () =>
+  api.get<SubscriptionsListResponse>(`${BASE}/staff/subscriptions/`);
 
+
+export const getSubscriptionDetail = (subscriptionId: string) =>
+  api.get<SubscriptionDetailResponse>(`${BASE}/staff/subscriptions/${subscriptionId}/`);
