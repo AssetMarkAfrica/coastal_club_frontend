@@ -32,9 +32,19 @@ export interface MembershipPlan {
 
 export type MembershipPlansResponse = ApiResponse<MembershipPlan[]>;
 
+export enum TShirtSize {
+  XS = "XS",
+  S = "S",
+  M = "M",
+  L = "L",
+  XL = "XL",
+  XXL = "XXL",
+}
+
 export interface SubmitMembershipApplicationPayload {
   plan_tier: MembershipPlanTier;
   callback_url: string;
+  t_shirt_size: TShirtSize;
 }
 
 export interface MembershipApplicationSubmission {

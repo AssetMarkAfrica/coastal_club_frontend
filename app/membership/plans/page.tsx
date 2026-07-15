@@ -15,7 +15,7 @@ import {
 } from "@/store/membership/membershipThunks";
 import { clearMembershipError } from "@/store/membership/membershipSlice";
 import { selectPendingPayment } from "@/store/payment/paymentSelectors";
-import type { MembershipPlan } from "@/types/membership";
+import { TShirtSize, type MembershipPlan } from "@/types/membership";
 
 const formatMoney = (pesewas: number) =>
   `GHc${(pesewas / 100).toLocaleString(undefined, {
@@ -68,6 +68,7 @@ export default function MembershipPlansPage() {
   const pendingPayment = useAppSelector(selectPendingPayment);
   const [submittingTier, setSubmittingTier] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null);
+  const [selectedTShirtSize, setSelectedTShirtSize] = useState<TShirtSize | "">("");
 
   useEffect(() => {
     dispatch(fetchMembershipPlans());
@@ -90,10 +91,11 @@ export default function MembershipPlansPage() {
   const closeApplicationModal = () => {
     if (submittingTier) return;
     setSelectedPlan(null);
+    setSelectedTShirtSize("");
   };
 
   const onConfirmApplication = async () => {
-    if (!isAuthenticated || !selectedPlan) return;
+    if (!isAuthenticated || !selectedPlan || !selectedTShirtSize) return;
 
     const planTier = selectedPlan.tier;
     dispatch(clearMembershipError());
@@ -101,7 +103,11 @@ export default function MembershipPlansPage() {
     try {
       const callbackUrl = `${window.location.origin}/payment/callback`;
       const response = await dispatch(
-        submitMembershipApplication({ plan_tier: planTier, callback_url: callbackUrl })
+        submitMembershipApplication({ 
+          plan_tier: planTier, 
+          callback_url: callbackUrl,
+          t_shirt_size: selectedTShirtSize as TShirtSize
+        })
       ).unwrap();
       if (response.authorization_url) {
         window.location.assign(response.authorization_url);
@@ -386,6 +392,33 @@ export default function MembershipPlansPage() {
                 membership payment.
               </p>
 
+              <div className="mt-5">
+                <label
+                  htmlFor="tshirt-size"
+                  className="block text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2"
+                >
+                  Select T-Shirt Size *
+                </label>
+                <select
+                  id="tshirt-size"
+                  value={selectedTShirtSize}
+                  onChange={(e) => setSelectedTShirtSize(e.target.value as TShirtSize)}
+                  className="w-full rounded border border-gold-muted/25 bg-surface-container-lowest px-4 py-2.5 text-sm text-text-primary focus:border-gold-muted focus:outline-none focus:ring-1 focus:ring-gold-muted transition-colors"
+                  disabled={Boolean(submittingTier)}
+                  required
+                >
+                  <option value="" disabled>
+                    Choose a size...
+                  </option>
+                  <option value={TShirtSize.XS}>Extra Small</option>
+                  <option value={TShirtSize.S}>Small</option>
+                  <option value={TShirtSize.M}>Medium</option>
+                  <option value={TShirtSize.L}>Large</option>
+                  <option value={TShirtSize.XL}>Extra Large</option>
+                  <option value={TShirtSize.XXL}>2XL</option>
+                </select>
+              </div>
+
               <div className="mt-5 rounded border border-gold-muted/25 bg-cream px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
                   Next steps
@@ -416,7 +449,7 @@ export default function MembershipPlansPage() {
               <button
                 type="button"
                 onClick={onConfirmApplication}
-                disabled={Boolean(submittingTier)}
+                disabled={Boolean(submittingTier) || !selectedTShirtSize}
                 className="rounded border border-gold-muted bg-primary px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
