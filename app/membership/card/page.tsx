@@ -49,7 +49,7 @@ export default function MemberCardPage() {
   /* ── Loading ── */
   if (loading) {
     return (
-      <main className="flex-1 md:ml-sidebar-width min-h-screen bg-[#F7F3EC] flex flex-col">
+      <main className="flex-1 min-h-screen bg-[#F7F3EC] flex flex-col">
         <MobileHeader />
         <div className="flex-1 flex flex-col items-center justify-center gap-10 p-8">
           <div className="w-full max-w-105 aspect-[1.6/1] rounded-2xl bg-navy-deep/10 animate-pulse" />
@@ -65,7 +65,7 @@ export default function MemberCardPage() {
   /* ── Error ── */
   if (error) {
     return (
-      <main className="flex-1 md:ml-sidebar-width min-h-screen bg-[#F7F3EC] flex flex-col">
+      <main className="flex-1 min-h-screen bg-[#F7F3EC] flex flex-col">
         <MobileHeader />
         <div className="flex-1 flex flex-col items-center justify-center gap-5 p-8 text-center">
           <div className="w-14 h-14 rounded-full bg-red-50 border border-red-200 flex items-center justify-center">
@@ -99,7 +99,7 @@ export default function MemberCardPage() {
 
   return (
     <main
-      className="flex-1 md:ml-sidebar-width min-h-screen flex flex-col"
+      className="flex-1 min-h-screen flex flex-col"
       style={{ background: "#F7F3EC" }}
     >
       <MobileHeader />

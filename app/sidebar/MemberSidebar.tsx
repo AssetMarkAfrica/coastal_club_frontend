@@ -55,7 +55,7 @@ const IconLogout = () => (
 const NAV_ITEMS = [
     { label: "Dashboard", icon: <IconGrid />, href: "/membership/dashboard" },
     { label: "Member Card", icon: <IconCard />, href: "/membership/card" },
-    { label: "Check Reservations", icon: <IconCalendar />, href: "/booking/customer/reservations" },
+    { label: "Check Reservations", icon: <IconCalendar />, href: "/booking/member/reservations" },
     { label: "Exclusive Perks", icon: <IconStar />, href: "/membership/perks" },
     { label: "Settings", icon: <IconSettings />, href: "/membership/settings" },
 ] as const;

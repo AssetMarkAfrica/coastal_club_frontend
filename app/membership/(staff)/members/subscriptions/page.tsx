@@ -9,16 +9,6 @@ import {
 } from "@/store/membership/membershipSelectors";
 import type { SubscriptionListItem } from "@/types/membership";
 
-import { searchMembers, getMemberSearchDetail } from "@/store/search/searchThunks";
-import {
-    selectMemberSearchResults,
-    selectMemberSearchLoading,
-    selectCurrentSearchMember,
-    selectMemberSearchDetailLoading
-} from "@/store/search/searchSelectors";
-import { clearMemberSearchResults, clearCurrentSearchMember } from "@/store/search/searchSlice";
-import type { MemberSearchResult } from "@/types/search";
-
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const pesewasToGHS = (pesewas: number) =>
@@ -395,147 +385,6 @@ function DetailPanel({
                     )}
                 </div>
 
-                {/* Sticky footer actions */}
-
-            </aside>
-        </>
-    );
-}
-
-// ─── Member Search Detail Panel ────────────────────────────────────────────────
-function MemberSearchDetailPanel({
-    open,
-    onClose,
-    selectedUserId,
-}: {
-    open: boolean;
-    onClose: () => void;
-    selectedUserId: string | null;
-}) {
-    const dispatch = useAppDispatch();
-    const detail = useAppSelector(selectCurrentSearchMember);
-    const loading = useAppSelector(selectMemberSearchDetailLoading);
-
-    useEffect(() => {
-        if (open && selectedUserId) {
-            dispatch(getMemberSearchDetail(selectedUserId));
-        }
-    }, [open, selectedUserId, dispatch]);
-
-    const handleClose = () => {
-        onClose();
-        setTimeout(() => dispatch(clearCurrentSearchMember()), 300);
-    };
-
-    return (
-        <>
-            {/* Backdrop */}
-            <div
-                onClick={handleClose}
-                className={`fixed inset-0 z-40 bg-[#10243F]/30 backdrop-blur-[2px] transition-opacity duration-300 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-                    }`}
-            />
-
-            {/* Panel */}
-            <aside
-                className={`fixed top-0 right-0 h-full z-50 w-full max-w-lg bg-[#F8F1DF] shadow-2xl shadow-[#10243F]/30 flex flex-col transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"
-                    }`}
-            >
-                {/* Panel header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#EDE3CC] bg-[#10243F]">
-                    <div>
-                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#B7922B]/80">
-                            Member Profile Search
-                        </p>
-                        {detail && (
-                            <p className="text-[#F1E0A6] font-semibold text-sm mt-0.5">
-                                {detail.full_name}
-                            </p>
-                        )}
-                    </div>
-                    <button
-                        onClick={handleClose}
-                        className="text-[#8aa4cf]/70 hover:text-[#F1E0A6] transition-colors p-2 rounded-full hover:bg-white/10"
-                    >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                    </button>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto px-6 pb-32">
-                    {loading || !detail ? (
-                        <div className="space-y-4 pt-4">
-                            {Array.from({ length: 4 }).map((_, i) => (
-                                <div key={i} className="h-24 bg-[#EDE3CC] rounded-xl animate-pulse" />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="space-y-5 pt-2">
-                            {/* Profile hero */}
-                            <div className="flex flex-col items-center text-center py-6">
-                                <div className="relative mb-3">
-                                    <div className="w-20 h-20 rounded-full bg-[#EDE3CC] border-2 border-[#B7922B]/40 flex items-center justify-center text-[#10243F] text-2xl font-bold shadow-lg">
-                                        {getInitials(detail.full_name)}
-                                    </div>
-                                    <div
-                                        className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow ${detail.is_active ? "bg-teal-500" : "bg-gray-400"
-                                            }`}
-                                    />
-                                </div>
-                                <h2 className="text-[#10243F] text-xl font-semibold" style={{ fontFamily: "var(--font-playfair, serif)" }}>
-                                    {detail.full_name}
-                                </h2>
-                                <p className="text-[#6B7280] text-xs mt-1">{detail.email}</p>
-                                <p className="text-[#6B7280] text-xs mt-1">{detail.phone_number}</p>
-                                <div className="flex gap-2 mt-3">
-                                    <StatusBadge status={detail.subscription?.status || "Inactive"} />
-                                    {detail.subscription?.plan_name && (
-                                        <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#F1E0A6]/40 text-[#B7922B] border border-[#B7922B]/30 text-xs font-semibold uppercase tracking-wider">
-                                            {detail.subscription.plan_name}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Details card */}
-                            <div className="bg-white rounded-xl border border-[#EDE3CC] shadow-[0_4px_24px_rgba(16,36,63,0.04)] overflow-hidden">
-                                <div className="flex items-center gap-2 px-5 py-4 border-b border-[#EDE3CC]">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7922B" strokeWidth="1.8"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-                                    <h3 className="text-[#10243F] font-semibold text-sm">Account Overview</h3>
-                                </div>
-                                <div className="grid grid-cols-2 gap-y-5 gap-x-8 p-5">
-                                    <div>
-                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Member ID</p>
-                                        <p className="text-[#10243F] font-semibold text-sm">{detail.member_number || "—"}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Username</p>
-                                        <p className="text-[#10243F] font-semibold text-sm">{detail.username}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Location</p>
-                                        <p className="text-[#10243F] font-semibold text-sm">{detail.profile.city ? `${detail.profile.city}, ${detail.profile.country}` : "—"}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Member Since</p>
-                                        <p className="text-[#10243F] font-semibold text-sm">{formatDate(detail.member_created_at)}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Maintenance</p>
-                                        <MaintenanceBadge status={detail.subscription?.maintenance_fee_status || "—"} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Can Charge</p>
-                                        <p className="text-[#10243F] font-semibold text-sm">{detail.can_charge ? "Yes" : "No"}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
             </aside>
         </>
     );
@@ -551,24 +400,15 @@ export default function SubscriptionsPage() {
     const loading = useAppSelector((s) => s.membership.loading);
     const error = useAppSelector((s) => s.membership.error);
 
-    // Panel state for Subscription Detail
+    // Panel state
     const [selectedItem, setSelectedItem] = useState<SubscriptionListItem | null>(null);
     const [panelOpen, setPanelOpen] = useState(false);
-
-    // Panel state for Search Member Detail
-    const [searchMemberId, setSearchMemberId] = useState<string | null>(null);
-    const [searchPanelOpen, setSearchPanelOpen] = useState(false);
 
     // Filter / search state
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const [maintenanceFilter, setMaintenanceFilter] = useState("all");
     const [activeMobileChip, setActiveMobileChip] = useState("all");
-    
-    // Search Autocomplete state
-    const searchResults = useAppSelector(selectMemberSearchResults);
-    const searchLoading = useAppSelector(selectMemberSearchLoading);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // Pagination
     const [page, setPage] = useState(1);
@@ -577,48 +417,28 @@ export default function SubscriptionsPage() {
         dispatch(fetchSubscriptions());
     }, [dispatch]);
 
-    // Handle Search Bar debounce
-    useEffect(() => {
-        if (!search.trim()) {
-            setIsDropdownOpen(false);
-            dispatch(clearMemberSearchResults());
-            return;
-        }
-
-        const handler = setTimeout(() => {
-            dispatch(searchMembers({ q: search, page_size: 5 }));
-            setIsDropdownOpen(true);
-        }, 300);
-
-        return () => clearTimeout(handler);
-    }, [search, dispatch]);
-
-    // Reset page when filters change (we don't reset for search anymore since search is API-driven)
+    // Reset page when filters change
     useEffect(() => {
         setPage(1);
-    }, [statusFilter, maintenanceFilter, activeMobileChip]);
+    }, [search, statusFilter, maintenanceFilter, activeMobileChip]);
 
     const filtered = useMemo(() => {
         const chipStatus = activeMobileChip !== "all" ? activeMobileChip : statusFilter;
         return subscriptions.filter((s) => {
+            const nameMatch =
+                s.member.name.toLowerCase().includes(search.toLowerCase()) ||
+                s.member.email.toLowerCase().includes(search.toLowerCase()) ||
+                s.plan.name.toLowerCase().includes(search.toLowerCase());
             const statusMatch = chipStatus === "all" || s.status.toLowerCase() === chipStatus;
             const maintenanceMatch =
                 maintenanceFilter === "all" ||
                 s.maintenance_fee_status.toLowerCase().replace("_", " ") === maintenanceFilter.toLowerCase();
-            return statusMatch && maintenanceMatch;
+            return nameMatch && statusMatch && maintenanceMatch;
         });
-    }, [subscriptions, statusFilter, maintenanceFilter, activeMobileChip]);
+    }, [subscriptions, search, statusFilter, maintenanceFilter, activeMobileChip]);
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-    const openSearchDetail = (userId: string) => {
-        setIsDropdownOpen(false);
-        setSearch("");
-        dispatch(clearMemberSearchResults());
-        setSearchMemberId(userId);
-        setSearchPanelOpen(true);
-    };
 
     const openDetail = (item: SubscriptionListItem) => {
         setSelectedItem(item);
@@ -703,43 +523,14 @@ export default function SubscriptionsPage() {
                                     <option value="clear">Clear</option>
                                 </select>
                             </div>
-                            <div className="px-3 py-2 flex items-center gap-2 relative">
+                            <div className="px-3 py-2 flex items-center gap-2">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                                 <input
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    onFocus={() => { if (search.trim()) setIsDropdownOpen(true); }}
-                                    onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
-                                    placeholder="Search members..."
+                                    placeholder="Search members, plans..."
                                     className="bg-transparent border-none focus:ring-0 text-[#10243F] text-xs placeholder:text-[#6B7280]/70 outline-none w-44"
                                 />
-                                
-                                {/* Desktop Autocomplete Dropdown */}
-                                {isDropdownOpen && (searchLoading || searchResults.length > 0) && (
-                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-[#EDE3CC] overflow-hidden z-50 max-h-80 overflow-y-auto">
-                                        {searchLoading ? (
-                                            <div className="p-4 text-center text-[#6B7280] text-xs">Searching...</div>
-                                        ) : (
-                                            <ul>
-                                                {searchResults.map((result) => (
-                                                    <li
-                                                        key={result.user_id}
-                                                        onClick={() => openSearchDetail(result.user_id)}
-                                                        className="px-4 py-3 hover:bg-[#F8F1DF]/50 cursor-pointer border-b border-[#EDE3CC]/40 last:border-0 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <div className="w-8 h-8 rounded-full bg-[#EDE3CC] flex items-center justify-center text-[#10243F] text-xs font-bold shrink-0">
-                                                            {getInitials(result.full_name)}
-                                                        </div>
-                                                        <div className="overflow-hidden">
-                                                            <p className="text-[#10243F] font-semibold text-xs truncate">{result.full_name}</p>
-                                                            <p className="text-[#6B7280] text-[10px] truncate">{result.email}</p>
-                                                        </div>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
@@ -853,8 +644,8 @@ export default function SubscriptionsPage() {
                                             key={p}
                                             onClick={() => setPage(p)}
                                             className={`px-3 py-1.5 rounded border text-sm transition-colors ${page === p
-                                                    ? "border-[#B7922B] bg-[#F1E0A6]/30 text-[#10243F] font-semibold"
-                                                    : "border-[#EDE3CC] text-[#6B7280] hover:bg-[#F8F1DF]"
+                                                ? "border-[#B7922B] bg-[#F1E0A6]/30 text-[#10243F] font-semibold"
+                                                : "border-[#EDE3CC] text-[#6B7280] hover:bg-[#F8F1DF]"
                                                 }`}
                                         >
                                             {p}
@@ -900,8 +691,8 @@ export default function SubscriptionsPage() {
                                 key={key}
                                 onClick={() => setActiveMobileChip(key)}
                                 className={`whitespace-nowrap px-4 py-2 rounded-full text-[11px] font-semibold tracking-widest uppercase border transition-colors ${activeMobileChip === key
-                                        ? "bg-[#10243F] text-[#F1E0A6] border-[#B7922B]/50"
-                                        : "bg-white text-[#10243F] border-[#EDE3CC] hover:bg-[#EDE3CC]"
+                                    ? "bg-[#10243F] text-[#F1E0A6] border-[#B7922B]/50"
+                                    : "bg-white text-[#10243F] border-[#EDE3CC] hover:bg-[#EDE3CC]"
                                     }`}
                             >
                                 {label}
@@ -910,43 +701,14 @@ export default function SubscriptionsPage() {
                     </div>
 
                     {/* Search bar */}
-                    <div className="relative z-20">
+                    <div className="relative">
                         <svg className="absolute left-3 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B7922B" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                         <input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            onFocus={() => { if (search.trim()) setIsDropdownOpen(true); }}
-                            onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
                             placeholder="Search members..."
                             className="w-full bg-white border border-[#EDE3CC] rounded-xl py-3 pl-10 pr-4 text-[#10243F] text-sm focus:outline-none focus:border-[#10243F] focus:ring-1 focus:ring-[#B7922B]/60 shadow-sm placeholder-[#6B7280]/60 transition-all"
                         />
-                        
-                        {/* Mobile Autocomplete Dropdown */}
-                        {isDropdownOpen && (searchLoading || searchResults.length > 0) && (
-                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-[#EDE3CC] overflow-hidden max-h-80 overflow-y-auto">
-                                {searchLoading ? (
-                                    <div className="p-4 text-center text-[#6B7280] text-sm">Searching...</div>
-                                ) : (
-                                    <ul>
-                                        {searchResults.map((result) => (
-                                            <li
-                                                key={result.user_id}
-                                                onClick={() => openSearchDetail(result.user_id)}
-                                                className="px-4 py-3 hover:bg-[#F8F1DF]/50 cursor-pointer border-b border-[#EDE3CC]/40 last:border-0 flex items-center gap-3 transition-colors"
-                                            >
-                                                <div className="w-10 h-10 rounded-full bg-[#EDE3CC] flex items-center justify-center text-[#10243F] text-sm font-bold shrink-0">
-                                                    {getInitials(result.full_name)}
-                                                </div>
-                                                <div className="overflow-hidden">
-                                                    <p className="text-[#10243F] font-semibold text-sm truncate">{result.full_name}</p>
-                                                    <p className="text-[#6B7280] text-xs truncate">{result.email}</p>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                        )}
                     </div>
 
                     {/* Error */}
@@ -1057,13 +819,6 @@ export default function SubscriptionsPage() {
                 open={panelOpen}
                 onClose={closeDetail}
                 selectedItem={selectedItem}
-            />
-
-            {/* ── Member Search Detail Panel ───────────────────────── */}
-            <MemberSearchDetailPanel
-                open={searchPanelOpen}
-                onClose={() => setSearchPanelOpen(false)}
-                selectedUserId={searchMemberId}
             />
         </>
     );

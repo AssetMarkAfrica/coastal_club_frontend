@@ -15,6 +15,18 @@ export interface Reservation {
   updated_at: string;
 }
 
+export interface MemberReservation {
+  id: string;
+  user_id?: string;
+  user_email?: string;
+  user_name?: string;
+  card_token?: string;
+  reservation_date: string;
+  status: 'confirmed' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+}
+
 export interface SpendEntry {
   id: string;
   customer_type: 'member' | 'non_member';
@@ -43,6 +55,10 @@ export interface CreateReservationPayload {
   callback_url: string;
 }
 
+export interface CreateMemberReservationPayload {
+  reservation_date: string;
+}
+
 export interface CreateReservationResponse {
   reservation_id: string;
   reservation_date: string;
@@ -60,6 +76,7 @@ export interface LogSpendPayload {
   customer_type: 'member' | 'non_member';
   reservation_id?: string;
   member_subscription_id?: string;
+  card_token?: string;
   amount_spent_pesewas: number;
   callback_url?: string;
 }

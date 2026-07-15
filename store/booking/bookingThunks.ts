@@ -5,6 +5,7 @@ import type {
   LogSpendPayload,
   VerifyReservationPayload,
   VerifySpendPayload,
+  CreateMemberReservationPayload,
 } from "../../types/booking";
 
 const getErrorMessage = (error: unknown, fallback: string) => {
@@ -88,6 +89,66 @@ export const getReservationById = createAsyncThunk(
       return data.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error, "Failed to fetch reservation details."));
+    }
+  }
+);
+
+export const createMemberReservation = createAsyncThunk(
+  "booking/createMemberReservation",
+  async (payload: CreateMemberReservationPayload, { rejectWithValue }) => {
+    try {
+      const { data } = await bookingService.createMemberReservation(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error, "Failed to create member reservation."));
+    }
+  }
+);
+
+export const getMyMemberReservations = createAsyncThunk(
+  "booking/getMyMemberReservations",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await bookingService.getMyMemberReservations();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error, "Failed to fetch your member reservations."));
+    }
+  }
+);
+
+export const getMyMemberReservationById = createAsyncThunk(
+  "booking/getMyMemberReservationById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const { data } = await bookingService.getMyMemberReservationById(id);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error, "Failed to fetch your member reservation details."));
+    }
+  }
+);
+
+export const getAllMemberReservations = createAsyncThunk(
+  "booking/getAllMemberReservations",
+  async (params: Record<string, string> | undefined, { rejectWithValue }) => {
+    try {
+      const { data } = await bookingService.getAllMemberReservations(params);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error, "Failed to fetch all member reservations."));
+    }
+  }
+);
+
+export const getMemberReservationById = createAsyncThunk(
+  "booking/getMemberReservationById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const { data } = await bookingService.getMemberReservationById(id);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error, "Failed to fetch member reservation details."));
     }
   }
 );

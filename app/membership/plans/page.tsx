@@ -119,221 +119,237 @@ export default function MembershipPlansPage() {
       <section className="px-4 py-8 sm:px-8 sm:py-12 lg:px-10">
         <div className="mx-auto w-full max-w-7xl">
 
-              {/* Hero text */}
-              <div className="text-center mb-10 sm:mb-12">
-                <h1
-                  className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-primary"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  Choose Your Membership
-                </h1>
+          {/* Hero text */}
+          <div className="text-center mb-10 sm:mb-12">
+            <h1
+              className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-primary"
+              style={{ fontFamily: "var(--font-playfair)" }}
+            >
+              Choose Your Membership
+            </h1>
+            <p
+              className="mt-4 mx-auto max-w-2xl text-sm sm:text-base leading-relaxed text-text-secondary"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Elevate your lifestyle with access to world-class amenities, exclusive
+              culinary experiences, and a curated community of discerning individuals.
+              Select the tier that best aligns with your aspirations.
+            </p>
+          </div>
+
+          {/* Application process */}
+          <section className="mb-8 border-y border-gold-muted/25 bg-surface-container-lowest px-4 py-5 sm:px-6">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-xl">
                 <p
-                  className="mt-4 mx-auto max-w-2xl text-sm sm:text-base leading-relaxed text-text-secondary"
+                  className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  Elevate your lifestyle with access to world-class amenities, exclusive
-                  culinary experiences, and a curated community of discerning individuals.
-                  Select the tier that best aligns with your aspirations.
+                  Application Process
+                </p>
+                <h2
+                  className="mt-2 text-2xl font-semibold text-primary"
+                  style={{ fontFamily: "var(--font-playfair)" }}
+                >
+                  Apply once, then let the club review your fit.
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                  The application fee is {APPLICATION_FEE_LABEL}. After payment,
+                  prospective members are placed on the waiting list while admin reviews
+                  the application within the next 48 hours.
                 </p>
               </div>
 
-              {/* Application process */}
-              <section className="mb-8 border-y border-gold-muted/25 bg-surface-container-lowest px-4 py-5 sm:px-6">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="max-w-xl">
-                    <p
-                      className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
-                      style={{ fontFamily: "var(--font-inter)" }}
-                    >
-                      Application Process
-                    </p>
-                    <h2
-                      className="mt-2 text-2xl font-semibold text-primary"
-                      style={{ fontFamily: "var(--font-playfair)" }}
-                    >
-                      Apply once, then let the club review your fit.
-                    </h2>
-                    <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                      The application fee is {APPLICATION_FEE_LABEL}. After payment,
-                      prospective members are placed on the waiting list while admin reviews
-                      the application within the next 48 hours.
-                    </p>
-                  </div>
-
-                  <ol className="grid gap-3 text-sm text-text-primary sm:grid-cols-2 lg:max-w-xl">
-                    {APPLICATION_PROCESS_STEPS.map((step, index) => (
-                      <li key={step} className="flex gap-3">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold-muted text-[11px] font-semibold text-gold-muted">
-                          {index + 1}
-                        </span>
-                        <span className="leading-relaxed">{step}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </section>
-
-              {/* Pending payment banner */}
-              {pendingPayment?.authorization_url && (
-                <div className="mb-6 rounded border border-gold-muted/30 bg-surface-container-lowest px-4 py-3 text-sm text-text-secondary shadow-sm">
-                  <p className="font-semibold text-primary text-sm">Pending Payment Detected</p>
-                  <p className="mt-1 text-xs">
-                    Continue your payment using reference{" "}
-                    <span className="font-semibold text-primary">{pendingPayment.reference}</span>.
-                  </p>
-                  <a
-                    href={pendingPayment.authorization_url}
-                    className="mt-2 inline-flex rounded border border-gold-muted px-3 py-1.5 text-[10px] font-semibold tracking-[0.14em] uppercase text-gold-muted hover:bg-gold-muted hover:text-primary transition-colors"
-                  >
-                    Continue Payment
-                  </a>
-                </div>
-              )}
-
-              <div className="mb-6 flex flex-col gap-3 rounded border border-gold-muted/25 bg-cream/60 px-4 py-4 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="font-semibold text-primary">Already approved?</p>
-                  <p className="mt-1 text-xs">
-                    View your membership contract, accept all required terms, and proceed
-                    to the final membership payment.
-                  </p>
-                </div>
-                <Link
-                  href="/membership/contract"
-                  className="inline-flex shrink-0 rounded border border-gold-muted px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-muted transition-colors hover:bg-gold-muted hover:text-primary"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  View Contract
-                </Link>
-              </div>
-
-              {/* Error banner */}
-              {error && (
-                <div className="mb-6 rounded border border-danger/35 bg-error-container px-4 py-3 text-sm text-danger flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <span>{error}</span>
-                  {error.includes("complete your profile") && (
-                    <Link
-                      href="/profile"
-                      className="inline-flex shrink-0 rounded border border-danger px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-danger transition-colors hover:bg-danger hover:text-white"
-                      style={{ fontFamily: "var(--font-inter)" }}
-                    >
-                      Complete Profile
-                    </Link>
-                  )}
-                </div>
-              )}
-
-              {/* Plan cards */}
-              {loading && sortedPlans.length === 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-                  {[1, 2, 3, 4].map((key) => (
-                    <div
-                      key={key}
-                      className="h-105 rounded-2xl border border-gold-muted/20 bg-surface-container-lowest animate-pulse"
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
-                  {sortedPlans.map((plan) => {
-                    const isFeatured = featuredPlanTier === plan.tier;
-                    const highlights = buildPlanHighlights(plan);
-                    const isSubmitting = submittingTier === plan.tier;
-                    const isSubscribed = Boolean(plan.is_subscribed);
-
-                    return (
-                      <article
-                        key={plan.id}
-                        className={`relative flex flex-col rounded-2xl border bg-surface-container-lowest p-6 transition-all duration-300 hover:-translate-y-1 ${isFeatured
-                            ? "border-gold-muted shadow-[0_18px_44px_rgba(16,36,63,0.14)]"
-                            : "border-gold-muted/20 shadow-[0_8px_24px_rgba(16,36,63,0.08)]"
-                          }`}
-                      >
-                        {/* Featured badge */}
-                        {isFeatured && (
-                          <span
-                            className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-muted px-4 py-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-primary whitespace-nowrap"
-                            style={{ fontFamily: "var(--font-inter)" }}
-                          >
-                            Most Popular
-                          </span>
-                        )}
-
-                        {/* Tier name */}
-                        <h2
-                          className="text-xl font-semibold text-primary"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          {toTitleCase(plan.tier)}
-                        </h2>
-
-                        {/* Pricing */}
-                        <div className="mt-3 flex items-end gap-1.5">
-                          <p
-                            className="text-3xl font-semibold text-gold-muted leading-none"
-                            style={{ fontFamily: "var(--font-playfair)" }}
-                          >
-                            {formatMoney(plan.annual_fee_pesewas)}
-                          </p>
-                          <span className="pb-0.5 text-sm text-text-secondary">/ year</span>
-                        </div>
-
-                        <p className="mt-1 text-xs text-text-secondary">
-                          {formatMoney(plan.initiation_fee_pesewas)} Initiation Fee
-                        </p>
-
-                        <div className="my-4 h-px w-full bg-gold-muted/20" />
-
-                        {/* Highlights */}
-                        <ul className="space-y-2.5 flex-1">
-                          {highlights.slice(0, 5).map((highlight, index) => (
-                            <li key={`${plan.id}-${index}`} className="flex items-start gap-2">
-                              <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-gold-muted text-gold-muted text-[10px]">
-                                ✓
-                              </span>
-                              <span className="text-xs text-text-primary leading-relaxed">{highlight}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        {/* CTA */}
-                        <div className="mt-6">
-                          {isAuthenticated ? (
-                            <button
-                              type="button"
-                              onClick={() => setSelectedPlan(plan)}
-                              disabled={isSubmitting || loading || isSubscribed}
-                              className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${isFeatured
-                                  ? "border-gold-muted bg-primary text-gold-light hover:bg-gold-muted hover:text-primary"
-                                  : "border-gold-muted text-gold-muted hover:bg-gold-muted hover:text-primary"
-                                } disabled:opacity-60 disabled:cursor-not-allowed`}
-                              style={{ fontFamily: "var(--font-inter)" }}
-                            >
-                              {isSubscribed
-                                ? "Subscribed"
-                                : isSubmitting
-                                  ? "Processing…"
-                                  : `Apply for ${toTitleCase(plan.tier)}`}
-                            </button>
-                          ) : (
-                            <p className="text-xs text-text-secondary text-center">
-                              <Link
-                                href="/auth/login"
-                                className="text-gold-muted font-semibold hover:text-primary transition-colors"
-                              >
-                                Sign in
-                              </Link>{" "}
-                              to apply for this plan.
-                            </p>
-                          )}
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              )}
+              <ol className="grid gap-3 text-sm text-text-primary sm:grid-cols-2 lg:max-w-xl">
+                {APPLICATION_PROCESS_STEPS.map((step, index) => (
+                  <li key={step} className="flex gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold-muted text-[11px] font-semibold text-gold-muted">
+                      {index + 1}
+                    </span>
+                    <span className="leading-relaxed">{step}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
+
+          {/* Pending payment banner */}
+          {pendingPayment?.authorization_url && (
+            <div className="mb-6 rounded border border-gold-muted/30 bg-surface-container-lowest px-4 py-3 text-sm text-text-secondary shadow-sm">
+              <p className="font-semibold text-primary text-sm">Pending Payment Detected</p>
+              <p className="mt-1 text-xs">
+                Continue your payment using reference{" "}
+                <span className="font-semibold text-primary">{pendingPayment.reference}</span>.
+              </p>
+              <a
+                href={pendingPayment.authorization_url}
+                className="mt-2 inline-flex rounded border border-gold-muted px-3 py-1.5 text-[10px] font-semibold tracking-[0.14em] uppercase text-gold-muted hover:bg-gold-muted hover:text-primary transition-colors"
+              >
+                Continue Payment
+              </a>
+            </div>
+          )}
+
+          <div className="mb-6 flex flex-col gap-3 rounded border border-gold-muted/25 bg-cream/60 px-4 py-4 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-primary">Already approved?</p>
+              <p className="mt-1 text-xs">
+                View your membership contract, accept all required terms, and proceed
+                to the final membership payment.
+              </p>
+            </div>
+            <Link
+              href="/membership/contract"
+              className="inline-flex shrink-0 rounded border border-gold-muted px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-muted transition-colors hover:bg-gold-muted hover:text-primary"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              View Contract
+            </Link>
+          </div>
+
+          <div className="mb-6 flex flex-col gap-3 rounded border border-gold-muted/25 bg-primary/5 px-4 py-4 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-primary">Not ready for a membership?</p>
+              <p className="mt-1 text-xs">
+                You can still experience Estrella del Mar. Book a table in our dining room and enjoy a world-class culinary experience.
+              </p>
+            </div>
+            <Link
+              href="/booking/customer/create"
+              className="inline-flex shrink-0 rounded border border-gold-muted bg-primary px-4 py-2.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Book a Table
+            </Link>
+          </div>
+
+          {/* Error banner */}
+          {error && (
+            <div className="mb-6 rounded border border-danger/35 bg-error-container px-4 py-3 text-sm text-danger flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <span>{error}</span>
+              {error.includes("complete your profile") && (
+                <Link
+                  href="/profile"
+                  className="inline-flex shrink-0 rounded border border-danger px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-danger transition-colors hover:bg-danger hover:text-white"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  Complete Profile
+                </Link>
+              )}
+            </div>
+          )}
+
+          {/* Plan cards */}
+          {loading && sortedPlans.length === 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+              {[1, 2, 3, 4].map((key) => (
+                <div
+                  key={key}
+                  className="h-105 rounded-2xl border border-gold-muted/20 bg-surface-container-lowest animate-pulse"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
+              {sortedPlans.map((plan) => {
+                const isFeatured = featuredPlanTier === plan.tier;
+                const highlights = buildPlanHighlights(plan);
+                const isSubmitting = submittingTier === plan.tier;
+                const isSubscribed = Boolean(plan.is_subscribed);
+
+                return (
+                  <article
+                    key={plan.id}
+                    className={`relative flex flex-col rounded-2xl border bg-surface-container-lowest p-6 transition-all duration-300 hover:-translate-y-1 ${isFeatured
+                      ? "border-gold-muted shadow-[0_18px_44px_rgba(16,36,63,0.14)]"
+                      : "border-gold-muted/20 shadow-[0_8px_24px_rgba(16,36,63,0.08)]"
+                      }`}
+                  >
+                    {/* Featured badge */}
+                    {isFeatured && (
+                      <span
+                        className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-muted px-4 py-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-primary whitespace-nowrap"
+                        style={{ fontFamily: "var(--font-inter)" }}
+                      >
+                        Most Popular
+                      </span>
+                    )}
+
+                    {/* Tier name */}
+                    <h2
+                      className="text-xl font-semibold text-primary"
+                      style={{ fontFamily: "var(--font-playfair)" }}
+                    >
+                      {toTitleCase(plan.tier)}
+                    </h2>
+
+                    {/* Pricing */}
+                    <div className="mt-3 flex items-end gap-1.5">
+                      <p
+                        className="text-3xl font-semibold text-gold-muted leading-none"
+                        style={{ fontFamily: "var(--font-playfair)" }}
+                      >
+                        {formatMoney(plan.annual_fee_pesewas)}
+                      </p>
+                      <span className="pb-0.5 text-sm text-text-secondary">/ year</span>
+                    </div>
+
+                    <p className="mt-1 text-xs text-text-secondary">
+                      {formatMoney(plan.initiation_fee_pesewas)} Initiation Fee
+                    </p>
+
+                    <div className="my-4 h-px w-full bg-gold-muted/20" />
+
+                    {/* Highlights */}
+                    <ul className="space-y-2.5 flex-1">
+                      {highlights.slice(0, 5).map((highlight, index) => (
+                        <li key={`${plan.id}-${index}`} className="flex items-start gap-2">
+                          <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-gold-muted text-gold-muted text-[10px]">
+                            ✓
+                          </span>
+                          <span className="text-xs text-text-primary leading-relaxed">{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* CTA */}
+                    <div className="mt-6">
+                      {isAuthenticated ? (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPlan(plan)}
+                          disabled={isSubmitting || loading || isSubscribed}
+                          className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${isFeatured
+                            ? "border-gold-muted bg-primary text-gold-light hover:bg-gold-muted hover:text-primary"
+                            : "border-gold-muted text-gold-muted hover:bg-gold-muted hover:text-primary"
+                            } disabled:opacity-60 disabled:cursor-not-allowed`}
+                          style={{ fontFamily: "var(--font-inter)" }}
+                        >
+                          {isSubscribed
+                            ? "Subscribed"
+                            : isSubmitting
+                              ? "Processing…"
+                              : `Apply for ${toTitleCase(plan.tier)}`}
+                        </button>
+                      ) : (
+                        <p className="text-xs text-text-secondary text-center">
+                          <Link
+                            href="/auth/login"
+                            className="text-gold-muted font-semibold hover:text-primary transition-colors"
+                          >
+                            Sign in
+                          </Link>{" "}
+                          to apply for this plan.
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
 
       {selectedPlan && (
         <div

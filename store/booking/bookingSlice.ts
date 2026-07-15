@@ -11,12 +11,19 @@ import {
   logSpendEntry,
   verifyReservationPayment,
   verifySpendPayment,
+  createMemberReservation,
+  getAllMemberReservations,
+  getMemberReservationById,
+  getMyMemberReservations,
+  getMyMemberReservationById,
 } from "./bookingThunks";
 
 export interface BookingState {
   reservations: Reservation[];
+  memberReservations: MemberReservation[];
   spendEntries: SpendEntry[];
   currentReservation: Reservation | null;
+  currentMemberReservation: MemberReservation | null;
   currentSpendEntry: SpendEntry | null;
   loading: boolean;
   error: string | null;
@@ -24,8 +31,10 @@ export interface BookingState {
 
 const initialState: BookingState = {
   reservations: [],
+  memberReservations: [],
   spendEntries: [],
   currentReservation: null,
+  currentMemberReservation: null,
   currentSpendEntry: null,
   loading: false,
   error: null,
@@ -40,6 +49,9 @@ const bookingSlice = createSlice({
     },
     clearCurrentReservation(state) {
       state.currentReservation = null;
+    },
+    clearCurrentMemberReservation(state) {
+      state.currentMemberReservation = null;
     },
     clearCurrentSpendEntry(state) {
       state.currentSpendEntry = null;
@@ -143,6 +155,82 @@ const bookingSlice = createSlice({
         state.error = (action.payload as string) ?? "Failed to fetch reservation.";
       });
 
+    // createMemberReservation
+    builder
+      .addCase(createMemberReservation.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createMemberReservation.fulfilled, (state, action) => {
+        state.loading = false;
+        state.memberReservations.unshift(action.payload);
+        state.currentMemberReservation = action.payload;
+      })
+      .addCase(createMemberReservation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to create member reservation.";
+      });
+
+    // getMyMemberReservations
+    builder
+      .addCase(getMyMemberReservations.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMyMemberReservations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.memberReservations = action.payload;
+      })
+      .addCase(getMyMemberReservations.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to fetch member reservations.";
+      });
+
+    // getMyMemberReservationById
+    builder
+      .addCase(getMyMemberReservationById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMyMemberReservationById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentMemberReservation = action.payload;
+      })
+      .addCase(getMyMemberReservationById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to fetch member reservation.";
+      });
+
+    // getAllMemberReservations
+    builder
+      .addCase(getAllMemberReservations.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllMemberReservations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.memberReservations = action.payload;
+      })
+      .addCase(getAllMemberReservations.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to fetch all member reservations.";
+      });
+
+    // getMemberReservationById
+    builder
+      .addCase(getMemberReservationById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMemberReservationById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentMemberReservation = action.payload;
+      })
+      .addCase(getMemberReservationById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to fetch member reservation.";
+      });
+
     // getAllSpendEntries
     builder
       .addCase(getAllSpendEntries.pending, (state) => {
@@ -212,5 +300,5 @@ const bookingSlice = createSlice({
   },
 });
 
-export const { clearBookingError, clearCurrentReservation, clearCurrentSpendEntry } = bookingSlice.actions;
+export const { clearBookingError, clearCurrentReservation, clearCurrentMemberReservation, clearCurrentSpendEntry } = bookingSlice.actions;
 export default bookingSlice.reducer;

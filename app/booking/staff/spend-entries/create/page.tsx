@@ -9,9 +9,10 @@ import {
 } from "../../../../../store/booking/bookingThunks";
 import { clearCurrentSpendEntry } from "../../../../../store/booking/bookingSlice";
 import type { RootState } from "../../../../../store";
-import type { ReservationSearchResult } from "../../../../../types/search";
+import type { ReservationSearchResult, MemberSearchResult } from "../../../../../types/search";
 import { getReservationSearchDetail } from "../../../../../store/search/searchThunks";
 import ReservationSearchInput from "../../../../../components/search/ReservationSearchInput";
+import MemberSearchInput from "../../../../../components/search/MemberSearchInput";
 import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeft,
@@ -27,6 +28,8 @@ import {
   Lock,
   ExternalLink,
   RefreshCcw,
+  Users,
+  UserCheck,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
@@ -202,7 +205,11 @@ function LogSpendEntryContent() {
   );
 
   /* ── local state ── */
+  const [customerType, setCustomerType] = useState<"non_member" | "member">("non_member");
   const [selectedReservation, setSelectedReservation] = useState<ReservationSearchResult | null>(null);
+  const [selectedMember, setSelectedMember] = useState<MemberSearchResult | null>(null);
+  // Pre-selected member injected via URL params (from member-reservations pages)
+  const [preselectedMember, setPreselectedMember] = useState<{ cardToken: string; name: string; email: string } | null>(null);
   const [inputString, setInputString] = useState("0");
   const [showShortfallModal, setShowShortfallModal] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -213,6 +220,24 @@ function LogSpendEntryContent() {
   useEffect(() => {
     dispatch(clearCurrentSpendEntry());
   }, [dispatch]);
+
+  useEffect(() => {
+    const type = searchParams?.get("type");
+    if (type === "member") {
+      setCustomerType("member");
+    }
+    const cardToken = searchParams?.get("cardToken");
+    const userName = searchParams?.get("userName");
+    const userEmail = searchParams?.get("userEmail");
+    if (cardToken) {
+      setPreselectedMember({
+        cardToken,
+        name: userName || userEmail || "Member",
+        email: userEmail || "",
+      });
+      setCustomerType("member");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const rid = searchParams?.get("reservationId");
@@ -227,13 +252,19 @@ function LogSpendEntryContent() {
 
   /* ── derived values ── */
   const amountGhs = parseFloat(inputString || "0");
-  const creditGhs = selectedReservation
-    ? selectedReservation.payment.spend_credit_remaining_pesewas / 100
-    : 0;
+  // Resolve the active card token: preselection (from URL) takes priority, then selected-from-search
+  const activeMemberCardToken = preselectedMember?.cardToken ?? selectedMember?.card?.token ?? null;
+  const creditGhs = customerType === "non_member"
+    ? (selectedReservation?.payment.spend_credit_remaining_pesewas || 0) / 100
+    : (selectedMember?.subscription?.spend_credit_remaining_pesewas || 0) / 100;
   const appliedCredit = Math.min(amountGhs, creditGhs);
   const shortfall = Math.max(0, amountGhs - creditGhs);
   const hasShortfall = shortfall > 0;
-  const canSubmit = amountGhs > 0 && !!selectedReservation;
+  const canSubmit =
+    amountGhs > 0 &&
+    (customerType === "non_member"
+      ? !!selectedReservation
+      : !!(activeMemberCardToken));
 
   /* ── keypad handlers ── */
   const appendNumber = useCallback((num: string) => {
@@ -267,8 +298,9 @@ function LogSpendEntryContent() {
 
     const result = await dispatch(
       logSpendEntry({
-        customer_type: "non_member",
-        reservation_id: selectedReservation!.reservation_id,
+        customer_type: customerType,
+        reservation_id: customerType === "non_member" ? selectedReservation!.reservation_id : undefined,
+        card_token: customerType === "member" ? activeMemberCardToken! : undefined,
         amount_spent_pesewas: Math.round(amountGhs * 100),
         callback_url: callbackUrl,
       }),
@@ -380,10 +412,67 @@ function LogSpendEntryContent() {
 
           {/* Search section */}
           <section className="flex flex-col gap-3">
-            <ReservationSearchInput onSelect={setSelectedReservation} />
+            {/* Tabs */}
+            <div className="flex gap-1 mb-2 bg-white border border-[#B7922B]/25 rounded-lg p-1 w-fit shadow-sm">
+              <button
+                onClick={() => {
+                  setCustomerType("non_member");
+                  setSelectedMember(null);
+                }}
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold uppercase tracking-widest transition-all duration-200 ${
+                  customerType === "non_member"
+                    ? "bg-[#10243F] text-[#F1E0A6] shadow-sm"
+                    : "text-[#B7922B] hover:bg-[#F8F1DF]"
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                Non-Members
+              </button>
+              <button
+                onClick={() => {
+                  setCustomerType("member");
+                  setSelectedReservation(null);
+                }}
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold uppercase tracking-widest transition-all duration-200 ${
+                  customerType === "member"
+                    ? "bg-[#10243F] text-[#F1E0A6] shadow-sm"
+                    : "text-[#B7922B] hover:bg-[#F8F1DF]"
+                }`}
+              >
+                <UserCheck className="w-4 h-4" />
+                Members
+              </button>
+            </div>
+
+            {customerType === "non_member" ? (
+              <ReservationSearchInput onSelect={setSelectedReservation} />
+            ) : preselectedMember ? (
+              /* Member pre-selected via URL — show locked card, no search needed */
+              <div className="flex items-center gap-3 bg-[#F8F1DF] border border-[#EDE3CC] rounded-lg px-4 py-3">
+                <div className="w-8 h-8 rounded-full bg-[#10243F] flex items-center justify-center text-[#F1E0A6] font-bold text-xs flex-shrink-0">
+                  {preselectedMember.name.slice(0, 2).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-[#10243F] truncate">{preselectedMember.name}</p>
+                  {preselectedMember.email && <p className="text-xs text-[#6B7280] truncate">{preselectedMember.email}</p>}
+                </div>
+                <button
+                  onClick={() => {
+                    setPreselectedMember(null);
+                    setCustomerType("member");
+                  }}
+                  className="text-[#6B7280] hover:text-red-500 transition-colors flex-shrink-0"
+                  title="Clear pre-selected member"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <MemberSearchInput onSelect={setSelectedMember} />
+            )}
 
             {/* Selected reservation card */}
-            {selectedReservation && (
+            {customerType === "non_member" && selectedReservation && (
               <div className="bg-white border border-[#F1E0A6]/40 rounded-xl p-4 flex items-center justify-between shadow-sm hover:-translate-y-[2px] transition-transform duration-300">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-[#10243F] flex items-center justify-center text-[#F1E0A6] font-bold text-sm flex-shrink-0">
@@ -398,6 +487,27 @@ function LogSpendEntryContent() {
                   <p className="text-xs text-[#6B7280] uppercase tracking-wider mb-1">Available Credit</p>
                   <p className="text-xl font-bold text-[#0F766E]">
                     GHS {(selectedReservation.payment.spend_credit_remaining_pesewas / 100).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Selected member card — shown when selected via search (not URL preselection) */}
+            {customerType === "member" && !preselectedMember && selectedMember && (
+              <div className="bg-white border border-[#F1E0A6]/40 rounded-xl p-4 flex items-center justify-between shadow-sm hover:-translate-y-[2px] transition-transform duration-300">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[#10243F] flex items-center justify-center text-[#F1E0A6] font-bold text-sm flex-shrink-0">
+                    {(selectedMember.full_name || selectedMember.email)?.slice(0, 2).toUpperCase() ?? "?"}
+                  </div>
+                  <div>
+                    <h3 className="text-[#10243F] font-semibold">{selectedMember.full_name || selectedMember.email}</h3>
+                    <p className="text-xs text-[#6B7280] font-mono">{selectedMember.member_number}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-[#6B7280] uppercase tracking-wider mb-1">Payment Method</p>
+                  <p className="text-xl font-bold text-[#0F766E] flex items-center justify-end gap-1">
+                    <CreditCard className="w-5 h-5" /> Tokenized Card
                   </p>
                 </div>
               </div>
@@ -495,7 +605,9 @@ function LogSpendEntryContent() {
                       <CheckCircle2 className="w-4 h-4" />
                       Credit Applied
                     </span>
-                    <span className="font-semibold">−GHS {formatCurrency(appliedCredit)}</span>
+                    <span className="font-semibold">
+                      −GHS {formatCurrency(appliedCredit)}
+                    </span>
                   </div>
                   <div className="h-px bg-[#F1E0A6]/20 my-1" />
                   <div className="flex justify-between items-end mt-auto mb-4">
@@ -503,7 +615,9 @@ function LogSpendEntryContent() {
                       <span className="text-xs font-semibold uppercase tracking-wider text-[#F1E0A6]/90">
                         {hasShortfall ? "Shortfall Due" : "Amount Due"}
                       </span>
-                      <p className="text-[10px] text-white/50 mt-0.5">To be settled by guest</p>
+                      <p className="text-[10px] text-white/50 mt-0.5">
+                        {hasShortfall && customerType === "member" ? "To be charged to member's card" : "To be settled by guest"}
+                      </p>
                     </div>
                     <span className={`text-2xl font-bold transition-colors ${hasShortfall ? "text-[#F1E0A6]" : "text-white"}`}>
                       GHS {formatCurrency(shortfall)}
@@ -534,9 +648,9 @@ function LogSpendEntryContent() {
               </div>
 
               {/* Mobile hint */}
-              {!selectedReservation && (
+              {!selectedReservation && !selectedMember && (
                 <p className="text-center text-xs text-[#6B7280] mt-3">
-                  Search and select a guest reservation above to begin.
+                  Search and select a {customerType === "member" ? "member" : "guest reservation"} above to begin.
                 </p>
               )}
             </section>

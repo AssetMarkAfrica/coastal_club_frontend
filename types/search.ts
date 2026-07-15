@@ -12,11 +12,15 @@ export interface MemberSearchSubscription {
   plan_name: string | null;
   tier: string | null;
   maintenance_fee_status: string | null;
+  spend_credit_remaining_pesewas?: number;
+  monthly_spend_credit_pesewas?: number;
+  fb_spend_this_month_pesewas?: number;
 }
 
 export interface MemberSearchCard {
   member_number: string | null;
   status: string | null;
+  token: string | null;
 }
 
 export interface MemberSearchProfile {

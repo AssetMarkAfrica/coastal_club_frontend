@@ -8,6 +8,8 @@ import type {
   VerifyReservationPayload,
   LogSpendPayload,
   VerifySpendPayload,
+  MemberReservation,
+  CreateMemberReservationPayload,
 } from "../../types/booking";
 
 const BASE = process.env.NEXT_PUBLIC_BOOKING_API;
@@ -29,6 +31,21 @@ export const getAllReservations = (params?: Record<string, string>) =>
 
 export const getReservationById = (id: string) =>
   api.get<ApiResponse<Reservation>>(`${BASE}/staff/reservations/${id}/`);
+
+export const createMemberReservation = (payload: CreateMemberReservationPayload) =>
+  api.post<ApiResponse<MemberReservation>>(`${BASE}/members/`, payload);
+
+export const getMyMemberReservations = () =>
+  api.get<ApiResponse<MemberReservation[]>>(`${BASE}/members/me/`);
+
+export const getMyMemberReservationById = (id: string) =>
+  api.get<ApiResponse<MemberReservation>>(`${BASE}/members/me/${id}/`);
+
+export const getAllMemberReservations = (params?: Record<string, string>) =>
+  api.get<ApiResponse<MemberReservation[]>>(`${BASE}/staff/member-reservations/`, { params });
+
+export const getMemberReservationById = (id: string) =>
+  api.get<ApiResponse<MemberReservation>>(`${BASE}/staff/member-reservations/${id}/`);
 
 export const getAllSpendEntries = (params?: Record<string, string>) =>
   api.get<ApiResponse<SpendEntry[]>>(`${BASE}/staff/spend-entries/`, { params });

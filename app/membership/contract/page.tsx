@@ -13,6 +13,7 @@ import { clearMembershipError } from "@/store/membership/membershipSlice";
 import {
   acceptMembershipContract,
   fetchMyMembershipContract,
+  fetchMyMembershipStatus,
 } from "@/store/membership/membershipThunks";
 import WaitlistExperience from "../dashboard/WaitlistExperience";
 
@@ -53,12 +54,20 @@ export default function MembershipContractPage() {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptPrivacy, setAcceptPrivacy] = useState(false);
   const [acceptClubRules, setAcceptClubRules] = useState(false);
+  const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) return;
 
     dispatch(clearMembershipError());
-    void dispatch(fetchMyMembershipContract());
+    const loadData = async () => {
+      await Promise.allSettled([
+        dispatch(fetchMyMembershipContract()),
+        dispatch(fetchMyMembershipStatus()),
+      ]);
+      setFetched(true);
+    };
+    void loadData();
   }, [dispatch, isAuthenticated]);
 
   const hasAcceptedContract = Boolean(
@@ -164,7 +173,15 @@ export default function MembershipContractPage() {
     );
   }
 
-  if (!loading && !contract) {
+  if (!fetched || (loading && !contract)) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-cream px-6 py-12 text-text-primary">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gold-muted/30 border-t-primary" />
+      </main>
+    );
+  }
+
+  if (!contract) {
     return <WaitlistExperience />;
   }
 
