@@ -15,10 +15,12 @@ export default function MembershipShell({
 }) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/membership/view-applications");
+  const isPaymentRoute = pathname.startsWith("/membership/payments");
+  const isLatePaymentRoute = pathname.startsWith("/membership/late-payments");
   const isStaffRoute = pathname.startsWith("/membership/members/subscriptions");
 
   // Admin-only for admin pages; staff is never allowed in the membership app
-  const allowedRoles = isAdminRoute ? ["admin"] : isStaffRoute ? ["staff"] : ["member"];
+  const allowedRoles = isAdminRoute || isPaymentRoute || isLatePaymentRoute ? ["admin"] : isStaffRoute ? ["staff"] : ["member"];
 
   return (
     <RoleGuard allowedRoles={allowedRoles}>
@@ -26,10 +28,10 @@ export default function MembershipShell({
         className="flex min-h-screen bg-cream antialiased"
         style={{ fontFamily: "var(--font-inter)" }}
       >
-        {isAdminRoute ? <AdminSidebar /> : isStaffRoute ? <StaffSidebar /> : <MemberSidebar />}
+        {isAdminRoute || isPaymentRoute || isLatePaymentRoute ? <AdminSidebar /> : isStaffRoute ? <StaffSidebar /> : <MemberSidebar />}
 
         <div className="flex-1 flex flex-col min-w-0">
-          {isAdminRoute ? <AdminNavbar /> : isStaffRoute ? <AdminNavbar /> : <MemberNavbar />}
+          {isAdminRoute || isPaymentRoute || isLatePaymentRoute ? <AdminNavbar /> : isStaffRoute ? <AdminNavbar /> : <MemberNavbar />}
           {children}
         </div>
       </div>

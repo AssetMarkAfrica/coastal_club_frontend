@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Estrella del Mar - Social Events</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "cream": "#F8F1DF",
+                        "surface-container": "#eeedf1",
+                        "surface": "#faf9fc",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#adc8f5",
+                        "surface-container-high": "#e9e7eb",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001c3b",
+                        "surface-dim": "#dad9dd",
+                        "inverse-primary": "#adc8f5",
+                        "on-secondary-fixed": "#241a00",
+                        "text-primary": "#1A1A1A",
+                        "cream-dark": "#EDE3CC",
+                        "surface-tint": "#455f87",
+                        "on-tertiary-fixed-variant": "#60410c",
+                        "navy-deep": "#10243F",
+                        "on-secondary-container": "#745c00",
+                        "tertiary-fixed": "#ffddb2",
+                        "primary": "#022448",
+                        "on-surface": "#1a1c1e",
+                        "secondary": "#735c00",
+                        "outline": "#74777f",
+                        "on-secondary-fixed-variant": "#574500",
+                        "info": "#185FA5",
+                        "gold-light": "#F1E0A6",
+                        "secondary-fixed-dim": "#e9c349",
+                        "on-tertiary-container": "#c69b5f",
+                        "danger": "#B42318",
+                        "primary-fixed": "#d5e3ff",
+                        "background": "#faf9fc",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#1e3a5f",
+                        "text-secondary": "#4A4A4A",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#291800",
+                        "inverse-surface": "#2f3033",
+                        "surface-variant": "#e3e2e6",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f1f0f4",
+                        "secondary-fixed": "#ffe088",
+                        "gold-muted": "#B7922B",
+                        "tertiary-fixed-dim": "#edbf7f",
+                        "tertiary": "#341f00",
+                        "warning": "#B45309",
+                        "secondary-container": "#fed65b",
+                        "on-background": "#1a1c1e",
+                        "surface-container-highest": "#e3e2e6",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "on-primary-container": "#8aa4cf",
+                        "outline-variant": "#c4c6cf",
+                        "success": "#0F766E",
+                        "text-muted": "#6B7280",
+                        "surface-bright": "#faf9fc",
+                        "tertiary-container": "#503300",
+                        "surface-container-low": "#f4f3f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "input-padding-x": "16px",
+                        "card-padding": "24px",
+                        "topbar-height": "64px",
+                        "gutter": "16px",
+                        "container-margin": "24px",
+                        "sidebar-width": "260px",
+                        "input-padding-y": "12px"
+                    },
+                    "fontFamily": {
+                        "label-uppercase": [
+                            "Inter"
+                        ],
+                        "h1": [
+                            "Playfair Display"
+                        ],
+                        "h3": [
+                            "Playfair Display"
+                        ],
+                        "h4": [
+                            "Playfair Display"
+                        ],
+                        "h2": [
+                            "Playfair Display"
+                        ],
+                        "body-lg": [
+                            "Inter"
+                        ]
+                    },
+                    "fontSize": {
+                        "label-uppercase": [
+                            "13px",
+                            {
+                                "lineHeight": "1",
+                                "letterSpacing": "0.08em",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "h1": [
+                            "48px",
+                            {
+                                "lineHeight": "1.2",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "h3": [
+                            "28px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "h4": [
+                            "22px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "h2": [
+                            "36px",
+                            {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "body-lg": [
+                            "16px",
+                            {
+                                "lineHeight": "1.7",
+                                "fontWeight": "400"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .fill-icon .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .gold-border {
+            border-color: rgba(212, 175, 55, 0.25);
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(16, 36, 63, 0.12);
+            border-color: rgba(212, 175, 55, 0.6);
+        }
+
+        .gradient-navy {
+            background: linear-gradient(135deg, #10243F 0%, #1E3A5F 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-cream text-text-primary min-h-screen flex flex-col md:flex-row">
+    <!-- SideNavBar (Desktop) -->
+    <nav
+        class="hidden md:flex flex-col h-full py-8 px-4 bg-navy-deep fixed left-0 top-0 w-sidebar-width border-r border-gold-muted/20 shadow-2xl z-40">
+        <div class="mb-12 px-4">
+            <h2 class="font-h4 text-h4 text-gold-light mb-1">Estrella del Mar</h2>
+            <p class="font-label-uppercase text-label-uppercase text-gold-muted/80">Private Members Club</p>
+        </div>
+        <ul class="flex flex-col space-y-2 flex-grow">
+            <li>
+                <a class="flex items-center space-x-3 px-4 py-3 rounded-DEFAULT text-on-primary/70 hover:text-gold-light hover:bg-white/5 hover:translate-x-1 transition-transform duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">home</span>
+                    <span class="font-label-uppercase text-label-uppercase">Home</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center space-x-3 px-4 py-3 rounded-DEFAULT text-on-primary/70 hover:text-gold-light hover:bg-white/5 hover:translate-x-1 transition-transform duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">castle</span>
+                    <span class="font-label-uppercase text-label-uppercase">The Club</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center space-x-3 px-4 py-3 rounded-DEFAULT bg-primary-container text-gold-light border-l-4 border-gold-light scale-98 transition-all"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]"
+                        style="font-variation-settings: 'FILL' 1;">restaurant</span>
+                    <span class="font-label-uppercase text-label-uppercase">Dining &amp; Social</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center space-x-3 px-4 py-3 rounded-DEFAULT text-on-primary/70 hover:text-gold-light hover:bg-white/5 hover:translate-x-1 transition-transform duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+                    <span class="font-label-uppercase text-label-uppercase">Exclusive Membership</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center space-x-3 px-4 py-3 rounded-DEFAULT text-on-primary/70 hover:text-gold-light hover:bg-white/5 hover:translate-x-1 transition-transform duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">history</span>
+                    <span class="font-label-uppercase text-label-uppercase">Heritage</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center space-x-3 px-4 py-3 rounded-DEFAULT text-on-primary/70 hover:text-gold-light hover:bg-white/5 hover:translate-x-1 transition-transform duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">mail</span>
+                    <span class="font-label-uppercase text-label-uppercase">Contact</span>
+                </a>
+            </li>
+        </ul>
+        <div class="mt-auto pt-8 border-t border-gold-muted/20">
+            <button
+                class="w-full bg-navy-deep border border-gold-muted text-gold-light font-label-uppercase text-label-uppercase py-3 rounded-DEFAULT hover:bg-gold-light hover:text-navy-deep transition-colors duration-300 mb-6">
+                Request Invitations
+            </button>
+            <div class="flex justify-between px-4 text-on-primary/50">
+                <a class="hover:text-gold-light transition-colors" href="#"><span
+                        class="material-symbols-outlined text-[18px]">settings</span></a>
+                <a class="hover:text-gold-light transition-colors" href="#"><span
+                        class="material-symbols-outlined text-[18px]">shield</span></a>
+                <a class="hover:text-gold-light transition-colors" href="#"><span
+                        class="material-symbols-outlined text-[18px]">logout</span></a>
+            </div>
+        </div>
+    </nav>
+    <!-- TopNavBar (Mobile Only) -->
+    <header
+        class="md:hidden flex justify-between items-center w-full px-container-margin h-topbar-height bg-navy-deep/90 backdrop-blur-md text-gold-light sticky top-0 z-50 border-b border-gold-muted/25 shadow-sm">
+        <h1 class="font-h3 text-h3 tracking-tight">Estrella del Mar</h1>
+        <div class="flex space-x-4">
+            <button class="hover:bg-white/5 p-2 rounded-full transition-all duration-300">
+                <span class="material-symbols-outlined">search</span>
+            </button>
+            <button class="hover:bg-white/5 p-2 rounded-full transition-all duration-300">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </header>
+    <!-- Main Content Area -->
+    <main class="flex-1 md:ml-sidebar-width flex flex-col min-h-screen">
+        <!-- Hero Section -->
+        <section class="relative w-full h-[60vh] min-h-[400px] flex items-end pb-12 px-container-margin">
+            <div class="absolute inset-0 z-0">
+                <div class="w-full h-full bg-cover bg-center"
+                    data-alt="A luxurious evening event at a premium beachfront members club. Elegant tables set with fine dining ware on a wooden deck overlooking a serene, starlit ocean. Soft, warm amber string lights and glowing lanterns create a sophisticated, intimate atmosphere. Deep navy twilight sky contrasting with the golden ambient light. High-end, lavish architectural details."
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDCVW6P0tidYSSqgRtkw3Wfr3wXWyFCroyls45ScP_dm49zsWPnVMGtuMJ-MGuGA5ONP3w-Pe7XxQGyZxdMhKc5PdvxG3fUKzw-jSRvPI5AxXhRJ7NMu1qOtYvhy2-yd5pmVNMM36bmRJCTvM7w5QGqGiD_2LwPLSRKzG6Hk_RifmGV1zwcV67wj2skkgfqBWkQMaG7b2fw0oVfI0U-8jjJ7keBG6wiCb0U0DCioNZ753T93BRg')">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/60 to-transparent"></div>
+            </div>
+            <div class="relative z-10 w-full max-w-5xl mx-auto">
+                <span
+                    class="inline-block px-3 py-1 bg-gold-muted/20 border border-gold-muted/50 rounded-full font-label-uppercase text-label-uppercase text-gold-light mb-4 backdrop-blur-sm">Social
+                    Calendar</span>
+                <h1 class="font-h1 text-h1 text-white mb-4">Curated Experiences</h1>
+                <p class="font-body-lg text-body-lg text-cream/90 max-w-2xl">Discover exclusive gatherings, culinary
+                    journeys, and cultural events designed for the discerning members of Estrella del Mar.</p>
+            </div>
+        </section>
+        <!-- Content Canvas -->
+        <div class="px-container-margin py-12 flex-1 max-w-7xl mx-auto w-full">
+            <!-- Filters & Search -->
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-6">
+                <div class="relative w-full lg:w-96">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-navy-deep/50">search</span>
+                    <input
+                        class="w-full bg-cream-dark/30 border border-cream-dark text-navy-deep font-body-lg rounded-DEFAULT pl-12 pr-4 py-3 focus:outline-none focus:border-navy-deep focus:ring-1 focus:ring-gold-muted/60 transition-all placeholder:text-navy-deep/50"
+                        placeholder="Search events..." type="text" />
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button
+                        class="px-5 py-2 rounded-full border border-navy-deep bg-navy-deep text-gold-light font-label-uppercase text-label-uppercase hover:bg-gold-light hover:text-navy-deep hover:border-gold-light transition-colors">All
+                        Events</button>
+                    <button
+                        class="px-5 py-2 rounded-full border border-gold-muted/30 bg-white text-navy-deep font-label-uppercase text-label-uppercase hover:border-gold-muted transition-colors">Upcoming</button>
+                    <button
+                        class="px-5 py-2 rounded-full border border-gold-muted/30 bg-white text-navy-deep font-label-uppercase text-label-uppercase hover:border-gold-muted transition-colors">Members
+                        Only</button>
+                    <button
+                        class="px-5 py-2 rounded-full border border-gold-muted/30 bg-white text-navy-deep font-label-uppercase text-label-uppercase flex items-center space-x-2 hover:border-gold-muted transition-colors">
+                        <span>Location</span>
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Bento Grid of Events -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Event Card 1 (Featured - spans 2 columns on desktop) -->
+                <article
+                    class="col-span-1 md:col-span-2 bg-white rounded-lg border gold-border shadow-[0_4px_24px_rgba(30,58,95,0.08)] overflow-hidden hover-lift flex flex-col md:flex-row">
+                    <div class="md:w-1/2 h-64 md:h-auto relative">
+                        <img class="w-full h-full object-cover"
+                            data-alt="A sophisticated wine tasting event in a grand, dimly lit cellar. Long wooden tables adorned with crystal wine glasses catching warm overhead light. Deep mahogany barrels line the curved stone walls. A sommelier in elegant attire pours a rich red wine. Luxurious, opulent atmosphere with strong contrasts of deep shadows and golden highlights."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLX3Aytvd8Hv498b_pVmUz-Ks7WJ0XVCl3E5cjc6D6Jh3rAonuB6Ep619l8R8cktXVfjpHEpN-XPdc47avpFSSfPYkLZaEZuereKkL_PpeblWZLb72QYq0h8zWMSLWyp50pIviyOAm8x3tqe3CQBzbZatQs2f1Bb4CebLlLHGQCnAoqBHoRPLkdglv2Qjo_vqidtfXGGKjEyVuADj1ypI2EEb7X7KmKTYrp4z7A9NudFrYO_Ji" />
+                        <div class="absolute top-4 left-4">
+                            <span
+                                class="px-3 py-1 bg-navy-deep/90 backdrop-blur-sm text-gold-light font-label-uppercase text-label-uppercase rounded-full border border-gold-muted/30 text-[11px]">Members
+                                Only</span>
+                        </div>
+                    </div>
+                    <div class="p-card-padding flex flex-col justify-between md:w-1/2">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-label-uppercase text-label-uppercase text-gold-muted">Oct 15 • 7:00
+                                    PM</span>
+                                <button class="text-navy-deep/40 hover:text-danger transition-colors fill-icon">
+                                    <span class="material-symbols-outlined">favorite</span>
+                                </button>
+                            </div>
+                            <h3 class="font-h3 text-h3 text-navy-deep mb-3">Vintage Reserve Tasting</h3>
+                            <p class="font-body-lg text-body-lg text-text-secondary mb-6 line-clamp-3">Join our Head
+                                Sommelier for an exclusive journey through the private cellars. Sample rare vintages
+                                paired with artisanal cheeses crafted specifically for this evening.</p>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-cream-dark pt-4">
+                            <div class="flex items-center text-text-muted">
+                                <span class="material-symbols-outlined text-[18px] mr-1">group</span>
+                                <span class="font-body-lg text-body-lg text-[14px]">12/20 Attending</span>
+                            </div>
+                            <button
+                                class="text-navy-deep font-label-uppercase text-label-uppercase border-b border-navy-deep pb-0.5 hover:text-gold-muted hover:border-gold-muted transition-colors">RSVP
+                                Now</button>
+                        </div>
+                    </div>
+                </article>
+                <!-- Event Card 2 -->
+                <article
+                    class="bg-white rounded-lg border gold-border shadow-[0_4px_24px_rgba(30,58,95,0.08)] overflow-hidden hover-lift flex flex-col">
+                    <div class="h-48 relative">
+                        <img class="w-full h-full object-cover"
+                            data-alt="An elegant white-attire summer party on a lush manicured lawn overlooking the ocean. Guests mingling holding champagne flutes. Bright, clear sunny day with crisp shadows. Crisp white furniture, subtle floral arrangements, and a refined, airy country club aesthetic."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFnmBfu4DYlo-Rf-eLHclxNX1iRvntBRqw98kfCaNQNjQ6EHbOcgRgTfJrW3tlZzEif5pzH4XMJueqZLPXW7hykO8wskpZohMnD2BdEFNd-XHF87EAVILBT917wU6q5DFLNdgDsfM6qajuIc6hZqWosXf9wVrZtWSGyPDpnunq3vJQWO8S2qVwViHwZiQneBqkfkBXysJR32GdFZX1UjCFI4fQnjZliXH6jqUck0V24-aNS1C2" />
+                        <div class="absolute top-4 left-4">
+                            <span
+                                class="px-3 py-1 bg-white/90 backdrop-blur-sm text-navy-deep font-label-uppercase text-label-uppercase rounded-full border border-gold-muted/30 text-[11px]">Social</span>
+                        </div>
+                    </div>
+                    <div class="p-card-padding flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-uppercase text-label-uppercase text-gold-muted">Oct 22 • 4:00
+                                PM</span>
+                        </div>
+                        <h4 class="font-h4 text-h4 text-navy-deep mb-2">End of Season Gala</h4>
+                        <p class="font-body-lg text-body-lg text-text-secondary mb-4 flex-grow line-clamp-2">Celebrate
+                            the conclusion of the summer season with live jazz, cocktails, and sunset views.</p>
+                        <div class="flex items-center justify-between border-t border-cream-dark pt-4 mt-auto">
+                            <div class="flex items-center text-text-muted">
+                                <span class="material-symbols-outlined text-[18px] mr-1">group</span>
+                                <span class="font-body-lg text-body-lg text-[14px]">85/150 Attending</span>
+                            </div>
+                            <button
+                                class="text-navy-deep font-label-uppercase text-label-uppercase hover:text-gold-muted transition-colors">Details</button>
+                        </div>
+                    </div>
+                </article>
+                <!-- Event Card 3 -->
+                <article
+                    class="bg-white rounded-lg border gold-border shadow-[0_4px_24px_rgba(30,58,95,0.08)] overflow-hidden hover-lift flex flex-col">
+                    <div class="h-48 relative">
+                        <img class="w-full h-full object-cover"
+                            data-alt="A serene morning yoga session on a pristine wooden deck near the beach. Soft, golden hour morning light casting long shadows. Minimalist, zen atmosphere. High-end yoga mats laid out precisely. Calm ocean in the background. Tranquil, luxurious wellness aesthetic."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8fWxlYAyRt9vOSw3eJMpwveTutlvF9ipmNvnLDP96UdPOnskNX7a-_oloGr3KqWIRKNSa_n-xmD71JYL51CW3eq_u7XhuSg8uXVa3cWOIwDW1z6-zFqVqWkomyOeRVxst1T1fPi68VGZs4N3Oiy_-yJg6FAT-GwR2OastlMuDDYKFHL1GMetsa2JgnHpKgqLvq-Jh7TjrbAUAzoCc_F7Sfgk3bH3cirXTBNBX5N4mfsjVLIgw" />
+                        <div class="absolute top-4 left-4">
+                            <span
+                                class="px-3 py-1 bg-white/90 backdrop-blur-sm text-navy-deep font-label-uppercase text-label-uppercase rounded-full border border-gold-muted/30 text-[11px]">Wellness</span>
+                        </div>
+                    </div>
+                    <div class="p-card-padding flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-uppercase text-label-uppercase text-gold-muted">Oct 25 • 7:30
+                                AM</span>
+                        </div>
+                        <h4 class="font-h4 text-h4 text-navy-deep mb-2">Sunrise Flow &amp; Meditation</h4>
+                        <p class="font-body-lg text-body-lg text-text-secondary mb-4 flex-grow line-clamp-2">Start your
+                            day centered with our resident instructor, followed by organic pressing juices.</p>
+                        <div class="flex items-center justify-between border-t border-cream-dark pt-4 mt-auto">
+                            <div class="flex items-center text-text-muted">
+                                <span class="material-symbols-outlined text-[18px] mr-1">group</span>
+                                <span class="font-body-lg text-body-lg text-[14px]">8/15 Attending</span>
+                            </div>
+                            <button
+                                class="text-navy-deep font-label-uppercase text-label-uppercase hover:text-gold-muted transition-colors">Details</button>
+                        </div>
+                    </div>
+                </article>
+                <!-- Event Card 4 (Navy Highlight) -->
+                <article
+                    class="gradient-navy rounded-lg border border-gold-muted/40 shadow-lg overflow-hidden hover-lift flex flex-col relative">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <span class="material-symbols-outlined text-[120px] text-gold-light">diamond</span>
+                    </div>
+                    <div class="p-card-padding flex flex-col flex-grow relative z-10">
+                        <div class="mb-4">
+                            <span
+                                class="px-3 py-1 bg-gold-muted/20 text-gold-light font-label-uppercase text-label-uppercase rounded-full border border-gold-muted/50 text-[11px]">Premier
+                                Tier</span>
+                        </div>
+                        <h4 class="font-h4 text-h4 text-white mb-2">The Commodore's Dinner</h4>
+                        <p class="font-body-lg text-body-lg text-cream/80 mb-6 flex-grow">An invitation-only
+                            multi-course culinary experience hosted by the Club Commodore. Formal attire required.</p>
+                        <div class="bg-navy-deep/50 rounded p-4 border border-gold-muted/20 mt-auto">
+                            <div class="flex justify-between items-center mb-1">
+                                <span
+                                    class="font-label-uppercase text-label-uppercase text-gold-muted text-[11px]">Date</span>
+                                <span
+                                    class="font-label-uppercase text-label-uppercase text-gold-muted text-[11px]">Status</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-body-lg text-body-lg text-white">Nov 05 • 8:00 PM</span>
+                                <span class="text-gold-light font-label-uppercase text-label-uppercase">Waitlist</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- Event Card 5 -->
+                <article
+                    class="bg-white rounded-lg border gold-border shadow-[0_4px_24px_rgba(30,58,95,0.08)] overflow-hidden hover-lift flex flex-col">
+                    <div class="h-48 relative">
+                        <img class="w-full h-full object-cover"
+                            data-alt="A masterclass cooking demonstration in a state-of-the-art commercial kitchen. Gleaming stainless steel surfaces, copper pots hanging overhead. A renowned chef in a pristine white coat plating a delicate, colorful dish. Focused, dramatic lighting highlighting the food. Premium culinary atmosphere."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFkDZHGV8lyBImk8NRBUuvo64l3BT7fR4SkO2cS2N-8MGEIWJtoH2OzRpGsCDaxUyJTLEPP56RYpa_eumDxoAQ1qRJKUwAwQYM4_N2Eff63fiDKsNU66bbIUC30HmG6q3TCEq-d7Y00zsgbb3rzQjuHRoYryxgbqIUjVU7vsF9NchCDA2N7f1XXD2VhgdTq2tBiZmZK7a383NVGY-J0zg8J_4QdlthT6-AABiMY8iN6cvM5Rl6" />
+                        <div class="absolute top-4 left-4">
+                            <span
+                                class="px-3 py-1 bg-white/90 backdrop-blur-sm text-navy-deep font-label-uppercase text-label-uppercase rounded-full border border-gold-muted/30 text-[11px]">Culinary</span>
+                        </div>
+                    </div>
+                    <div class="p-card-padding flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-uppercase text-label-uppercase text-gold-muted">Nov 12 • 2:00
+                                PM</span>
+                        </div>
+                        <h4 class="font-h4 text-h4 text-navy-deep mb-2">Masterclass: Coastal Cuisine</h4>
+                        <p class="font-body-lg text-body-lg text-text-secondary mb-4 flex-grow line-clamp-2">Learn the
+                            secrets of our signature seafood dishes from Executive Chef Laurent.</p>
+                        <div class="flex items-center justify-between border-t border-cream-dark pt-4 mt-auto">
+                            <div class="flex items-center text-text-muted">
+                                <span class="material-symbols-outlined text-[18px] mr-1">group</span>
+                                <span class="font-body-lg text-body-lg text-[14px]">10/12 Attending</span>
+                            </div>
+                            <button
+                                class="text-navy-deep font-label-uppercase text-label-uppercase hover:text-gold-muted transition-colors">Details</button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div class="mt-12 text-center">
+                <button
+                    class="px-8 py-3 bg-transparent border border-navy-deep text-navy-deep font-label-uppercase text-label-uppercase rounded hover:bg-navy-deep/5 transition-colors">
+                    Load More Events
+                </button>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer
+            class="w-full py-12 bg-navy-deep flex flex-col items-center justify-center text-center space-y-6 px-container-margin border-t border-gold-muted/30 mt-auto">
+            <h4 class="font-h4 text-h4 text-gold-light mb-4">Estrella del Mar</h4>
+            <div class="flex space-x-6">
+                <a class="font-label-uppercase text-label-uppercase text-gold-muted/80 hover:text-gold-light transition-colors hover:underline decoration-gold-muted/50"
+                    href="#">Privacy Policy</a>
+                <a class="font-label-uppercase text-label-uppercase text-gold-muted/80 hover:text-gold-light transition-colors hover:underline decoration-gold-muted/50"
+                    href="#">Terms of Service</a>
+                <a class="font-label-uppercase text-label-uppercase text-gold-muted/80 hover:text-gold-light transition-colors hover:underline decoration-gold-muted/50"
+                    href="#">Press Inquiry</a>
+                <a class="font-label-uppercase text-label-uppercase text-gold-muted/80 hover:text-gold-light transition-colors hover:underline decoration-gold-muted/50"
+                    href="#">Careers</a>
+            </div>
+            <p class="font-body-lg text-body-lg text-gold-muted">© 2024 Estrella del Mar. All rights reserved. Laboma
+                Beach, Accra.</p>
+        </footer>
+    </main>
+</body>
+
+</html>

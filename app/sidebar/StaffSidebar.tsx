@@ -62,6 +62,11 @@ const NAV_ITEMS = [
         label: "Manage Subscriptions",
         icon: <IconPlus />,
         href: "/membership/members/subscriptions",
+    },
+    {
+        label: "Event Management",
+        icon: <IconPlus />,
+        href: "/events/staff",
     }
 ] as const;
 

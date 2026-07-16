@@ -116,6 +116,10 @@ export interface MembershipApplication {
   updated_at: string;
   applicant: MembershipApplicationApplicant;
   plan: MembershipPlanSummary;
+  contract_id?: string | null;
+  contract_status?: string | null;
+  subscription_id?: string | null;
+  subscription_status?: string | null;
 }
 
 export type AdminMembershipApplicationsResponse = ApiResponse<MembershipApplication[]>;
@@ -127,6 +131,8 @@ export interface MembershipApplicationDetail {
   status: string;
   contract_id: string | null;
   contract_status: string | null;
+  subscription_id: string | null;
+  subscription_status: string | null;
   application_fee_reference: string;
   application_fee_paid_at: string | null;
   approved_at: string | null;
@@ -303,3 +309,55 @@ export type SubscriptionsListResponse = ApiResponse<SubscriptionListItem[]>;
 export type SubscriptionDetail = MyMembership;
 
 export type SubscriptionDetailResponse = ApiResponse<SubscriptionDetail>;
+
+// ---------------------------------------------------------------------------
+// Admin: suspend / reactivate a subscription
+// ---------------------------------------------------------------------------
+
+// Both endpoints return the updated subscription (same shape as SubscriptionDetail).
+export type SuspendSubscriptionResponse = ApiResponse<SubscriptionDetail>;
+export type ReactivateSubscriptionResponse = ApiResponse<SubscriptionDetail>;
+
+// ---------------------------------------------------------------------------
+// Admin: payments and late payments
+// ---------------------------------------------------------------------------
+
+export interface MembershipPaymentHistory {
+  id: string;
+  user: {
+    id: string;
+    email: string;
+    username: string;
+    first_name: string;
+    last_name: string;
+  };
+  payment_type: string;
+  payment_type_display: string;
+  amount_pesewas: number;
+  reference: string;
+  status: string;
+  paid_at: string;
+  application: string | null;
+  subscription: string | null;
+}
+
+export type AdminPaymentHistoryResponse = ApiResponse<MembershipPaymentHistory[]>;
+
+export interface AdminSubscriptionDetail extends SubscriptionDetail {
+  member: {
+    id: string;
+    email: string;
+    username: string;
+    first_name: string;
+    last_name: string;
+  };
+}
+
+export interface AdminLatePaymentsData {
+  pending_applications: MembershipApplication[];
+  pending_subscriptions: AdminSubscriptionDetail[];
+  expired_subscriptions: AdminSubscriptionDetail[];
+  late_maintenance_subscriptions: AdminSubscriptionDetail[];
+}
+
+export type AdminLatePaymentsResponse = ApiResponse<AdminLatePaymentsData>;

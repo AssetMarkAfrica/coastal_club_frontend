@@ -12,6 +12,8 @@ import { clearMembershipError } from "@/store/membership/membershipSlice";
 import {
   approveMembershipApplication,
   fetchAdminMembershipApplications,
+  suspendSubscription,
+  reactivateSubscription,
 } from "@/store/membership/membershipThunks";
 
 const formatDate = (value: string | null) => {
@@ -88,6 +90,26 @@ export default function AdminMembershipApplicationsPage() {
     }
   };
 
+  const onSuspend = async (contractId: string) => {
+    dispatch(clearMembershipError());
+    try {
+      await dispatch(suspendSubscription(contractId)).unwrap();
+      await dispatch(fetchAdminMembershipApplications());
+    } catch {
+      // Error state handled by slice
+    }
+  };
+
+  const onReactivate = async (contractId: string) => {
+    dispatch(clearMembershipError());
+    try {
+      await dispatch(reactivateSubscription(contractId)).unwrap();
+      await dispatch(fetchAdminMembershipApplications());
+    } catch {
+      // Error state handled by slice
+    }
+  };
+
   const stats = useMemo(() => {
     const total = applications.length;
     const pending = applications.filter(
@@ -148,7 +170,7 @@ export default function AdminMembershipApplicationsPage() {
               </p>
             </div>
 
-          
+
           </div>
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -189,11 +211,10 @@ export default function AdminMembershipApplicationsPage() {
                       setStatusFilter(status);
                       setCurrentPage(1);
                     }}
-                    className={`rounded-md px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors ${
-                      statusFilter === status
+                    className={`rounded-md px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors ${statusFilter === status
                         ? "bg-navy-deep text-gold-light shadow-sm"
                         : "text-text-muted hover:text-navy-deep"
-                    }`}
+                      }`}
                   >
                     {toTitleCase(status)}
                   </button>
@@ -285,9 +306,8 @@ export default function AdminMembershipApplicationsPage() {
                               router.push(detailHref);
                             }
                           }}
-                          className={`cursor-pointer transition-colors hover:bg-cream/40 ${
-                            index % 2 === 1 ? "bg-cream/10" : ""
-                          }`}
+                          className={`cursor-pointer transition-colors hover:bg-cream/40 ${index % 2 === 1 ? "bg-cream/10" : ""
+                            }`}
                         >
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
@@ -332,17 +352,71 @@ export default function AdminMembershipApplicationsPage() {
                               >
                                 <span>👁</span>
                               </button>
-                              <button
-                                type="button"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  onApprove(application.id);
-                                }}
-                                disabled={loading || isApproved || isApproving}
-                                className="rounded border border-gold-muted bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                              >
-                                {isApproved ? "Approved" : isApproving ? "Approving..." : "Approve"}
-                              </button>
+                              {isApproved ? (
+                                application.subscription_id ? (
+                                  application.subscription_status === "active" ? (
+                                    <button
+                                      type="button"
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        onSuspend(application.subscription_id!);
+                                      }}
+                                      disabled={loading}
+                                      className="rounded border border-danger bg-danger/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-danger transition-colors hover:bg-danger hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                                    >
+                                      Put on Hold
+                                    </button>
+                                  ) : application.subscription_status === "suspended" ? (
+                                    <button
+                                      type="button"
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        onReactivate(application.subscription_id!);
+                                      }}
+                                      disabled={loading}
+                                      className="rounded border border-success bg-success/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-success transition-colors hover:bg-success hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                                    >
+                                      Reactivate
+                                    </button>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      disabled
+                                      className="rounded border border-gold-muted bg-navy-deep px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-light opacity-60 cursor-not-allowed"
+                                    >
+                                      Approved
+                                    </button>
+                                  )
+                                ) : (
+                                  <button
+                                    type="button"
+                                    disabled
+                                    className="rounded border border-gold-muted bg-navy-deep px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-light opacity-60 cursor-not-allowed"
+                                  >
+                                    Approved
+                                  </button>
+                                )
+                              ) : normalizeStatusBucket(application.status) === "rejected" ? (
+                                <button
+                                  type="button"
+                                  disabled
+                                  className="rounded border border-gold-muted bg-danger/50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white opacity-60 cursor-not-allowed"
+                                >
+                                  Rejected
+                                </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    onApprove(application.id);
+                                  }}
+                                  disabled={loading || isApproving}
+                                  className="rounded border border-gold-muted bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                  {isApproving ? "Approving..." : "Approve"}
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -381,11 +455,10 @@ export default function AdminMembershipApplicationsPage() {
                       key={pageNumber}
                       type="button"
                       onClick={() => setCurrentPage(pageNumber)}
-                      className={`h-8 w-8 rounded text-xs font-semibold ${
-                        safeCurrentPage === pageNumber
+                      className={`h-8 w-8 rounded text-xs font-semibold ${safeCurrentPage === pageNumber
                           ? "bg-navy-deep text-gold-light"
                           : "text-navy-deep hover:bg-cream"
-                      }`}
+                        }`}
                     >
                       {pageNumber}
                     </button>
@@ -403,7 +476,7 @@ export default function AdminMembershipApplicationsPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          
+
 
             <div className="rounded-xl border border-gold-muted/25 bg-white p-6 text-center shadow-sm">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cream">

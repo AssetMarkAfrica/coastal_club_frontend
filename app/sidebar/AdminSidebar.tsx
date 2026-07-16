@@ -10,6 +10,7 @@ import { logoutUser } from "@/store/auth/authThunks";
 const navItems = [
 
   { label: "Applications", href: "/membership/view-applications", icon: "users" },
+  { label: "Payment History", href: "/membership/payments", icon: "credit-card" }
 
 ] as const;
 
@@ -96,11 +97,10 @@ export default function AdminSidebar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-4 px-6 py-4 transition-all ${
-                  active
+                className={`flex items-center gap-4 px-6 py-4 transition-all ${active
                     ? "border-r-4 border-gold-muted bg-gold-muted/10 text-gold-light"
                     : "text-cream/70 hover:bg-primary-container/50 hover:text-gold-light"
-                }`}
+                  }`}
               >
                 {iconMap[item.icon]}
                 <span className="text-[11px] uppercase tracking-[0.12em] font-semibold">{item.label}</span>

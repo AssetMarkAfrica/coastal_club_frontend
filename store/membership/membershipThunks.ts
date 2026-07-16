@@ -216,3 +216,59 @@ export const fetchSubscriptionDetail = createAsyncThunk(
     }
   }
 );
+
+export const suspendSubscription = createAsyncThunk(
+  "membership/suspendSubscription",
+  async (subscriptionId: string, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.suspendSubscription(subscriptionId);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to suspend subscription.")
+      );
+    }
+  }
+);
+
+export const reactivateSubscription = createAsyncThunk(
+  "membership/reactivateSubscription",
+  async (subscriptionId: string, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.reactivateSubscription(subscriptionId);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to reactivate subscription.")
+      );
+    }
+  }
+);
+
+export const fetchAdminPaymentHistory = createAsyncThunk(
+  "membership/fetchAdminPaymentHistory",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getAdminPaymentHistory();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch payment history.")
+      );
+    }
+  }
+);
+
+export const fetchAdminLatePayments = createAsyncThunk(
+  "membership/fetchAdminLatePayments",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getAdminLatePayments();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch late payments.")
+      );
+    }
+  }
+);

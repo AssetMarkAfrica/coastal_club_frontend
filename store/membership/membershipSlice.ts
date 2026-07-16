@@ -11,7 +11,8 @@ import type {
   MyMembershipStatus,
   SubscriptionDetail,
   SubscriptionListItem,
-
+  MembershipPaymentHistory,
+  AdminLatePaymentsData,
 } from "../../types/membership";
 import {
   acceptMembershipContract,
@@ -25,7 +26,10 @@ import {
   fetchSubscriptions,
   fetchSubscriptionDetail,
   submitMembershipApplication,
-
+  suspendSubscription,
+  reactivateSubscription,
+  fetchAdminPaymentHistory,
+  fetchAdminLatePayments
 } from "./membershipThunks";
 
 export interface MembershipState {
@@ -40,6 +44,8 @@ export interface MembershipState {
   contractAcceptance: AcceptMembershipContractData | null;
   subscriptions: SubscriptionListItem[];
   subscriptionDetail: SubscriptionDetail | null;
+  paymentHistory: MembershipPaymentHistory[];
+  latePayments: AdminLatePaymentsData | null;
   loading: boolean;
   error: string | null;
 }
@@ -56,6 +62,8 @@ const initialState: MembershipState = {
   contractAcceptance: null,
   subscriptions: [],
   subscriptionDetail: null,
+  paymentHistory: [],
+  latePayments: null,
   loading: false,
   error: null,
 };
@@ -79,6 +87,8 @@ const membershipSlice = createSlice({
       state.contractAcceptance = null;
       state.subscriptions = [];
       state.subscriptionDetail = null;
+      state.paymentHistory = [];
+      state.latePayments = null;
       state.loading = false;
       state.error = null;
     },
@@ -271,6 +281,89 @@ const membershipSlice = createSlice({
         state.loading = false;
         state.error =
           (action.payload as string) ?? "Failed to fetch subscription detail.";
+      });
+
+    builder
+      .addCase(suspendSubscription.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(suspendSubscription.fulfilled, (state, action) => {
+        state.loading = false;
+        // Update subscription detail if it's the one currently viewed
+        if (state.subscriptionDetail?.id === action.payload.id) {
+          state.subscriptionDetail = action.payload;
+        }
+        // Also update in the list if it exists there
+        const index = state.subscriptions.findIndex(s => s.id === action.payload.id);
+        if (index !== -1) {
+          state.subscriptions[index].status = action.payload.status;
+          state.subscriptions[index].is_active = action.payload.is_active;
+        }
+        // Update myMembership if it matches (in case it's an admin looking at their own, or something like that)
+        if (state.myMembership?.id === action.payload.id) {
+          state.myMembership = action.payload;
+        }
+      })
+      .addCase(suspendSubscription.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to suspend subscription.";
+      });
+
+    builder
+      .addCase(reactivateSubscription.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(reactivateSubscription.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.subscriptionDetail?.id === action.payload.id) {
+          state.subscriptionDetail = action.payload;
+        }
+        const index = state.subscriptions.findIndex(s => s.id === action.payload.id);
+        if (index !== -1) {
+          state.subscriptions[index].status = action.payload.status;
+          state.subscriptions[index].is_active = action.payload.is_active;
+        }
+        if (state.myMembership?.id === action.payload.id) {
+          state.myMembership = action.payload;
+        }
+      })
+      .addCase(reactivateSubscription.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to reactivate subscription.";
+      });
+
+    builder
+      .addCase(fetchAdminPaymentHistory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAdminPaymentHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.paymentHistory = action.payload;
+      })
+      .addCase(fetchAdminPaymentHistory.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to fetch payment history.";
+      });
+
+    builder
+      .addCase(fetchAdminLatePayments.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAdminLatePayments.fulfilled, (state, action) => {
+        state.loading = false;
+        state.latePayments = action.payload;
+      })
+      .addCase(fetchAdminLatePayments.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to fetch late payments.";
       });
   },
 });

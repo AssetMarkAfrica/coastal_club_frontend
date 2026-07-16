@@ -14,7 +14,11 @@ import type {
   SubmitMembershipApplicationResponse,
 
   SubscriptionDetailResponse,
-  SubscriptionsListResponse
+  SubscriptionsListResponse,
+  SuspendSubscriptionResponse,
+  ReactivateSubscriptionResponse,
+  AdminPaymentHistoryResponse,
+  AdminLatePaymentsResponse
 } from "../../types/membership";
 
 export type {
@@ -43,6 +47,10 @@ export type {
   MyMembershipStatusResponse,
   SubmitMembershipApplicationPayload,
   SubmitMembershipApplicationResponse,
+  MembershipPaymentHistory,
+  AdminPaymentHistoryResponse,
+  AdminLatePaymentsData,
+  AdminLatePaymentsResponse
 } from "../../types/membership";
 
 const BASE = process.env.NEXT_PUBLIC_MEMBERSHIP_API;
@@ -94,3 +102,15 @@ export const getSubscriptions = () =>
 
 export const getSubscriptionDetail = (subscriptionId: string) =>
   api.get<SubscriptionDetailResponse>(`${BASE}/staff/subscriptions/${subscriptionId}/`);
+
+export const suspendSubscription = (subscriptionId: string) =>
+  api.post<SuspendSubscriptionResponse>(`${BASE}/admin/subscriptions/${subscriptionId}/suspend/`);
+
+export const reactivateSubscription = (subscriptionId: string) =>
+  api.post<ReactivateSubscriptionResponse>(`${BASE}/admin/subscriptions/${subscriptionId}/reactivate/`);
+
+export const getAdminPaymentHistory = () =>
+  api.get<AdminPaymentHistoryResponse>(`${BASE}/admin/payments/`);
+
+export const getAdminLatePayments = () =>
+  api.get<AdminLatePaymentsResponse>(`${BASE}/admin/late-payments/`);

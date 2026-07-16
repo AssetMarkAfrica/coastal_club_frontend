@@ -13,6 +13,8 @@ import { clearMembershipError } from "@/store/membership/membershipSlice";
 import {
   approveMembershipApplication,
   fetchAdminMembershipApplicationDetail,
+  suspendSubscription,
+  reactivateSubscription,
 } from "@/store/membership/membershipThunks";
 
 const formatDateTime = (value: string | null) => {
@@ -117,6 +119,28 @@ export default function ApplicationDetailPage() {
     }
   };
 
+  const onSuspend = async () => {
+    if (!application?.subscription_id) return;
+    dispatch(clearMembershipError());
+    try {
+      await dispatch(suspendSubscription(application.subscription_id)).unwrap();
+      dispatch(fetchAdminMembershipApplicationDetail(application.id));
+    } catch {
+      // Error state handled by slice
+    }
+  };
+
+  const onReactivate = async () => {
+    if (!application?.subscription_id) return;
+    dispatch(clearMembershipError());
+    try {
+      await dispatch(reactivateSubscription(application.subscription_id)).unwrap();
+      dispatch(fetchAdminMembershipApplicationDetail(application.id));
+    } catch {
+      // Error state handled by slice
+    }
+  };
+
   return (
     <main className="flex-1 min-w-0 bg-cream text-text-primary antialiased pb-12">
       <header className="sticky top-0 z-30 border-b border-gold-muted/20 bg-surface/95 backdrop-blur-md">
@@ -143,14 +167,62 @@ export default function ApplicationDetailPage() {
 
             <div className="flex flex-wrap items-center gap-3">
              
-              <button
-                type="button"
-                onClick={onApprove}
-                disabled={loading || isApproved || !application}
-                className="rounded border border-gold-muted bg-navy-deep px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-gold-light transition-colors hover:bg-gold-muted hover:text-navy-deep disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isApproved ? "Approved" : loading ? "Approving..." : "Approve Application"}
-              </button>
+              {isApproved ? (
+                application?.subscription_id ? (
+                  application.subscription_status === "active" ? (
+                    <button
+                      type="button"
+                      onClick={onSuspend}
+                      disabled={loading}
+                      className="rounded border border-danger bg-danger/10 px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-danger transition-colors hover:bg-danger hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {loading ? "Suspending..." : "Suspend"}
+                    </button>
+                  ) : application.subscription_status === "suspended" ? (
+                    <button
+                      type="button"
+                      onClick={onReactivate}
+                      disabled={loading}
+                      className="rounded border border-success bg-success/10 px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-success transition-colors hover:bg-success hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {loading ? "Reactivating..." : "Reactivate"}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="rounded border border-gold-muted bg-navy-deep px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-gold-light opacity-60 cursor-not-allowed"
+                    >
+                      Approved
+                    </button>
+                  )
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    className="rounded border border-gold-muted bg-navy-deep px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-gold-light opacity-60 cursor-not-allowed"
+                  >
+                    Approved
+                  </button>
+                )
+              ) : statusKey === "rejected" ? (
+                <button
+                  type="button"
+                  disabled
+                  className="rounded border border-gold-muted bg-danger/50 px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white opacity-60 cursor-not-allowed"
+                >
+                  Rejected
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onApprove}
+                  disabled={loading || !application}
+                  className="rounded border border-gold-muted bg-navy-deep px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-gold-light transition-colors hover:bg-gold-muted hover:text-navy-deep disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading ? "Approving..." : "Approve Application"}
+                </button>
+              )}
             </div>
           </div>
         </div>

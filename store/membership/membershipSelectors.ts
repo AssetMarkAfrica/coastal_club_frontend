@@ -25,3 +25,7 @@ export const selectSubscriptions = (state: RootState) =>
   state.membership.subscriptions;
 export const selectSubscriptionDetail = (state: RootState) =>
   state.membership.subscriptionDetail;
+export const selectAdminPaymentHistory = (state: RootState) =>
+  state.membership.paymentHistory;
+export const selectAdminLatePayments = (state: RootState) =>
+  state.membership.latePayments;
