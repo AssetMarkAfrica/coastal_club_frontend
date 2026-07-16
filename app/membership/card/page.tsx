@@ -64,16 +64,38 @@ export default function MemberCardPage() {
 
   /* ── Error ── */
   if (error) {
+    const isSuspended = error.includes("suspended") || error.includes("subscription");
+
     return (
       <main className="flex-1 min-h-screen bg-[#F7F3EC] flex flex-col">
         <MobileHeader />
-        <div className="flex-1 flex flex-col items-center justify-center gap-5 p-8 text-center">
-          <div className="w-14 h-14 rounded-full bg-red-50 border border-red-200 flex items-center justify-center">
-            <span className="material-symbols-outlined text-danger" style={{ fontVariationSettings: "'FILL' 1" }}>
-              error
-            </span>
-          </div>
-          <p className="text-navy-deep/60 text-sm max-w-xs">{error}</p>
+        <div className="flex-1 flex flex-col items-center justify-center gap-6 p-8 text-center">
+          {isSuspended ? (
+            <>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(183,146,43,0.12)", border: "1.5px solid rgba(183,146,43,0.3)" }}>
+                <span className="material-symbols-outlined" style={{ color: "#B7922B", fontSize: "32px", fontVariationSettings: "'FILL' 1" }}>
+                  account_pause
+                </span>
+              </div>
+              <div className="max-w-sm space-y-3">
+                <h2 className="text-lg font-semibold text-navy-deep" style={{ fontFamily: "var(--font-playfair)" }}>
+                  Membership Suspended
+                </h2>
+                <p className="text-navy-deep/60 text-sm leading-relaxed">
+                  {error}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="w-14 h-14 rounded-full bg-red-50 border border-red-200 flex items-center justify-center">
+                <span className="material-symbols-outlined text-danger" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  error
+                </span>
+              </div>
+              <p className="text-navy-deep/60 text-sm max-w-xs">{error}</p>
+            </>
+          )}
           <button
             onClick={() => dispatch(getMyMembershipCard())}
             className="px-6 py-2.5 border border-gold-muted text-gold-muted rounded text-xs font-semibold tracking-[0.14em] uppercase hover:bg-gold-muted hover:text-navy-deep transition-colors duration-300"

@@ -240,6 +240,21 @@ export interface MembershipContractPaymentDetails {
   total_due_now_pesewas: number;
 }
 
+export interface CheckoutMaintenanceFeePayload {
+  callback_url?: string;
+}
+
+export interface CheckoutMaintenanceFeeResponse {
+  authorization_url: string;
+  reference: string;
+  maintenance_fee_pesewas: number;
+  month: string;
+}
+
+export interface VerifyMaintenanceFeePayload {
+  reference: string;
+}
+
 export interface ContractAcceptanceContractSummary {
   id: string;
   status: string;

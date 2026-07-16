@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectCurrentUser } from "@/store/auth/authSelectors";
-import { selectMyMembership } from "@/store/membership/membershipSelectors";
+import { selectMyMembership, selectMyMembershipStatus } from "@/store/membership/membershipSelectors";
 import { logoutUser } from "@/store/auth/authThunks";
 
 /* ── Icons ───────────────────────────────────────────── */
@@ -52,13 +52,14 @@ const IconLogout = () => (
 );
 
 /* ── Nav items definition ─────────────────────────────── */
-const NAV_ITEMS = [
+type NavItem = { label: string; icon: React.ReactNode; href: string };
+
+const BASE_NAV_ITEMS: NavItem[] = [
     { label: "Dashboard", icon: <IconGrid />, href: "/membership/dashboard" },
     { label: "Member Card", icon: <IconCard />, href: "/membership/card" },
-    { label: "Check Reservations", icon: <IconCalendar />, href: "/booking/member/reservations" },
     { label: "Exclusive Perks", icon: <IconStar />, href: "/membership/perks" },
     { label: "Settings", icon: <IconSettings />, href: "/membership/settings" },
-] as const;
+];
 
 /* ── Active-tab helper ───────────────────────────────── */
 function useIsActive() {
@@ -83,6 +84,7 @@ export default function MemberSidebar() {
     const isActive = useIsActive();
     const currentUser = useAppSelector(selectCurrentUser);
     const membership = useAppSelector(selectMyMembership);
+    const membershipStatus = useAppSelector(selectMyMembershipStatus);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const initials =
         [currentUser?.first_name?.[0], currentUser?.last_name?.[0]]
@@ -93,6 +95,17 @@ export default function MemberSidebar() {
     const tierLabel = membership
         ? membership.plan.tier.charAt(0).toUpperCase() + membership.plan.tier.slice(1)
         : null;
+
+    const isSuspended = membershipStatus?.status === "suspended";
+
+    const navItems: NavItem[] = [
+        ...BASE_NAV_ITEMS,
+        {
+            label: "Check Reservations",
+            icon: <IconCalendar />,
+            href: isSuspended ? "/booking/customer/reservations" : "/booking/member/reservations",
+        },
+    ];
 
     const displayName =
         currentUser?.first_name
@@ -143,7 +156,7 @@ export default function MemberSidebar() {
 
                 {/* Nav */}
                 <nav className="flex-1 px-3 py-5 space-y-0.5">
-                    {NAV_ITEMS.map(({ label, icon, href }) => {
+                    {navItems.map(({ label, icon, href }: NavItem) => {
                         const active = isActive(href);
                         return (
                             <Link
@@ -195,7 +208,7 @@ export default function MemberSidebar() {
                 className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-16 bg-navy-deep border-t border-gold-muted/25 shadow-[0_-4px_24px_rgba(16,36,63,0.35)]"
                 style={{ fontFamily: "var(--font-inter)", paddingBottom: "env(safe-area-inset-bottom)" }}
             >
-                {NAV_ITEMS.map(({ label, icon, href }) => {
+                {navItems.map(({ label, icon, href }: { label: string; icon: React.ReactNode; href: string }) => {
                     const active = isActive(href);
                     return (
                         <Link

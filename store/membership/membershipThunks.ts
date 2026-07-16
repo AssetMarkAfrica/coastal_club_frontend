@@ -8,7 +8,8 @@ import type {
   AcceptMembershipContractPayload,
   ApproveMembershipApplicationPayload,
   SubmitMembershipApplicationPayload,
-
+  CheckoutMaintenanceFeePayload,
+  VerifyMaintenanceFeePayload
 } from "../../types/membership";
 
 const getErrorMessage = (error: unknown, fallback: string) => {
@@ -268,6 +269,34 @@ export const fetchAdminLatePayments = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         getErrorMessage(error, "Failed to fetch late payments.")
+      );
+    }
+  }
+);
+
+export const checkoutMaintenanceFee = createAsyncThunk(
+  "membership/checkoutMaintenanceFee",
+  async (payload: CheckoutMaintenanceFeePayload, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.checkoutMaintenanceFee(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to initialize maintenance fee payment.")
+      );
+    }
+  }
+);
+
+export const verifyMaintenanceFee = createAsyncThunk(
+  "membership/verifyMaintenanceFee",
+  async (payload: VerifyMaintenanceFeePayload, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.verifyMaintenanceFee(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to verify maintenance fee payment.")
       );
     }
   }

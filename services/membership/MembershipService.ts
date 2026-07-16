@@ -18,7 +18,10 @@ import type {
   SuspendSubscriptionResponse,
   ReactivateSubscriptionResponse,
   AdminPaymentHistoryResponse,
-  AdminLatePaymentsResponse
+  AdminLatePaymentsResponse,
+  CheckoutMaintenanceFeePayload,
+  CheckoutMaintenanceFeeResponse,
+  VerifyMaintenanceFeePayload
 } from "../../types/membership";
 
 export type {
@@ -95,6 +98,14 @@ export const acceptMembershipContract = (
     `${BASE}/contracts/${membershipContractId}/accept/`,
     payload
   );
+
+export const checkoutMaintenanceFee = (payload: CheckoutMaintenanceFeePayload) =>
+  api.post<CheckoutMaintenanceFeeResponse>(`${BASE}/maintenance-fee/checkout/`, payload);
+
+export const verifyMaintenanceFee = (payload: VerifyMaintenanceFeePayload) =>
+  api.get<MyMembershipResponse>(`${BASE}/maintenance-fee/verify/`, {
+    params: { reference: payload.reference },
+  });
 
 export const getSubscriptions = () =>
   api.get<SubscriptionsListResponse>(`${BASE}/staff/subscriptions/`);

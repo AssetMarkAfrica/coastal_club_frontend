@@ -39,6 +39,8 @@ export default function CreateMemberReservationPage() {
 
     const payload = {
       reservation_date: reservationDateStr,
+      reservation_time: `${time}:00`,
+      number_of_guests: guests,
     };
 
     try {
