@@ -2,6 +2,7 @@ import {
     IconConcierge,
     IconEvents, IconSpa,
     IconFork,
+    IconWalletMini,
 } from "./icons";
 
 export const formatMoney = (pesewas: number) =>
@@ -32,4 +33,5 @@ export const QUICK_SERVICES = [
   { label: "Spa\nBooking", icon: <IconSpa />, href: "#" },
   { label: "Private\nEvents", icon: <IconEvents />, href: "#" },
   { label: "Concierge\nRequest", icon: <IconConcierge />, href: "#" },
+  { label: "Pay\nMaintenance Fee", icon: <IconWalletMini />, href: "/membership/maintenance" },
 ];

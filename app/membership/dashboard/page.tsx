@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectCurrentUser } from "@/store/auth/authSelectors";
 import {
@@ -17,6 +18,7 @@ import { formatMoney, formatDate, toTitleCase, QUICK_SERVICES } from "./utils";
 
 export default function MembershipDashboardPage() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const currentUser = useAppSelector(selectCurrentUser);
   const membership = useAppSelector(selectMyMembership);
   const loading = useAppSelector(selectMembershipLoading);
@@ -275,11 +277,31 @@ export default function MembershipDashboardPage() {
           {
             label: "Monthly Dues",
             value: monthlyDues ?? "—",
-            sub: membership.maintenance_fee_paid_through_month ? (
-              <span className="text-text-secondary text-[11px]">
-                Paid through {membership.maintenance_fee_paid_through_month}
-              </span>
-            ) : null,
+            sub: (() => {
+              const feeStatus = membership.maintenance_fee_status;
+              if (feeStatus === "bonus_active") {
+                return (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700 border border-emerald-200">
+                    ✦ Bonus Active
+                  </span>
+                );
+              }
+              if (feeStatus === "paid" || membership.is_maintenance_fee_paid_current_month) {
+                return (
+                  <span className="text-text-secondary text-[11px]">
+                    Paid through {membership.maintenance_fee_paid_through_month}
+                  </span>
+                );
+              }
+              return (
+                <button
+                  onClick={() => router.push("/membership/maintenance")}
+                  className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors"
+                >
+                  ⚠ Pay Now
+                </button>
+              );
+            })(),
             icon: <IconBill />,
           },
           {

@@ -29,7 +29,9 @@ import {
   suspendSubscription,
   reactivateSubscription,
   fetchAdminPaymentHistory,
-  fetchAdminLatePayments
+  fetchAdminLatePayments,
+  checkoutMaintenanceFee,
+  verifyMaintenanceFee,
 } from "./membershipThunks";
 
 export interface MembershipState {
@@ -47,6 +49,7 @@ export interface MembershipState {
   paymentHistory: MembershipPaymentHistory[];
   latePayments: AdminLatePaymentsData | null;
   loading: boolean;
+  maintenanceFeeLoading: boolean;
   error: string | null;
 }
 
@@ -65,6 +68,7 @@ const initialState: MembershipState = {
   paymentHistory: [],
   latePayments: null,
   loading: false,
+  maintenanceFeeLoading: false,
   error: null,
 };
 
@@ -90,6 +94,7 @@ const membershipSlice = createSlice({
       state.paymentHistory = [];
       state.latePayments = null;
       state.loading = false;
+      state.maintenanceFeeLoading = false;
       state.error = null;
     },
   },
@@ -364,6 +369,38 @@ const membershipSlice = createSlice({
         state.loading = false;
         state.error =
           (action.payload as string) ?? "Failed to fetch late payments.";
+      });
+
+    builder
+      .addCase(checkoutMaintenanceFee.pending, (state) => {
+        state.maintenanceFeeLoading = true;
+        state.error = null;
+      })
+      .addCase(checkoutMaintenanceFee.fulfilled, (state) => {
+        state.maintenanceFeeLoading = false;
+      })
+      .addCase(checkoutMaintenanceFee.rejected, (state, action) => {
+        state.maintenanceFeeLoading = false;
+        state.error =
+          (action.payload as string) ??
+          "Failed to initialize maintenance fee payment.";
+      });
+
+    builder
+      .addCase(verifyMaintenanceFee.pending, (state) => {
+        state.maintenanceFeeLoading = true;
+        state.error = null;
+      })
+      .addCase(verifyMaintenanceFee.fulfilled, (state, action) => {
+        state.maintenanceFeeLoading = false;
+        // Refresh myMembership with the updated subscription (paid fees, new credit)
+        state.myMembership = action.payload;
+      })
+      .addCase(verifyMaintenanceFee.rejected, (state, action) => {
+        state.maintenanceFeeLoading = false;
+        state.error =
+          (action.payload as string) ??
+          "Failed to verify maintenance fee payment.";
       });
   },
 });

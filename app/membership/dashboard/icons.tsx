@@ -44,6 +44,13 @@ export const IconConcierge = () => (
     <line x1="6" y1="1" x2="6" y2="4" /><line x1="10" y1="1" x2="10" y2="4" /><line x1="14" y1="1" x2="14" y2="4" />
   </svg>
 );
+export const IconWalletMini = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M20 12V8H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h12v4" />
+    <path d="M20 12v4H6a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2h14v-4" />
+    <circle cx="18" cy="12" r="1" fill="currentColor" />
+  </svg>
+);
 export const IconTrendUp = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" />
