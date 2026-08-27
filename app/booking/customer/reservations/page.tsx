@@ -16,6 +16,7 @@ import {
   Clock,
   XCircle,
   TimerOff,
+  Star,
 } from "lucide-react";
 
 export default function MyReservationsPage() {
@@ -213,14 +214,24 @@ export default function MyReservationsPage() {
                       GHS {creditGhs.toFixed(2)}
                     </p>
                   </div>
-                  <button
-                    aria-label={`View details for reservation`}
-                    className="inline-flex items-center gap-2 text-gold-light hover:text-white transition-all px-3 py-2 rounded-full hover:bg-white/5 active:scale-95 text-sm font-semibold"
-                    onClick={() => router.push(`/booking/customer/reservations/${reservation.id}`)}
-                  >
-                    <span className="hidden sm:inline">View Details</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="inline-flex items-center gap-1.5 text-gold-light hover:text-white border border-gold-muted/30 px-3 py-1.5 rounded-lg hover:bg-gold-light/10 transition-all text-xs font-semibold"
+                      onClick={() => router.push(`/review?venue=${reservation.venue_type || 'skybar'}&non_member_reservation=${reservation.id}`)}
+                    >
+                      <Star className="w-3.5 h-3.5 fill-gold-light/20" />
+                      <span className="hidden sm:inline">Review Experience</span>
+                      <span className="sm:hidden">Review</span>
+                    </button>
+                    <button
+                      aria-label={`View details for reservation`}
+                      className="inline-flex items-center gap-2 text-gold-light hover:text-white transition-all px-3 py-2 rounded-full hover:bg-white/5 active:scale-95 text-sm font-semibold"
+                      onClick={() => router.push(`/booking/customer/reservations/${reservation.id}`)}
+                    >
+                      <span className="hidden sm:inline">View Details</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
               </article>
             );

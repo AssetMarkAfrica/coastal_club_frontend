@@ -7,6 +7,7 @@ import notificationReducer from "./notification/notificationSlice";
 import bookingReducer from "./booking/bookingSlice";
 import searchReducer from "./search/searchSlice";
 import eventReducer from "./event/eventSlice";
+import reviewReducer from "./review/reviewSlice";
 
 import cardReducer from "./membership/cardSlice"; 
 
@@ -21,6 +22,7 @@ export const store = configureStore({
     booking: bookingReducer,
     search: searchReducer,
     event: eventReducer,
+    review: reviewReducer,
   },
 });
 
