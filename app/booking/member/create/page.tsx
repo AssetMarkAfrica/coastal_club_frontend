@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ExperienceSelector from "../../components/ExperienceSelector";
 import DatePicker from "../../components/DatePicker";
@@ -10,8 +10,98 @@ import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { createMemberReservation } from "../../../../store/booking/bookingThunks";
 import type { RootState } from "../../../../store";
 import type { VenueType } from "../../../../types/booking";
-import { ChevronLeft, Sailboat, CalendarDays, Users, Loader2, CheckCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  CalendarDays,
+  Clock,
+  Users,
+  Loader2,
+  CheckCircle,
+  ShieldCheck,
+  Utensils,
+  Sofa,
+  DoorClosed,
+  Sunset,
+} from "lucide-react";
 
+/* ── Venue metadata (mirrors ExperienceSelector) ── */
+const VENUE_META: Record<
+  VenueType,
+  { label: string; tagline: string; image: string | null; Icon: React.ElementType }
+> = {
+  fine_dining: {
+    label: "Fine Dining",
+    tagline: "An exquisite à la carte dining journey",
+    image:
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761397/FineDining7_fepbsb.png",
+    Icon: Utensils,
+  },
+  executive_lounge: {
+    label: "Executive Lounge",
+    tagline: "An exclusive sanctuary for our members",
+    image: null,
+    Icon: Sofa,
+  },
+  private_room: {
+    label: "Private Room",
+    tagline: "Intimate parties & private gatherings",
+    image:
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758507/PrivateRoom1_eihid3.png",
+    Icon: DoorClosed,
+  },
+  skybar: {
+    label: "Skybar",
+    tagline: "Cocktails beneath an open sky",
+    image:
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757506/Skybar1_akorqw.png",
+    Icon: Sunset,
+  },
+};
+
+/* ── Helpers ── */
+function formatDateDisplay(d: Date) {
+  return d.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function toDateString(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/* ── Section wrapper ── */
+function FormSection({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-[0_2px_24px_rgba(0,0,0,0.055)]">
+      {/* Card header */}
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
+        <div className="w-8 h-8 rounded-lg bg-navy-deep/5 flex items-center justify-center flex-shrink-0">
+          {icon}
+        </div>
+        <h2 className="text-[11px] font-bold text-navy-deep uppercase tracking-[0.15em]">
+          {title}
+        </h2>
+      </div>
+      <div className="p-5">{children}</div>
+    </section>
+  );
+}
+
+/* ── Main page ── */
 export default function CreateMemberReservationPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -19,12 +109,25 @@ export default function CreateMemberReservationPage() {
   const { loading, error } = useAppSelector((state: RootState) => state.booking);
 
   const [venueType, setVenueType] = useState<VenueType>("fine_dining");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const v = (params.get("venue") || params.get("venue_type")) as VenueType | null;
+      const validVenues: VenueType[] = ["fine_dining", "executive_lounge", "private_room", "skybar"];
+      if (v && validVenues.includes(v)) {
+        setVenueType(v);
+      }
+    }
+  }, []);
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<string>("19:00");
   const [guests, setGuests] = useState<number>(2);
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
   const availableTimes = ["18:00", "18:30", "19:00", "19:30", "20:00"];
+  const venue = VENUE_META[venueType];
+  const canSubmit = !loading && !!venueType;
 
   const handleConfirmBooking = async () => {
     if (!user) {
@@ -32,15 +135,9 @@ export default function CreateMemberReservationPage() {
       return;
     }
 
-    // Format date string as YYYY-MM-DD
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const reservationDateStr = `${year}-${month}-${day}`;
-
     const payload = {
       venue_type: venueType,
-      reservation_date: reservationDateStr,
+      reservation_date: toDateString(date),
       reservation_time: `${time}:00`,
       number_of_guests: guests,
       notes: specialRequests,
@@ -55,113 +152,231 @@ export default function CreateMemberReservationPage() {
   };
 
   return (
-    <>
-      <header className="w-full bg-navy-deep px-gutter py-4 flex flex-col items-center justify-center relative shadow-sm shadow-navy-deep/20 z-10 rounded-b-xl border-b border-gold-light/20">
+    <div className="min-h-screen bg-cream">
+      {/* ─────────────── Header ─────────────── */}
+      <header className="w-full bg-navy-deep/95 backdrop-blur-sm px-4 py-3.5 flex items-center justify-between z-20 sticky top-0 border-b border-white/10">
         <button
           aria-label="Go Back"
-          className="absolute left-gutter top-1/2 -translate-y-1/2 text-gold-light p-2"
           onClick={() => router.back()}
+          className="flex items-center gap-1 text-gold-light/70 hover:text-gold-light transition-colors rounded-lg p-1 -ml-1"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-5 h-5" />
+          <span className="text-sm font-medium hidden sm:inline">Back</span>
         </button>
-        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gold-light/30 bg-primary-container flex items-center justify-center">
-          <Sailboat className="text-gold-light w-8 h-8" />
+
+        <div className="text-center">
+          <p className="text-gold-light/50 text-[9px] font-bold uppercase tracking-[0.25em] leading-none mb-0.5">
+            Coastal Club Member
+          </p>
+          <h1 className="text-white font-semibold text-[15px] leading-none">
+            New Reservation
+          </h1>
         </div>
-        <h1 className="font-h4 text-h4 text-gold-light mt-2">Member Reservation</h1>
+
+        {/* Balance spacer */}
+        <div className="w-16" />
       </header>
 
-      <main className="flex-1 px-gutter py-container-margin w-full max-w-md mx-auto lg:max-w-5xl relative z-0">
-        {error && (
-          <div className="bg-error-container text-on-error-container p-4 rounded-lg text-sm border border-error/20 mb-6">
-            {error}
-          </div>
-        )}
+      {/* ─────────────── Error Banner ─────────────── */}
+      {error && (
+        <div className="mx-4 mt-4 bg-red-50 text-red-700 p-4 rounded-xl text-sm border border-red-100">
+          {error}
+        </div>
+      )}
 
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
-          <div className="lg:col-span-8 flex flex-col gap-6">
+      {/* ─────────────── Page body ─────────────── */}
+      <main className="w-full max-w-md mx-auto lg:max-w-[1152px] px-4 pt-6 pb-32 lg:pb-10">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-10 lg:items-start">
+
+          {/* ─── Left column ─── */}
+          <div className="lg:col-span-7 flex flex-col gap-5">
+
+            {/* 1. Venue hero picker */}
             <ExperienceSelector value={venueType} onChange={setVenueType} />
 
-            <section className="bg-surface rounded-xl p-card-padding border border-gold-light/25 shadow-[0_4px_24px_rgba(30,58,95,0.08)] relative overflow-hidden">
-              <h2 className="font-h4 text-h4 text-primary-container mb-4 flex items-center gap-2">
-                <CalendarDays className="text-gold-muted w-6 h-6" />
-                Date &amp; Time
-              </h2>
-              <div className="flex flex-col gap-4">
+            {/* 2. Date & Time */}
+            <FormSection
+              icon={<CalendarDays className="w-4 h-4 text-navy-deep" />}
+              title="Date & Time"
+            >
+              <div className="flex flex-col gap-5">
                 <DatePicker value={date} onChange={setDate} />
-                <TimePicker value={time} onChange={setTime} availableTimes={availableTimes} />
-              </div>
-            </section>
-
-            <section className="bg-surface rounded-xl p-card-padding border border-gold-light/25 shadow-[0_4px_24px_rgba(30,58,95,0.08)] mb-6 lg:mb-0">
-              <h2 className="font-h4 text-h4 text-primary-container mb-4 flex items-center gap-2">
-                <Users className="text-gold-muted w-6 h-6" />
-                Details
-              </h2>
-              <GuestSelector value={guests} onChange={setGuests} />
-              <div>
-                <label
-                  className="font-label-uppercase text-label-uppercase text-text-secondary mb-2 block"
-                  htmlFor="special-requests"
-                >
-                  Special Requests (Optional)
-                </label>
-                <textarea
-                  id="special-requests"
-                  placeholder="Allergies, occasions..."
-                  rows={2}
-                  value={specialRequests}
-                  onChange={(e) => setSpecialRequests(e.target.value)}
-                  className="w-full bg-cream border border-cream-dark rounded-lg px-input-padding-x py-input-padding-y text-body-lg text-text-primary focus:border-primary-container focus:ring-2 focus:ring-gold-muted/60 placeholder:text-text-muted transition-all resize-none"
+                <TimePicker
+                  value={time}
+                  onChange={setTime}
+                  availableTimes={availableTimes}
                 />
               </div>
-            </section>
+            </FormSection>
+
+            {/* 3. Booking details */}
+            <FormSection
+              icon={<Users className="w-4 h-4 text-navy-deep" />}
+              title="Booking Details"
+            >
+              <div className="flex flex-col gap-5">
+                <GuestSelector value={guests} onChange={setGuests} />
+
+                <div>
+                  <label
+                    className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2 block"
+                    htmlFor="special-requests-member"
+                  >
+                    Special Requests{" "}
+                    <span className="font-normal normal-case text-gray-300">
+                      — optional
+                    </span>
+                  </label>
+                  <textarea
+                    id="special-requests-member"
+                    placeholder="Dietary requirements, special occasion, seating preferences…"
+                    rows={3}
+                    value={specialRequests}
+                    onChange={(e) => setSpecialRequests(e.target.value)}
+                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:border-navy-deep focus:ring-2 focus:ring-gold-muted/20 transition-all resize-none outline-none"
+                  />
+                </div>
+              </div>
+            </FormSection>
           </div>
 
-          <div className="lg:col-span-4 mt-6 lg:mt-0 sticky top-24 mb-24 lg:mb-0">
-            <section className="bg-surface rounded-xl p-card-padding border border-gold-light/25 shadow-[0_4px_24px_rgba(30,58,95,0.08)]">
-              <h2 className="font-h4 text-h4 text-primary-container mb-4 flex items-center gap-2">
-                <CheckCircle className="text-gold-muted w-6 h-6" />
-                Confirm Booking
-              </h2>
-              
-              <div className="text-sm text-text-secondary mb-6 leading-relaxed">
-                As a member, you are not required to pay a deposit for your reservation. 
-                Your club credit will be available to use during your visit.
+          {/* ─── Right sticky sidebar ─── */}
+          <div className="hidden lg:block lg:col-span-5 sticky top-24">
+            <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-[0_4px_40px_rgba(0,0,0,0.09)] bg-white">
+
+              {/* Venue photo */}
+              <div className="relative h-44 overflow-hidden">
+                {venue.image ? (
+                  <img
+                    key={venueType}
+                    src={venue.image}
+                    alt={venue.label}
+                    className="w-full h-full object-cover transition-opacity duration-500"
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full flex items-center justify-center"
+                    style={{
+                      background: "linear-gradient(135deg,#1E3A5F 0%,#10243F 100%)",
+                    }}
+                  >
+                    <venue.Icon className="w-14 h-14 text-white/10" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
+
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className="text-gold-light/70 text-[9px] font-bold uppercase tracking-[0.18em] mb-0.5">
+                    Selected Venue
+                  </p>
+                  <p className="text-white font-bold text-xl leading-tight">
+                    {venue.label}
+                  </p>
+                </div>
               </div>
-              
-              <div className="mt-6 pt-6 border-t border-gold-light/20">
+
+              {/* Summary */}
+              <div className="p-5 flex flex-col gap-5">
+
+                {/* Quick summary */}
+                <ul className="flex flex-col gap-3">
+                  <SummaryRow
+                    icon={<CalendarDays className="w-4 h-4 text-gray-400" />}
+                    label={formatDateDisplay(date)}
+                  />
+                  <SummaryRow
+                    icon={<Clock className="w-4 h-4 text-gray-400" />}
+                    label={time}
+                  />
+                  <SummaryRow
+                    icon={<Users className="w-4 h-4 text-gray-400" />}
+                    label={`${guests} ${guests === 1 ? "guest" : "guests"}`}
+                  />
+                </ul>
+
+                <div className="border-t border-gray-100" />
+                
+                <div className="bg-navy-deep/5 rounded-xl px-4 py-3 border border-navy-deep/10">
+                   <div className="flex items-start gap-3">
+                      <div className="mt-0.5">
+                        <CheckCircle className="w-4 h-4 text-navy-deep/60" />
+                      </div>
+                      <p className="text-[12px] text-gray-600 leading-relaxed">
+                        As a member, no deposit is required. Your club credit will be available to use during your visit.
+                      </p>
+                   </div>
+                </div>
+
+                {/* CTA */}
                 <button
+                  id="confirm-btn"
                   onClick={handleConfirmBooking}
-                  disabled={loading || !venueType}
-                  className="w-full bg-navy-deep text-gold-light border border-gold-muted font-label-uppercase text-label-uppercase py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gold-muted hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-50"
+                  disabled={!canSubmit}
+                  className="w-full bg-navy-deep text-gold-light font-bold text-[11px] uppercase tracking-[0.18em] py-4 rounded-xl flex items-center justify-center gap-2.5 hover:bg-gold-light hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-40 mt-1"
                 >
                   {loading ? (
                     <Loader2 className="animate-spin w-5 h-5" />
                   ) : (
-                    <CheckCircle className="w-5 h-5" />
+                    <CheckCircle className="w-4 h-4" />
                   )}
-                  {loading ? "Processing..." : "Confirm Reservation"}
+                  {loading ? "Processing…" : "Confirm Reservation"}
                 </button>
+
+                {/* Trust badge */}
+                <div className="flex items-center justify-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-gray-300" />
+                  <span className="text-[11px] text-gray-400">
+                    Priority member confirmation
+                  </span>
+                </div>
               </div>
-            </section>
+            </div>
           </div>
         </div>
       </main>
 
-      <div className="fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 w-full bg-surface/90 backdrop-blur-md p-4 border-t border-gold-light/20 z-40 lg:hidden shadow-[0_-8px_30px_rgba(16,36,63,0.1)]">
-        <button
-          onClick={handleConfirmBooking}
-          disabled={loading || !venueType}
-          className="w-full bg-navy-deep text-gold-light border border-gold-muted font-label-uppercase text-label-uppercase py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gold-muted hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-50"
-        >
-          {loading ? (
-            <Loader2 className="animate-spin w-5 h-5" />
-          ) : (
-            <CheckCircle className="w-5 h-5" />
-          )}
-          {loading ? "Processing..." : "Confirm Reservation"}
-        </button>
+      {/* ─────────────── Mobile sticky footer ─────────────── */}
+      <div className="fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 z-40 shadow-[0_-8px_30px_rgba(0,0,0,0.07)] lg:hidden">
+        
+        <div className="px-4 py-3 bg-navy-deep/5 border-b border-gray-100">
+           <div className="flex items-center justify-between">
+              <p className="text-[11px] text-gray-600 font-medium">
+                No deposit required for members
+              </p>
+              <div className="text-right flex-shrink-0">
+                <p className="font-bold text-navy-deep text-sm leading-none">
+                  {venue.label}
+                </p>
+              </div>
+           </div>
+        </div>
+
+        <div className="px-4 py-3">
+          <button
+            id="confirm-btn-mobile"
+            onClick={handleConfirmBooking}
+            disabled={!canSubmit}
+            className="w-full bg-navy-deep text-gold-light font-bold text-[11px] uppercase tracking-[0.18em] py-4 rounded-xl flex items-center justify-center gap-2.5 hover:bg-gold-light hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-40"
+          >
+            {loading ? (
+              <Loader2 className="animate-spin w-5 h-5" />
+            ) : (
+              <CheckCircle className="w-4 h-4" />
+            )}
+            {loading ? "Processing…" : "Confirm Reservation"}
+          </button>
+        </div>
       </div>
-    </>
+    </div>
+  );
+}
+
+/* ── Small summary row helper ── */
+function SummaryRow({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <li className="flex items-center gap-2.5 text-sm text-gray-600">
+      {icon}
+      <span>{label}</span>
+    </li>
   );
 }

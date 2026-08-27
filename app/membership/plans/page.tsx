@@ -8,6 +8,7 @@ import {
   selectMembershipError,
   selectMembershipLoading,
   selectMembershipPlans,
+  selectMyMembership,
 } from "@/store/membership/membershipSelectors";
 import {
   fetchMembershipPlans,
@@ -66,6 +67,8 @@ export default function MembershipPlansPage() {
   const loading = useAppSelector(selectMembershipLoading);
   const error = useAppSelector(selectMembershipError);
   const pendingPayment = useAppSelector(selectPendingPayment);
+  const myMembership = useAppSelector(selectMyMembership);
+  const hasActiveMembership = myMembership?.is_active === true;
   const [submittingTier, setSubmittingTier] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null);
   const [selectedTShirtSize, setSelectedTShirtSize] = useState<TShirtSize | "">("");
@@ -213,21 +216,23 @@ export default function MembershipPlansPage() {
             </Link>
           </div>
 
-          <div className="mb-6 flex flex-col gap-3 rounded border border-gold-muted/25 bg-primary/5 px-4 py-4 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-semibold text-primary">Not ready for a membership?</p>
-              <p className="mt-1 text-xs">
-                You can still experience Estrella del Mar. Book a table in our dining room and enjoy a world-class culinary experience.
-              </p>
+          {!hasActiveMembership && (
+            <div className="mb-6 flex flex-col gap-3 rounded border border-gold-muted/25 bg-primary/5 px-4 py-4 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold text-primary">Not ready for a membership?</p>
+                <p className="mt-1 text-xs">
+                  You can still experience Estrella del Mar. Book a table in our dining room and enjoy a world-class culinary experience.
+                </p>
+              </div>
+              <Link
+                href="/booking/customer/create"
+                className="inline-flex shrink-0 rounded border border-gold-muted bg-primary px-4 py-2.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                Book a Table
+              </Link>
             </div>
-            <Link
-              href="/booking/customer/create"
-              className="inline-flex shrink-0 rounded border border-gold-muted bg-primary px-4 py-2.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              Book a Table
-            </Link>
-          </div>
+          )}
 
           {/* Error banner */}
           {error && (
