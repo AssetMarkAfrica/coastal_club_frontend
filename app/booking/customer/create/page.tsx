@@ -9,6 +9,7 @@ import GuestSelector from "../../components/GuestSelector";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { createReservation } from "../../../../store/booking/bookingThunks";
 import type { RootState } from "../../../../store";
+import type { VenueType } from "../../../../types/booking";
 import { ChevronLeft, Sailboat, CalendarDays, Users, Loader2, Lock, CreditCard } from "lucide-react";
 
 export default function CreateReservationPage() {
@@ -17,7 +18,7 @@ export default function CreateReservationPage() {
   const { user } = useAppSelector((state: RootState) => state.auth);
   const { loading, error } = useAppSelector((state: RootState) => state.booking);
 
-  const [experience, setExperience] = useState<"dining" | "spa">("dining");
+  const [venueType, setVenueType] = useState<VenueType>("fine_dining");
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<string>("19:00");
   const [guests, setGuests] = useState<number>(2);
@@ -38,12 +39,12 @@ export default function CreateReservationPage() {
     const day = String(date.getDate()).padStart(2, "0");
     const reservationDateStr = `${year}-${month}-${day}`;
 
-    // Combine special requests with experience, time, guests for now as there's no native field
-    // Ideally the backend would take these separately, but based on API doc we only have
-    // reservation_date, intended_spend_pesewas, callback_url. So we are limited by API schema.
-    // If we wanted we could put it in a separate api, but we stick to the docs:
     const payload = {
+      venue_type: venueType,
       reservation_date: reservationDateStr,
+      reservation_time: `${time}:00`,
+      number_of_guests: guests,
+      notes: specialRequests,
       intended_spend_pesewas: Math.round((depositAmount || 0) * 100),
       callback_url: `${window.location.origin}/booking/customer/verify`,
     };
@@ -83,7 +84,7 @@ export default function CreateReservationPage() {
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
           <div className="lg:col-span-7 flex flex-col gap-6">
-            <ExperienceSelector value={experience} onChange={setExperience} />
+            <ExperienceSelector value={venueType} onChange={setVenueType} />
 
             <section className="bg-surface rounded-xl p-card-padding border border-gold-light/25 shadow-[0_4px_24px_rgba(30,58,95,0.08)] relative overflow-hidden">
               <h2 className="font-h4 text-h4 text-primary-container mb-4 flex items-center gap-2">
@@ -154,7 +155,7 @@ export default function CreateReservationPage() {
                 </div>
                 <button
                   onClick={handleConfirmAndPay}
-                  disabled={loading || !depositAmount || depositAmount <= 0}
+                  disabled={loading || !depositAmount || depositAmount <= 0 || !venueType}
                   className="w-full bg-navy-deep text-gold-light border border-gold-muted font-label-uppercase text-label-uppercase py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gold-muted hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-50"
                 >
                   {loading ? (
@@ -179,7 +180,7 @@ export default function CreateReservationPage() {
         </div>
         <button
           onClick={handleConfirmAndPay}
-          disabled={loading || !depositAmount || depositAmount <= 0}
+          disabled={loading || !depositAmount || depositAmount <= 0 || !venueType}
           className="w-full bg-navy-deep text-gold-light border border-gold-muted font-label-uppercase text-label-uppercase py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gold-muted hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-50"
         >
           {loading ? (

@@ -9,6 +9,7 @@ import GuestSelector from "../../components/GuestSelector";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { createMemberReservation } from "../../../../store/booking/bookingThunks";
 import type { RootState } from "../../../../store";
+import type { VenueType } from "../../../../types/booking";
 import { ChevronLeft, Sailboat, CalendarDays, Users, Loader2, CheckCircle } from "lucide-react";
 
 export default function CreateMemberReservationPage() {
@@ -17,7 +18,7 @@ export default function CreateMemberReservationPage() {
   const { user } = useAppSelector((state: RootState) => state.auth);
   const { loading, error } = useAppSelector((state: RootState) => state.booking);
 
-  const [experience, setExperience] = useState<"dining" | "spa">("dining");
+  const [venueType, setVenueType] = useState<VenueType>("fine_dining");
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<string>("19:00");
   const [guests, setGuests] = useState<number>(2);
@@ -38,9 +39,11 @@ export default function CreateMemberReservationPage() {
     const reservationDateStr = `${year}-${month}-${day}`;
 
     const payload = {
+      venue_type: venueType,
       reservation_date: reservationDateStr,
       reservation_time: `${time}:00`,
       number_of_guests: guests,
+      notes: specialRequests,
     };
 
     try {
@@ -76,7 +79,7 @@ export default function CreateMemberReservationPage() {
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
           <div className="lg:col-span-8 flex flex-col gap-6">
-            <ExperienceSelector value={experience} onChange={setExperience} />
+            <ExperienceSelector value={venueType} onChange={setVenueType} />
 
             <section className="bg-surface rounded-xl p-card-padding border border-gold-light/25 shadow-[0_4px_24px_rgba(30,58,95,0.08)] relative overflow-hidden">
               <h2 className="font-h4 text-h4 text-primary-container mb-4 flex items-center gap-2">
@@ -129,7 +132,7 @@ export default function CreateMemberReservationPage() {
               <div className="mt-6 pt-6 border-t border-gold-light/20">
                 <button
                   onClick={handleConfirmBooking}
-                  disabled={loading}
+                  disabled={loading || !venueType}
                   className="w-full bg-navy-deep text-gold-light border border-gold-muted font-label-uppercase text-label-uppercase py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gold-muted hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-50"
                 >
                   {loading ? (
@@ -148,7 +151,7 @@ export default function CreateMemberReservationPage() {
       <div className="fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 w-full bg-surface/90 backdrop-blur-md p-4 border-t border-gold-light/20 z-40 lg:hidden shadow-[0_-8px_30px_rgba(16,36,63,0.1)]">
         <button
           onClick={handleConfirmBooking}
-          disabled={loading}
+          disabled={loading || !venueType}
           className="w-full bg-navy-deep text-gold-light border border-gold-muted font-label-uppercase text-label-uppercase py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gold-muted hover:text-navy-deep active:scale-[0.98] transition-all shadow-md disabled:opacity-50"
         >
           {loading ? (
