@@ -244,12 +244,14 @@ export interface CheckoutMaintenanceFeePayload {
   callback_url?: string;
 }
 
-export interface CheckoutMaintenanceFeeResponse {
+export interface CheckoutMaintenanceFeeData {
   authorization_url: string;
   reference: string;
   maintenance_fee_pesewas: number;
   month: string;
 }
+
+export type CheckoutMaintenanceFeeResponse = ApiResponse<CheckoutMaintenanceFeeData>;
 
 export interface VerifyMaintenanceFeePayload {
   reference: string;

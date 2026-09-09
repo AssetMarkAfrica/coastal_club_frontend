@@ -20,6 +20,7 @@ import type {
   AdminPaymentHistoryResponse,
   AdminLatePaymentsResponse,
   CheckoutMaintenanceFeePayload,
+  CheckoutMaintenanceFeeData,
   CheckoutMaintenanceFeeResponse,
   VerifyMaintenanceFeePayload
 } from "../../types/membership";

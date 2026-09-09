@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Reservation, SpendEntry } from "../../types/booking";
+import type { Reservation, MemberReservation, SpendEntry } from "../../types/booking";
 import {
   createReservation,
   getAllReservations,
