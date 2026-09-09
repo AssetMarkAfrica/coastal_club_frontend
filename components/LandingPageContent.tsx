@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback, ReactNode } from "react";
 import Link from "next/link";
+import ReviewSection from "./review/ReviewSection";
 
 /* ── Hero video carousel ── */
 const HERO_VIDEOS = [
@@ -607,6 +608,9 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
             </SlideIn>
           </div>
         </section>
+
+        {/* ── Guest Reviews ── */}
+        <ReviewSection isAuthenticated={isAuthenticated} minRating={4} showViewMore={true} />
 
         {/* ── Membership CTA ── */}
         <section className="navy-gradient-bg py-24 relative overflow-hidden bg-[#10243F]">

@@ -105,6 +105,11 @@ export default function MemberSidebar() {
             icon: <IconCalendar />,
             href: isSuspended ? "/booking/customer/reservations" : "/booking/member/reservations",
         },
+        {
+            label: "Book a Table",
+            icon: <IconCard />, // Using IconCard for now as a placeholder, let's use a plus icon
+            href: "/booking/member/create",
+        },
     ];
 
     const displayName =

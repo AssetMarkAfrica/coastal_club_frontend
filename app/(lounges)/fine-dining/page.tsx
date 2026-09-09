@@ -143,10 +143,10 @@ export default function FineDiningPage() {
                                 </div>
                             </div>
                             <Link
-                                href="/booking"
+                                href="/booking/member/create?venue=fine_dining"
                                 className="bg-[#10243F] text-[#F1E0A6] border border-[#F1E0A6] transition-all duration-300 hover:bg-[#F1E0A6] hover:text-[#10243F] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(241,224,166,0.2)] text-[13px] uppercase tracking-widest font-semibold py-4 px-8 rounded-full w-full flex items-center justify-center space-x-2 group"
                             >
-                                <span>Reserve a Table</span>
+                                <span>Book Space Now</span>
                                 <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </Link>
                         </div>
@@ -399,10 +399,10 @@ export default function FineDiningPage() {
                         </p>
                         <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-6">
                             <Link
-                                href="/booking"
+                                href="/booking/member/create?venue=fine_dining"
                                 className="bg-[#F1E0A6] text-[#10243F] transition-all duration-300 hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(241,224,166,0.3)] text-[13px] uppercase tracking-widest font-semibold py-4 px-8 rounded-full flex items-center justify-center space-x-2 w-full sm:w-auto"
                             >
-                                <span>Book a Table</span>
+                                <span>Book Space Now</span>
                             </Link>
                             <Link
                                 href="/contact"

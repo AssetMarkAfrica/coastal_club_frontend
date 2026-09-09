@@ -1,9 +1,26 @@
+export type VenueType =
+  | 'fine_dining'
+  | 'executive_lounge'
+  | 'private_room'
+  | 'skybar';
+
+export const VENUE_OPTIONS: { value: VenueType; label: string }[] = [
+  { value: 'fine_dining',      label: 'Fine Dining' },
+  { value: 'executive_lounge', label: 'Executive Lounge' },
+  { value: 'private_room',     label: 'Private Room' },
+  { value: 'skybar',           label: 'Skybar' },
+];
+
 export interface Reservation {
   id: string;
   user_id?: string;
   user_email?: string;
   user_full_name?: string;
+  venue_type: VenueType | null;
   reservation_date: string;
+  reservation_time: string | null;
+  number_of_guests: number;
+  notes: string;
   status: 'pending_payment' | 'confirmed' | 'cancelled' | 'expired';
   intended_spend_pesewas: number;
   spend_credit_remaining_pesewas: number;
@@ -21,7 +38,11 @@ export interface MemberReservation {
   user_email?: string;
   user_name?: string;
   card_token?: string;
+  venue_type: VenueType | null;
   reservation_date: string;
+  reservation_time: string | null;
+  number_of_guests: number;
+  notes: string;
   status: 'confirmed' | 'cancelled';
   created_at: string;
   updated_at: string;
@@ -50,13 +71,21 @@ export interface SpendEntry {
 }
 
 export interface CreateReservationPayload {
+  venue_type: VenueType;
   reservation_date: string;
+  reservation_time?: string;
+  number_of_guests?: number;
+  notes?: string;
   intended_spend_pesewas: number;
   callback_url: string;
 }
 
 export interface CreateMemberReservationPayload {
+  venue_type: VenueType;
   reservation_date: string;
+  reservation_time?: string;
+  number_of_guests?: number;
+  notes?: string;
 }
 
 export interface CreateReservationResponse {

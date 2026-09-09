@@ -102,10 +102,13 @@ export default function ExecutiveLoungePage() {
                                     </p>
                                 </div>
                             </div>
-                            <button className="bg-[#10243F] text-[#F1E0A6] border border-[#F1E0A6] transition-all duration-300 hover:bg-[#F1E0A6] hover:text-[#10243F] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(241,224,166,0.2)] text-[13px] uppercase tracking-widest font-semibold py-4 px-8 rounded-full w-full flex items-center justify-center space-x-2 group">
-                                <span>Enquire for Access</span>
+                            <Link
+                                href="/booking/member/create?venue=executive_lounge"
+                                className="bg-[#10243F] text-[#F1E0A6] border border-[#F1E0A6] transition-all duration-300 hover:bg-[#F1E0A6] hover:text-[#10243F] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(241,224,166,0.2)] text-[13px] uppercase tracking-widest font-semibold py-4 px-8 rounded-full w-full flex items-center justify-center space-x-2 group"
+                            >
+                                <span>Book Space Now</span>
                                 <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                            </button>
+                            </Link>
                         </div>
                     </div>
 
@@ -184,8 +187,8 @@ export default function ExecutiveLoungePage() {
                             The Executive Lounge operates on a strict members-only basis. Membership provides priority reservations, access to private tasting events, and dedicated concierge services tailored to your exact preferences.
                         </p>
                         <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-6">
-                            <Link href="/membership" className="bg-[#F1E0A6] text-[#10243F] transition-all duration-300 hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(241,224,166,0.3)] text-[13px] uppercase tracking-widest font-semibold py-4 px-8 rounded-full flex items-center justify-center space-x-2 w-full sm:w-auto">
-                                <span>Explore Memberships</span>
+                            <Link href="/booking/member/create?venue=executive_lounge" className="bg-[#F1E0A6] text-[#10243F] transition-all duration-300 hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(241,224,166,0.3)] text-[13px] uppercase tracking-widest font-semibold py-4 px-8 rounded-full flex items-center justify-center space-x-2 w-full sm:w-auto">
+                                <span>Book Space Now</span>
                             </Link>
                             <Link href="/contact" className="bg-transparent text-[#F1E0A6] border border-[#F1E0A6] transition-all duration-300 hover:bg-[#F1E0A6]/10 hover:-translate-y-0.5 text-[13px] uppercase tracking-widest font-semibold py-4 px-8 rounded-full flex items-center justify-center space-x-2 w-full sm:w-auto">
                                 <span>Contact Concierge</span>
