@@ -119,6 +119,9 @@ const authSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    setError(state, action: PayloadAction<string>) {
+      state.error = action.payload;
+    },
     completeOnboarding(state) {
       state.isNewUser = false;
       persistIsNewUser(false);
@@ -250,6 +253,7 @@ export const {
   setCredentials,
   setGooglePending,
   clearError,
+  setError,
   completeOnboarding,
   clearAuth,
 } =
