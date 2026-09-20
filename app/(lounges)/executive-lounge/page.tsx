@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import SharedNavbar from '@/components/SharedNavbar';
+import OtherLounges from '@/components/OtherLounges';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -41,6 +43,7 @@ export default function ExecutiveLoungePage() {
       `}} />
 
             <main className="[perspective:1px] h-screen overflow-x-hidden overflow-y-auto bg-[#10243F] text-white m-0 p-0 font-sans">
+                <SharedNavbar />
                 {/* Background Parallax Layer */}
                 <div className="absolute inset-0 [transform:translateZ(-1px)_scale(2)] -z-10 w-full h-full">
                     {/* Background Media Container (Video/Image) */}
@@ -196,6 +199,8 @@ export default function ExecutiveLoungePage() {
                         </div>
                     </div>
                 </div>
+                
+                <OtherLounges currentRoute="/executive-lounge" />
             </main>
         </>
     );

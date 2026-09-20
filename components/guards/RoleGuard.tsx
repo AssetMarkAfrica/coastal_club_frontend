@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, ReactNode } from "react";
+import { useEffect, ReactNode, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import {
@@ -20,6 +20,11 @@ export default function RoleGuard({
   const loading = useAppSelector(selectAuthLoading);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (loading) return;
@@ -35,6 +40,11 @@ export default function RoleGuard({
       router.back();
     }
   }, [role, allowedRoles, router, loading, isAuthenticated]);
+
+  // Ensure client-side rendering to avoid hydration mismatches
+  if (!mounted) {
+    return null;
+  }
 
   // Show a spinner while auth state is resolving
   if (loading) {

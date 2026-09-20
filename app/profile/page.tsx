@@ -72,21 +72,8 @@ function FieldInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-all duration-200"
-        style={{
-          background: "rgba(255,255,255,0.07)",
-          border: "1px solid rgba(193,160,76,0.25)",
-        }}
-        onFocus={(e) => {
-          e.target.style.border = "1px solid rgba(193,160,76,0.65)";
-          e.target.style.background = "rgba(255,255,255,0.1)";
-          e.target.style.boxShadow = "0 0 0 3px rgba(193,160,76,0.12)";
-        }}
-        onBlur={(e) => {
-          e.target.style.border = "1px solid rgba(193,160,76,0.25)";
-          e.target.style.background = "rgba(255,255,255,0.07)";
-          e.target.style.boxShadow = "none";
-        }}
+        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/30 focus:bg-white/10 focus:border-gold-muted/50 focus:ring-1 focus:ring-gold-muted/50 transition-all outline-none backdrop-blur-sm shadow-inner"
+        style={{ colorScheme: type === 'date' ? 'dark' : undefined }}
       />
     </div>
   );
@@ -94,8 +81,8 @@ function FieldInput({
 
 function FieldLabel({ htmlFor, children, required }: { htmlFor: string; children: React.ReactNode; required?: boolean }) {
   return (
-    <label htmlFor={htmlFor} className="block text-[10px] font-semibold tracking-[0.2em] uppercase" style={{ color: "rgba(193,160,76,0.8)" }}>
-      {children}{required && <span style={{ color: "#e8c96f" }}> *</span>}
+    <label htmlFor={htmlFor} className="block text-[10px] font-semibold tracking-[0.2em] uppercase text-white/70 mb-0.5 ml-1">
+      {children}{required && <span className="text-gold-light"> *</span>}
     </label>
   );
 }
@@ -119,7 +106,7 @@ export default function ProfilePage() {
   }, [dispatch]);
 
   useEffect(() => {
-    const t = setInterval(() => setActiveImg(i => (i + 1) % BG_IMAGES.length), 5000);
+    const t = setInterval(() => setActiveImg(i => (i + 1) % BG_IMAGES.length), 6000);
     return () => clearInterval(t);
   }, []);
 
@@ -181,133 +168,126 @@ export default function ProfilePage() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.7s ease forwards; }
-        .profile-input:focus { outline: none; }
+        
+        @keyframes shimmer {
+          from { transform: translateX(-100%); }
+          to   { transform: translateX(100%);  }
+        }
+        .animate-shimmer { animation: shimmer 1.5s ease forwards infinite; }
+
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(32px); }
+          to   { opacity: 1; transform: translateY(0);    }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px rgba(0,0,0,0.5) inset !important;
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
       `}</style>
 
-      <main className="min-h-screen antialiased" style={{ background: "#0c1e35", fontFamily: "var(--font-inter)" }}>
-
-        {/* ── Decorative background images (left panel) ── */}
-        <div className="fixed inset-0 z-0 pointer-events-none">
+      <main className="relative flex min-h-screen antialiased bg-black selection:bg-gold-light/30">
+        
+        {/* Full screen slideshow background */}
+        <div className="fixed inset-0 z-0 overflow-hidden bg-navy-deep">
           {BG_IMAGES.map((src, i) => (
-            <img
+            <div
               key={src}
-              src={src}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-              style={{ opacity: i === activeImg ? 0.12 : 0 }}
-            />
+              className="absolute inset-0 w-full h-full"
+              style={{
+                opacity: i === activeImg ? 1 : 0,
+                transition: "opacity 2.5s ease-in-out",
+              }}
+            >
+              <img
+                src={src}
+                alt=""
+                className="w-full h-full object-cover"
+                style={{
+                  transform: i === activeImg ? "scale(1.08)" : "scale(1)",
+                  transition: "transform 10s ease-out",
+                }}
+              />
+            </div>
           ))}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(12,30,53,0.6) 0%, rgba(12,30,53,0.98) 60%)" }} />
-          <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(rgba(193,160,76,0.05) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+          <div className="absolute inset-0 bg-black/50 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/80 to-navy-deep/50 z-10" />
         </div>
 
-        {/* ── Top Nav ── */}
-        <nav className="relative z-20 sticky top-0 border-b px-6 h-16 flex items-center justify-between" style={{ background: "rgba(12,30,53,0.85)", backdropFilter: "blur(16px)", borderColor: "rgba(193,160,76,0.2)" }}>
-          <Link href="/" className="text-xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-playfair)", color: "#e8c96f" }}>
-            Estrella del Mar
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-xs font-semibold tracking-widest uppercase hover:text-gold-light transition-colors" style={{ color: "rgba(255,255,255,0.6)" }}>
-              Home
-            </Link>
-            <button
-              type="button"
-              onClick={onLogout}
-              className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
-              style={{ background: "rgba(193,160,76,0.12)", border: "1px solid rgba(193,160,76,0.3)", color: "#e8c96f" }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: "15px" }}>logout</span>
-              Logout
-            </button>
-          </div>
-        </nav>
-
         {/* ── Page Body ── */}
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-
-          {/* ── Profile Hero Header ── */}
-          <div className="fade-in flex flex-col md:flex-row items-start md:items-center gap-6 mb-12">
-            {/* Avatar */}
-            <div className="w-20 h-20 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-2xl shadow-xl" style={{ background: "rgba(193,160,76,0.15)", border: "2px solid rgba(193,160,76,0.5)", color: "#e8c96f" }}>
-              {initials}
+        <div className="relative z-20 w-full flex flex-col min-h-screen">
+          
+          {/* ── Top Nav ── */}
+          <nav className="border-b px-6 h-16 flex items-center justify-between bg-white/[0.03] backdrop-blur-2xl border-white/10 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+            <Link href="/" className="text-xl font-bold tracking-tight text-gold-light drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
+              Estrella del Mar
+            </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/" className="text-[10px] font-semibold tracking-widest uppercase text-white/60 hover:text-gold-light transition-colors">
+                Home
+              </Link>
+              <button
+                type="button"
+                onClick={onLogout}
+                className="inline-flex items-center gap-2 text-[10px] font-semibold tracking-widest uppercase px-4 py-2 rounded-lg transition-all duration-300 bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/20"
+              >
+                <span className="material-symbols-outlined text-[14px]">logout</span>
+                Logout
+              </button>
             </div>
-            <div className="flex-1">
-              <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-1" style={{ color: "#c9a84c" }}>
-                {role ?? "Member"} Account
-              </p>
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair)" }}>
-                My Profile
-              </h1>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
-                {user?.email ?? ""}
-              </p>
-            </div>
+          </nav>
 
-            {/* Completion badge */}
-            <div className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold" style={{
-              background: isProfileComplete ? "rgba(52,211,153,0.12)" : "rgba(251,191,36,0.12)",
-              border: `1px solid ${isProfileComplete ? "rgba(52,211,153,0.4)" : "rgba(251,191,36,0.4)"}`,
-              color: isProfileComplete ? "#34d399" : "#fbbf24",
-            }}>
-              <span className="material-symbols-outlined" style={{ fontSize: "15px" }}>
-                {isProfileComplete ? "verified" : "warning"}
-              </span>
-              {isProfileComplete ? "Profile Complete" : `${missingFields.length} field(s) missing`}
-            </div>
-          </div>
-
-          {/* ── Two-column layout: left = background card, right = form ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 fade-in">
-
-            {/* ── Left: Lounge backdrop card ── */}
-            <div className="lg:col-span-2 rounded-2xl overflow-hidden relative" style={{ minHeight: "420px", border: "1px solid rgba(193,160,76,0.2)" }}>
-              {BG_IMAGES.map((src, i) => (
-                <img
-                  key={src}
-                  src={src}
-                  alt=""
-                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-                  style={{ opacity: i === activeImg ? 1 : 0 }}
-                />
-              ))}
-              <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(12,30,53,0.95) 0%, rgba(12,30,53,0.4) 50%, rgba(12,30,53,0.2) 100%)" }} />
-
-              {/* Content overlay */}
-              <div className="absolute inset-0 flex flex-col justify-end p-8">
-                <div className="flex gap-2 mb-4">
-                  {BG_IMAGES.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveImg(i)}
-                      className="rounded-full transition-all duration-300"
-                      style={{
-                        width: i === activeImg ? "24px" : "6px",
-                        height: "4px",
-                        background: i === activeImg ? "#e8c96f" : "rgba(255,255,255,0.3)",
-                      }}
-                    />
-                  ))}
-                </div>
-                <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-2" style={{ color: "#c9a84c" }}>
-                  Estrella del Mar
+          <div className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-10 sm:py-14 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            {/* ── Profile Hero Header ── */}
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-12">
+              <div className="w-20 h-20 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-2xl shadow-[0_0_24px_rgba(232,201,111,0.2)] bg-black/40 border-2 border-gold-muted/50 text-gold-light backdrop-blur-md">
+                {initials}
+              </div>
+              <div className="flex-1">
+                <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-1 text-gold-light drop-shadow-md">
+                  {role ?? "Member"} Account
                 </p>
-                <h2 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
-                  Complete your profile to unlock full membership privileges
+                <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
+                  My Profile
+                </h1>
+                <p className="text-sm text-white/70">
+                  {user?.email ?? ""}
+                </p>
+              </div>
+
+              <div className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold backdrop-blur-md ${isProfileComplete ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400" : "bg-amber-500/10 border border-amber-500/30 text-amber-400"}`}>
+                <span className="material-symbols-outlined text-base">
+                  {isProfileComplete ? "verified" : "warning"}
+                </span>
+                {isProfileComplete ? "Profile Complete" : `${missingFields.length} field(s) missing`}
+              </div>
+            </div>
+
+            {/* ── Glassmorphic Form Card ── */}
+            <div className="w-full bg-white/[0.03] backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col md:flex-row">
+              
+              {/* Left text column */}
+              <div className="w-full md:w-1/3 p-8 border-b md:border-b-0 md:border-r border-white/10 bg-black/20">
+                <h2 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
+                  Complete your profile to begin your membership application
                 </h2>
-                <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
-                  Access priority bookings, exclusive events, and concierge services across all four of our venues.
+                <p className="text-sm leading-relaxed text-white/60 mb-8">
+                  Once your profile is complete, you can select a membership plan and submit your application for review.
                 </p>
 
                 {!isProfileComplete && missingFields.length > 0 && (
-                  <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(193,160,76,0.2)" }}>
-                    <p className="text-[10px] font-semibold tracking-widest uppercase mb-2" style={{ color: "rgba(193,160,76,0.7)" }}>
-                      Still needed
+                  <div className="pt-6 border-t border-white/10">
+                    <p className="text-[10px] font-semibold tracking-widest uppercase mb-3 text-gold-muted/80">
+                      Required Fields Missing
                     </p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {missingFields.map(f => (
-                        <span key={f} className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.3)", color: "#fbbf24" }}>
+                        <span key={f} className="text-[10px] px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400/90 font-medium">
                           {toDisplayLabel(f)}
                         </span>
                       ))}
@@ -315,149 +295,142 @@ export default function ProfilePage() {
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* ── Right: Form ── */}
-            <div className="lg:col-span-3 rounded-2xl overflow-hidden" style={{ background: "rgba(16,36,63,0.7)", border: "1px solid rgba(193,160,76,0.15)", backdropFilter: "blur(12px)" }}>
-              {/* Form header */}
-              <div className="px-8 py-6 border-b" style={{ borderColor: "rgba(193,160,76,0.15)" }}>
-                <h3 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
-                  Personal Details
-                </h3>
-                <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>
-                  Fields marked with <span style={{ color: "#e8c96f" }}>*</span> are required for membership
-                </p>
+              {/* Right form column */}
+              <div className="w-full md:w-2/3 p-8">
+                <form onSubmit={onSubmit} className="space-y-6">
+                  {/* Row 1 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div className="flex flex-col gap-1.5">
+                      <FieldLabel htmlFor="gender" required>Gender</FieldLabel>
+                      <div className="relative">
+                        <select
+                          id="gender"
+                          required
+                          value={getFieldValue("gender")}
+                          onChange={(e) => setField("gender", e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white focus:bg-black/40 focus:border-gold-muted/50 focus:ring-1 focus:ring-gold-muted/50 transition-all outline-none backdrop-blur-sm shadow-inner appearance-none"
+                        >
+                          <option value="" disabled className="text-black">Select gender</option>
+                          <option value="male" className="text-black">Male</option>
+                          <option value="female" className="text-black">Female</option>
+                          <option value="other" className="text-black">Other</option>
+                          <option value="prefer_not_to_say" className="text-black">Prefer Not To Say</option>
+                        </select>
+                        <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">expand_more</span>
+                      </div>
+                    </div>
+                    <FieldInput id="date_of_birth" type="date" required value={getFieldValue("date_of_birth")} onChange={(v) => setField("date_of_birth", v)}>
+                      <FieldLabel htmlFor="date_of_birth" required>Date of Birth</FieldLabel>
+                    </FieldInput>
+                  </div>
+
+                  {/* Row 2 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <FieldInput id="phone_number" type="tel" required value={getFieldValue("phone_number")} onChange={(v) => setField("phone_number", v)} placeholder="+233 20 000 0000">
+                      <FieldLabel htmlFor="phone_number" required>Phone Number</FieldLabel>
+                    </FieldInput>
+                    <FieldInput id="nationality" value={getFieldValue("nationality")} onChange={(v) => setField("nationality", v)}>
+                      <FieldLabel htmlFor="nationality">Nationality</FieldLabel>
+                    </FieldInput>
+                  </div>
+
+                  {/* Row 3 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <FieldInput id="occupation" value={getFieldValue("occupation")} onChange={(v) => setField("occupation", v)}>
+                      <FieldLabel htmlFor="occupation">Occupation</FieldLabel>
+                    </FieldInput>
+                    <FieldInput id="id_type" value={getFieldValue("id_type")} onChange={(v) => setField("id_type", v)} placeholder="Passport, National ID…">
+                      <FieldLabel htmlFor="id_type">ID Type</FieldLabel>
+                    </FieldInput>
+                  </div>
+
+                  {/* Row 4 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <FieldInput id="id_number" value={getFieldValue("id_number")} onChange={(v) => setField("id_number", v)}>
+                      <FieldLabel htmlFor="id_number">ID Number</FieldLabel>
+                    </FieldInput>
+                    <FieldInput id="country" required value={getFieldValue("country")} onChange={(v) => setField("country", v)}>
+                      <FieldLabel htmlFor="country" required>Country</FieldLabel>
+                    </FieldInput>
+                  </div>
+
+                  {/* Address */}
+                  <FieldInput id="address_line1" required value={getFieldValue("address_line1")} onChange={(v) => setField("address_line1", v)}>
+                    <FieldLabel htmlFor="address_line1" required>Address Line 1</FieldLabel>
+                  </FieldInput>
+                  <FieldInput id="address_line2" value={getFieldValue("address_line2")} onChange={(v) => setField("address_line2", v)}>
+                    <FieldLabel htmlFor="address_line2">Address Line 2</FieldLabel>
+                  </FieldInput>
+
+                  {/* Row 5 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <FieldInput id="city" required value={getFieldValue("city")} onChange={(v) => setField("city", v)}>
+                      <FieldLabel htmlFor="city" required>City</FieldLabel>
+                    </FieldInput>
+                    <FieldInput id="region_state" value={getFieldValue("region_state")} onChange={(v) => setField("region_state", v)}>
+                      <FieldLabel htmlFor="region_state">Region / State</FieldLabel>
+                    </FieldInput>
+                    <FieldInput id="postal_code" value={getFieldValue("postal_code")} onChange={(v) => setField("postal_code", v)}>
+                      <FieldLabel htmlFor="postal_code">Postal Code</FieldLabel>
+                    </FieldInput>
+                  </div>
+
+                  {/* Emergency Contact */}
+                  <div className="pt-4 mt-6 border-t border-white/10">
+                    <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-4 text-gold-muted">Emergency Contact</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      <FieldInput id="emergency_contact_name" value={getFieldValue("emergency_contact_name")} onChange={(v) => setField("emergency_contact_name", v)}>
+                        <FieldLabel htmlFor="emergency_contact_name">Name</FieldLabel>
+                      </FieldInput>
+                      <FieldInput id="emergency_contact_phone" type="tel" value={getFieldValue("emergency_contact_phone")} onChange={(v) => setField("emergency_contact_phone", v)}>
+                        <FieldLabel htmlFor="emergency_contact_phone">Phone</FieldLabel>
+                      </FieldInput>
+                    </div>
+                  </div>
+
+                  {/* Bio */}
+                  <div className="flex flex-col gap-1.5 pt-4 mt-6 border-t border-white/10">
+                    <FieldLabel htmlFor="bio">Bio</FieldLabel>
+                    <textarea
+                      id="bio"
+                      rows={4}
+                      value={getFieldValue("bio")}
+                      onChange={(e) => setField("bio", e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:bg-white/10 focus:border-gold-muted/50 focus:ring-1 focus:ring-gold-muted/50 transition-all outline-none resize-none backdrop-blur-sm shadow-inner"
+                      placeholder="Tell us a little about yourself…"
+                    />
+                  </div>
+
+                  {/* Feedback */}
+                  {error && (
+                    <div className="bg-danger/20 border border-danger/30 rounded-xl p-4 flex items-center gap-3">
+                      <span className="material-symbols-outlined text-danger">error_outline</span>
+                      <p className="text-sm text-white">{error}</p>
+                    </div>
+                  )}
+                  {status && (
+                    <div className="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-4 flex items-center gap-3">
+                      <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+                      <p className="text-sm text-white">{status}</p>
+                    </div>
+                  )}
+
+                  {/* Submit */}
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full flex justify-center py-4 px-4 border-0 rounded-xl shadow-[0_4px_16px_rgba(232,201,111,0.2)] bg-gradient-to-r from-[#c9a84c] to-[#e8c96f] text-[#10243f] hover:shadow-[0_4px_24px_rgba(232,201,111,0.4)] disabled:opacity-60 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden group text-xs font-bold tracking-[0.2em] uppercase"
+                    >
+                      {loading ? "Saving Profile…" : "Save Profile"}
+                      <span aria-hidden className="absolute inset-0 bg-white/30 -translate-x-full group-hover:animate-shimmer pointer-events-none" />
+                    </button>
+                  </div>
+                </form>
               </div>
 
-              <form onSubmit={onSubmit} className="px-8 py-6 space-y-6">
-                {/* Row 1 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <FieldLabel htmlFor="gender" required>Gender</FieldLabel>
-                    <select
-                      id="gender"
-                      required
-                      value={getFieldValue("gender")}
-                      onChange={(e) => setField("gender", e.target.value)}
-                      className="mt-1.5 w-full rounded-lg px-4 py-3 text-sm text-white focus:outline-none transition-all"
-                      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(193,160,76,0.25)", color: getFieldValue("gender") ? "white" : "rgba(255,255,255,0.3)" }}
-                    >
-                      <option value="" disabled style={{ background: "#10243f" }}>Select gender</option>
-                      <option value="male" style={{ background: "#10243f" }}>Male</option>
-                      <option value="female" style={{ background: "#10243f" }}>Female</option>
-                      <option value="other" style={{ background: "#10243f" }}>Other</option>
-                      <option value="prefer_not_to_say" style={{ background: "#10243f" }}>Prefer Not To Say</option>
-                    </select>
-                  </div>
-                  <FieldInput id="date_of_birth" type="date" required value={getFieldValue("date_of_birth")} onChange={(v) => setField("date_of_birth", v)}>
-                    <FieldLabel htmlFor="date_of_birth" required>Date of Birth</FieldLabel>
-                  </FieldInput>
-                </div>
-
-                {/* Row 2 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FieldInput id="phone_number" type="tel" required value={getFieldValue("phone_number")} onChange={(v) => setField("phone_number", v)} placeholder="+233 20 000 0000">
-                    <FieldLabel htmlFor="phone_number" required>Phone Number</FieldLabel>
-                  </FieldInput>
-                  <FieldInput id="nationality" value={getFieldValue("nationality")} onChange={(v) => setField("nationality", v)}>
-                    <FieldLabel htmlFor="nationality">Nationality</FieldLabel>
-                  </FieldInput>
-                </div>
-
-                {/* Row 3 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FieldInput id="occupation" value={getFieldValue("occupation")} onChange={(v) => setField("occupation", v)}>
-                    <FieldLabel htmlFor="occupation">Occupation</FieldLabel>
-                  </FieldInput>
-                  <FieldInput id="id_type" value={getFieldValue("id_type")} onChange={(v) => setField("id_type", v)} placeholder="Passport, National ID…">
-                    <FieldLabel htmlFor="id_type">ID Type</FieldLabel>
-                  </FieldInput>
-                </div>
-
-                {/* Row 4 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FieldInput id="id_number" value={getFieldValue("id_number")} onChange={(v) => setField("id_number", v)}>
-                    <FieldLabel htmlFor="id_number">ID Number</FieldLabel>
-                  </FieldInput>
-                  <FieldInput id="country" required value={getFieldValue("country")} onChange={(v) => setField("country", v)}>
-                    <FieldLabel htmlFor="country" required>Country</FieldLabel>
-                  </FieldInput>
-                </div>
-
-                {/* Address */}
-                <FieldInput id="address_line1" required value={getFieldValue("address_line1")} onChange={(v) => setField("address_line1", v)}>
-                  <FieldLabel htmlFor="address_line1" required>Address Line 1</FieldLabel>
-                </FieldInput>
-                <FieldInput id="address_line2" value={getFieldValue("address_line2")} onChange={(v) => setField("address_line2", v)}>
-                  <FieldLabel htmlFor="address_line2">Address Line 2</FieldLabel>
-                </FieldInput>
-
-                {/* Row 5 */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <FieldInput id="city" required value={getFieldValue("city")} onChange={(v) => setField("city", v)}>
-                    <FieldLabel htmlFor="city" required>City</FieldLabel>
-                  </FieldInput>
-                  <FieldInput id="region_state" value={getFieldValue("region_state")} onChange={(v) => setField("region_state", v)}>
-                    <FieldLabel htmlFor="region_state">Region / State</FieldLabel>
-                  </FieldInput>
-                  <FieldInput id="postal_code" value={getFieldValue("postal_code")} onChange={(v) => setField("postal_code", v)}>
-                    <FieldLabel htmlFor="postal_code">Postal Code</FieldLabel>
-                  </FieldInput>
-                </div>
-
-                {/* Emergency Contact */}
-                <div className="pt-2 border-t" style={{ borderColor: "rgba(193,160,76,0.12)" }}>
-                  <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-4" style={{ color: "rgba(193,160,76,0.6)" }}>Emergency Contact</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FieldInput id="emergency_contact_name" value={getFieldValue("emergency_contact_name")} onChange={(v) => setField("emergency_contact_name", v)}>
-                      <FieldLabel htmlFor="emergency_contact_name">Name</FieldLabel>
-                    </FieldInput>
-                    <FieldInput id="emergency_contact_phone" type="tel" value={getFieldValue("emergency_contact_phone")} onChange={(v) => setField("emergency_contact_phone", v)}>
-                      <FieldLabel htmlFor="emergency_contact_phone">Phone</FieldLabel>
-                    </FieldInput>
-                  </div>
-                </div>
-
-                {/* Bio */}
-                <div className="flex flex-col gap-1.5">
-                  <FieldLabel htmlFor="bio">Bio</FieldLabel>
-                  <textarea
-                    id="bio"
-                    rows={4}
-                    value={getFieldValue("bio")}
-                    onChange={(e) => setField("bio", e.target.value)}
-                    className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none resize-none transition-all"
-                    style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(193,160,76,0.25)" }}
-                    placeholder="Tell us a little about yourself…"
-                  />
-                </div>
-
-                {/* Feedback */}
-                {error && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", color: "#fca5a5" }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>error</span>
-                    {error}
-                  </div>
-                )}
-                {status && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.3)", color: "#6ee7b7" }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>check_circle</span>
-                    {status}
-                  </div>
-                )}
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 text-xs font-semibold tracking-[0.18em] uppercase rounded-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-50"
-                  style={{ background: "#c9a84c", color: "#0c1e35", boxShadow: "0 4px 20px rgba(201,168,76,0.3)" }}
-                >
-                  {loading ? "Saving Profile…" : "Save Profile"}
-                </button>
-              </form>
             </div>
-
           </div>
         </div>
       </main>

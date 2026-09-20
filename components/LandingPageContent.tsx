@@ -3,6 +3,9 @@
 import { useRef, useState, useEffect, useCallback, ReactNode } from "react";
 import Link from "next/link";
 import ReviewSection from "./review/ReviewSection";
+import SharedNavbar from "./SharedNavbar";
+import { VENUES } from "./venueData";
+import VenueCard from "./VenueCard";
 
 /* ── Hero video carousel ── */
 const HERO_VIDEOS = [
@@ -170,159 +173,7 @@ function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-interface Venue {
-  title: string;
-  tag: string;
-  route: string;
-  icon: string;
-  description: string;
-  images: string[];
-  accent?: string;
-}
 
-const VENUES: Venue[] = [
-  {
-    title: "The Sky Bar",
-    tag: "54th Floor · Rooftop Oasis",
-    route: "/skybar",
-    icon: "roofing",
-    description: "Elevated social energy featuring 360° city views, master cocktail artistry, curated DJ sets, and glowing fire pits under the stars.",
-    images: [
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757506/Skybar1_akorqw.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757507/Skybar2_wt66as.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757507/Skybar3_cudwrl.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757507/Skybar4_mfresm.png",
-    ],
-  },
-  {
-    title: "Fine Dining",
-    tag: "Ground Floor · Haute Cuisine",
-    route: "/fine-dining",
-    icon: "restaurant",
-    description: "Our flagship chef's table destination — 7-course tasting menus, hyper-seasonal coastal sourcing, and a 1,500-vintage cellar.",
-    images: [
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining1_bmcrtp.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining2_mluv5r.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining3_ulq0dx.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761393/FineDining6_hwvzt2.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining5_dzbvnr.png",
-    ],
-  },
-  {
-    title: "Executive Lounge",
-    tag: "Members Only · Vault & Spirits",
-    route: "/executive-lounge",
-    icon: "diamond",
-    description: "A private sanctum reserved exclusively for distinguished members. Rare pre-prohibition spirits, live acoustics, and plush velvet surrounds.",
-    images: [
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining2_mluv5r.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757507/Skybar3_cudwrl.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758507/PrivateRoom1_eihid3.png",
-    ],
-  },
-  {
-    title: "The Private Room",
-    tag: "Exclusive Hire · Events & Boardroom",
-    route: "/private-room",
-    icon: "meeting_room",
-    description: "A fully soundproofed private space crafted for executive boardroom sessions, milestone celebrations, and bespoke dinners for up to 20 guests.",
-    images: [
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758507/PrivateRoom1_eihid3.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758506/PrivateRoom2_gcowvn.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758506/PrivateRoom3_cvokpc.png",
-    ],
-  },
-];
-
-function VenueCard({ venue, index }: { venue: Venue; index: number }) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  useEffect(() => {
-    if (venue.images.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % venue.images.length);
-    }, 4500 + index * 300);
-    return () => clearInterval(interval);
-  }, [venue.images.length, index]);
-
-  return (
-    <div className="pillar-card group relative rounded-xl overflow-hidden flex flex-col h-full" style={{ background: "#0c1e35", border: "1px solid rgba(193,160,76,0.18)", boxShadow: "0 8px 40px rgba(0,0,0,0.45)" }}>
-
-      {/* ── Image slideshow area ── */}
-      <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4 / 3" }}>
-        {venue.images.map((imgUrl, idx) => (
-          <img
-            key={imgUrl}
-            src={imgUrl}
-            alt={`${venue.title} — view ${idx + 1}`}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{
-              opacity: idx === currentSlide ? 1 : 0,
-              transform: idx === currentSlide ? "scale(1.04)" : "scale(1)",
-              transition: "opacity 1.2s ease, transform 6s ease",
-            }}
-          />
-        ))}
-
-        {/* Cinematic overlay — bottom-heavy gradient */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to bottom, rgba(12,30,53,0.1) 0%, rgba(12,30,53,0.08) 40%, rgba(12,30,53,0.72) 100%)" }} />
-
-        {/* Tag pill — top left */}
-        <span className="absolute top-4 left-4 z-10 text-[10px] uppercase font-semibold tracking-[0.18em] px-3 py-1.5 rounded-full" style={{ background: "rgba(12,30,53,0.75)", border: "1px solid rgba(193,160,76,0.45)", color: "#e8c96f", backdropFilter: "blur(8px)" }}>
-          {venue.tag}
-        </span>
-
-        {/* Slide dots — bottom right */}
-        {venue.images.length > 1 && (
-          <div className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5">
-            {venue.images.map((_, idx) => (
-              <span
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className="cursor-pointer rounded-full transition-all duration-500"
-                style={{
-                  width: idx === currentSlide ? "24px" : "6px",
-                  height: "4px",
-                  background: idx === currentSlide ? "#e8c96f" : "rgba(255,255,255,0.35)",
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ── Text body ── */}
-      <div className="flex flex-col flex-1 p-7" style={{ background: "#0c1e35" }}>
-        {/* Icon + title row */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(193,160,76,0.12)", border: "1px solid rgba(193,160,76,0.3)" }}>
-            <span className="material-symbols-outlined" style={{ fontSize: "18px", color: "#e8c96f" }}>{venue.icon}</span>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold leading-tight" style={{ fontFamily: "var(--font-playfair)", color: "#f0dfa0" }}>
-              {venue.title}
-            </h3>
-          </div>
-        </div>
-
-        <div className="w-10 h-px mb-4" style={{ background: "rgba(193,160,76,0.4)" }} />
-
-        <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "rgba(240,223,160,0.62)" }}>
-          {venue.description}
-        </p>
-
-        <Link
-          href={venue.route}
-          className="inline-flex items-center gap-1.5 self-start text-[11px] font-semibold tracking-[0.16em] uppercase transition-all duration-300 group-hover:gap-2.5"
-          style={{ color: "#c9a84c" }}
-        >
-          Explore
-          <span className="material-symbols-outlined" style={{ fontSize: "16px", transition: "transform 0.3s ease" }}>arrow_forward</span>
-        </Link>
-      </div>
-    </div>
-  );
-}
 
 
 export default function LandingPageContent({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
@@ -378,62 +229,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
 
       <div className="bg-cream text-text-primary antialiased" style={{ fontFamily: "var(--font-inter)" }}>
 
-        {/* ── Desktop Nav ── */}
-        <nav className="hidden md:flex bg-navy-deep/90 backdrop-blur-md sticky top-0 z-50 border-b border-gold-muted/25 shadow-sm flex-row items-center w-full px-6 h-20 justify-between">
-          <Link href="/" className="text-2xl font-semibold text-gold-light tracking-tight hover:opacity-80 transition-opacity" style={{ fontFamily: "var(--font-playfair)" }}>
-            Estrella del Mar
-          </Link>
-          <div className="hidden lg:flex items-center space-x-8">
-            {[
-              { label: "The Club", href: "/", active: true },
-              { label: "Fine Dining", href: "/fine-dining" },
-              { label: "Sky Bar", href: "/skybar" },
-              { label: "Executive Lounge", href: "/executive-lounge" },
-              { label: "Private Room", href: "/private-room" },
-              { label: "Membership", href: "/membership/plans" },
-            ].map(({ label, href, active }) => (
-              <Link
-                key={label}
-                href={href}
-                className={`
-                  text-xs font-semibold tracking-widest uppercase px-1 py-1 transition-colors duration-300
-                  ${active
-                    ? "nav-link-active text-gold-light"
-                    : "nav-link text-white/80 hover:text-gold-light"
-                  }
-                `}
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-          <div className="flex items-center space-x-4">
-            {["language", "search"].map((icon) => (
-              <button key={icon} className="text-white/80 hover:text-gold-light transition-colors p-2 hover:bg-white/5 rounded-full">
-                <span className="material-symbols-outlined text-xl">{icon}</span>
-              </button>
-            ))}
-            {isAuthenticated ? (
-              <Link href="/membership/dashboard" className="bg-primary text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
-                My Portal
-              </Link>
-            ) : (
-              <Link href="/auth/login" className="bg-transparent text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
-                Login
-              </Link>
-            )}
-            <Link href="/membership/plans" className="bg-primary text-gold-light border border-gold-muted/50 px-6 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-gold-light hover:text-primary transition-all duration-300 rounded" style={{ fontFamily: "var(--font-inter)" }}>
-              Join the Club
-            </Link>
-          </div>
-        </nav>
-
-        {/* ── Mobile Nav ── */}
-        <nav className="md:hidden bg-navy-deep sticky top-0 z-50 border-b border-gold-muted/25 px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-semibold text-gold-light" style={{ fontFamily: "var(--font-playfair)" }}>Estrella del Mar</Link>
-          <button className="text-gold-light"><span className="material-symbols-outlined text-3xl">menu</span></button>
-        </nav>
+        <SharedNavbar />
 
         {/* ── Hero Video Section ── */}
         <section className="relative w-full flex flex-col overflow-hidden bg-black" style={{ minHeight: "100vh" }}>
@@ -459,7 +255,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
             {/* Tagline */}
             <p className="max-w-2xl mx-auto mb-10 leading-relaxed" style={{ fontSize: "clamp(1rem, 2vw, 1.2rem)", color: "rgba(240,223,160,0.82)", animation: "wordDrop 0.7s ease 550ms both" }}>
               An exclusive coastal sanctuary of haute cuisine, rooftop cocktail artistry,<br className="hidden md:block" />
-              rare spirits, and bespoke private events — 54 floors above the Atlantic.
+              rare spirits, and bespoke private events — right on the shores of Laboma Beach.
             </p>
 
             {/* CTAs */}
@@ -485,9 +281,9 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
             <div className="flex flex-wrap justify-center gap-8 md:gap-14" style={{ animation: "wordDrop 0.6s ease 950ms both" }}>
               {[
                 { v: "4", label: "Curated Venues" },
-                { v: "54th", label: "Rooftop Floor" },
-                { v: "1,500+", label: "Cellar Vintages" },
+                { v: "3", label: "Membership Tiers" },
                 { v: "100%", label: "Private & Exclusive" },
+                { v: "1", label: "Coastal Location" },
               ].map(({ v, label }) => (
                 <div key={label} className="text-center">
                   <div className="font-bold mb-1" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.4rem, 3vw, 2.2rem)", color: "#e8c96f" }}>{v}</div>
@@ -501,7 +297,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
           <div className="relative z-10 w-full" style={{ borderTop: "1px solid rgba(193,160,76,0.2)", background: "rgba(16,36,63,0.75)", backdropFilter: "blur(16px)" }}>
             <div className="max-w-7xl mx-auto px-6 py-0 grid grid-cols-2 md:grid-cols-4 divide-x" style={{ borderColor: "rgba(193,160,76,0.15)" }}>
               {[
-                { label: "The Sky Bar", tag: "54th Floor", href: "/skybar", icon: "roofing" },
+                { label: "The Sky Bar", tag: "Rooftop Terrace", href: "/skybar", icon: "roofing" },
                 { label: "Fine Dining", tag: "Ground Floor", href: "/fine-dining", icon: "restaurant" },
                 { label: "Executive Lounge", tag: "Members Only", href: "/executive-lounge", icon: "diamond" },
                 { label: "The Private Room", tag: "Exclusive Hire", href: "/private-room", icon: "meeting_room" },
@@ -590,7 +386,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
               <h2 className="text-4xl font-semibold text-navy-deep mb-6" style={{ fontFamily: "var(--font-playfair)" }}>A World Above the Atlantic</h2>
               <p className="text-base text-text-secondary mb-8 leading-relaxed">
                 Nestled along the pristine shores of Laboma Beach, Estrella del Mar offers a sanctuary of uncompromised taste.
-                From our ground floor dining hall to the open-air 54th floor Sky Bar, every space is architected for distinction.
+                From our elegant dining hall to the open-air Sky Bar terrace, every space is architected for distinction.
               </p>
               <ul className="space-y-4 mb-10">
                 {["15 minutes from Kotoka International Airport", "Private valet & secure access roads", "Helipad & yacht arrival concierge"].map((item, i) => (

@@ -107,7 +107,7 @@ export default function RegisterPage() {
       `}</style>
 
       <main className="relative flex min-h-screen antialiased bg-black selection:bg-gold-light/30">
-        
+
         {/* Full screen slideshow background */}
         <div className="fixed inset-0 z-0 overflow-hidden bg-navy-deep">
           {AUTH_IMAGES.map((src, index) => (
@@ -131,12 +131,13 @@ export default function RegisterPage() {
             </div>
           ))}
           {/* Cinematic gradients to make text readable */}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/95 via-navy-deep/70 to-navy-deep/40 z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-transparent to-transparent z-10" />
+          <div className="absolute inset-0 bg-black/50 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/95 via-navy-deep/80 to-navy-deep/50 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-transparent to-transparent z-10" />
         </div>
 
         <div className="relative z-20 flex flex-col lg:flex-row w-full min-h-screen">
-          
+
           {/* Left Brand Area */}
           <div className="hidden lg:flex flex-col justify-center w-5/12 p-16 xl:p-24 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
             <Link href="/" className="inline-block mb-12 group">
@@ -144,14 +145,14 @@ export default function RegisterPage() {
                 Estrella del Mar
               </h1>
             </Link>
-            
+
             <div className="w-16 h-px mb-8 bg-gradient-to-r from-gold-muted to-transparent" />
-            
+
             <h2 className="text-4xl xl:text-5xl font-semibold leading-tight text-white mb-6 drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
-              Become Part of <br/> 
+              Become Part of <br />
               <span className="text-gold-light italic font-light">The Legacy</span>
             </h2>
-            
+
             <p className="text-lg text-white/70 max-w-md leading-relaxed mb-12" style={{ fontFamily: "var(--font-inter)" }}>
               Join our exclusive coastal sanctuary. Priority access, dedicated concierge, and a world of uncompromised taste await you 54 floors above the Atlantic.
             </p>
@@ -165,9 +166,9 @@ export default function RegisterPage() {
 
           {/* Right Form Area */}
           <div className="w-full lg:w-7/12 flex items-center justify-center p-6 sm:p-12 lg:p-16 my-auto">
-            
+
             <div className="w-full max-w-2xl bg-white/[0.03] backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-              
+
               {/* Mobile Brand Header */}
               <div className="lg:hidden p-8 pb-0 text-center">
                 <Link href="/" className="inline-block mb-2">
@@ -180,15 +181,15 @@ export default function RegisterPage() {
 
               {/* Card Header */}
               <div className="p-8 sm:p-10 border-b border-white/10 relative overflow-hidden">
-                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold-muted to-transparent opacity-50" />
-                 <h3 className="text-3xl font-semibold text-white mb-2" style={{ fontFamily: "var(--font-playfair)" }}>Create Account</h3>
-                 <p className="text-white/60 text-sm" style={{ fontFamily: "var(--font-inter)" }}>Enter your details to begin your membership application.</p>
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold-muted to-transparent opacity-50" />
+                <h3 className="text-3xl font-semibold text-white mb-2" style={{ fontFamily: "var(--font-playfair)" }}>Create Account</h3>
+                <p className="text-white/60 text-sm" style={{ fontFamily: "var(--font-inter)" }}>Enter your details to begin your membership application.</p>
               </div>
 
               {/* Form */}
               <div className="p-8 sm:p-10">
                 <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-                  
+
                   <div className="space-y-1.5">
                     <label htmlFor="firstName" className={labelClass}>First Name</label>
                     <div className="relative group">
@@ -263,19 +264,18 @@ export default function RegisterPage() {
                     <label htmlFor="passwordConfirm" className={labelClass}>Confirm Password</label>
                     <div className="relative group">
                       <span className={iconClass}>lock_reset</span>
-                      <input 
-                        id="passwordConfirm" 
-                        name="passwordConfirm" 
-                        type="password" 
-                        value={passwordConfirm} 
-                        onChange={e => setPasswordConfirm(e.target.value)} 
-                        required 
-                        placeholder="••••••••" 
-                        className={`w-full bg-white/5 border rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:bg-white/10 focus:ring-1 transition-all outline-none text-sm backdrop-blur-sm shadow-inner ${
-                          passwordMismatch
-                            ? "border-danger focus:border-danger focus:ring-danger/50"
-                            : "border-white/10 focus:border-gold-muted/50 focus:ring-gold-muted/50"
-                        }`}
+                      <input
+                        id="passwordConfirm"
+                        name="passwordConfirm"
+                        type="password"
+                        value={passwordConfirm}
+                        onChange={e => setPasswordConfirm(e.target.value)}
+                        required
+                        placeholder="••••••••"
+                        className={`w-full bg-white/5 border rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:bg-white/10 focus:ring-1 transition-all outline-none text-sm backdrop-blur-sm shadow-inner ${passwordMismatch
+                          ? "border-danger focus:border-danger focus:ring-danger/50"
+                          : "border-white/10 focus:border-gold-muted/50 focus:ring-gold-muted/50"
+                          }`}
                       />
                     </div>
                     {passwordMismatch && (
@@ -299,7 +299,7 @@ export default function RegisterPage() {
                       disabled={loading || passwordMismatch}
                       className="w-full flex justify-center py-4 px-4 border-0 rounded-xl shadow-[0_4px_16px_rgba(232,201,111,0.2)] bg-gradient-to-r from-[#c9a84c] to-[#e8c96f] text-[#10243f] hover:shadow-[0_4px_24px_rgba(232,201,111,0.4)] disabled:opacity-60 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden group text-xs font-bold tracking-[0.2em] uppercase"
                     >
-                      {loading ? "Processing..." : "Submit Application"}
+                      {loading ? "Processing..." : "Sign Up"}
                       <span
                         aria-hidden
                         className="absolute inset-0 bg-white/30 -translate-x-full group-hover:animate-shimmer pointer-events-none"
@@ -340,7 +340,7 @@ export default function RegisterPage() {
                 ))}
               </div>
             </div>
-            
+
           </div>
         </div>
       </main>

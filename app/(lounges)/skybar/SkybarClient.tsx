@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import SharedNavbar from '@/components/SharedNavbar';
+import OtherLounges from '@/components/OtherLounges';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  BACKGROUND MEDIA
@@ -69,6 +71,7 @@ export default function SkybarClient() {
             }} />
 
             <main className="[perspective:1px] h-screen overflow-x-hidden overflow-y-auto bg-[#10243F] text-white m-0 p-0 font-sans">
+                <SharedNavbar />
 
                 {/* ── HERO BACKGROUND LAYER ── */}
                 <section
@@ -336,6 +339,7 @@ export default function SkybarClient() {
                     </div>
                 </div>
 
+                <OtherLounges currentRoute="/skybar" />
             </main>
         </>
     );

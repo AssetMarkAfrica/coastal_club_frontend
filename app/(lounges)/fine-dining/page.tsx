@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import SharedNavbar from '@/components/SharedNavbar';
+import OtherLounges from '@/components/OtherLounges';
 import type { Metadata } from 'next';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -88,6 +90,7 @@ export default function FineDiningPage() {
             }} />
 
             <main className="[perspective:1px] h-screen overflow-x-hidden overflow-y-auto bg-[#10243F] text-white m-0 p-0 font-sans">
+                <SharedNavbar />
 
                 {/* ── HERO BACKGROUND LAYER ── */}
                 <div className="absolute inset-0 [transform:translateZ(-1px)_scale(2)] -z-10 w-full h-full overflow-hidden">
@@ -414,6 +417,7 @@ export default function FineDiningPage() {
                     </div>
                 </div>
 
+                <OtherLounges currentRoute="/fine-dining" />
             </main>
         </>
     );

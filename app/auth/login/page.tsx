@@ -142,8 +142,9 @@ export default function LoginPage() {
               />
             </div>
           ))}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/95 via-navy-deep/70 to-navy-deep/40 z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-transparent to-transparent z-10" />
+          <div className="absolute inset-0 bg-black/50 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/95 via-navy-deep/80 to-navy-deep/50 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-transparent to-transparent z-10" />
         </div>
 
         <div className="relative z-20 flex flex-col lg:flex-row w-full min-h-screen">
