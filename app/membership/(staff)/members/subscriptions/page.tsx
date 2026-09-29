@@ -132,11 +132,11 @@ function DetailPanel({
     }, [open, selectedItem, dispatch]);
 
     const creditPct =
-        detail && detail.monthly_spend_credit_pesewas > 0
+        detail && detail.plan.fb_minimum_pesewas > 0
             ? Math.min(
                 100,
-                (detail.spend_credit_remaining_pesewas /
-                    detail.monthly_spend_credit_pesewas) *
+                (detail.fb_spend_this_month_pesewas /
+                    detail.plan.fb_minimum_pesewas) *
                 100
             )
             : 0;
@@ -277,9 +277,9 @@ function DetailPanel({
                                 <div className="p-5 space-y-5">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="bg-[#F8F1DF]/60 rounded-lg p-4 border border-[#EDE3CC]/60">
-                                            <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Monthly Credit</p>
+                                            <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Monthly F&B Quota</p>
                                             <p className="text-[#10243F] text-xl font-bold" style={{ fontFamily: "var(--font-playfair, serif)" }}>
-                                                {pesewasToGHS(detail.monthly_spend_credit_pesewas)}
+                                                {pesewasToGHS(detail.plan.fb_minimum_pesewas)}
                                             </p>
                                         </div>
                                         <div className="bg-[#F8F1DF]/60 rounded-lg p-4 border border-[#EDE3CC]/60">
@@ -293,9 +293,9 @@ function DetailPanel({
                                     {/* Credit progress bar */}
                                     <div>
                                         <div className="flex justify-between items-end mb-2">
-                                            <p className="text-[10px] font-semibold tracking-widest uppercase text-[#10243F]">Remaining Credit</p>
+                                            <p className="text-[10px] font-semibold tracking-widest uppercase text-[#10243F]">Quota Progress</p>
                                             <p className="text-xs text-[#6B7280]">
-                                                <strong className="text-[#10243F]">{pesewasToGHS(detail.spend_credit_remaining_pesewas)}</strong> left
+                                                <strong className="text-[#10243F]">{pesewasToGHS(Math.max(0, detail.plan.fb_minimum_pesewas - detail.fb_spend_this_month_pesewas))}</strong> remaining
                                             </p>
                                         </div>
                                         <div className="w-full bg-[#EDE3CC] h-2.5 rounded-full overflow-hidden shadow-inner">
@@ -307,7 +307,7 @@ function DetailPanel({
                                                 }}
                                             />
                                         </div>
-                                        <p className="text-[10px] text-[#6B7280] mt-1 text-right">{creditPct.toFixed(0)}% remaining</p>
+                                        <p className="text-[10px] text-[#6B7280] mt-1 text-right">{creditPct.toFixed(0)}% met</p>
                                     </div>
                                 </div>
                             </div>
@@ -337,29 +337,7 @@ function DetailPanel({
                                 </div>
                             )}
 
-                            {/* Signup bonus perk card */}
-                            {detail.is_signup_bonus_active && (
-                                <div className="rounded-xl border border-[#B7922B]/40 overflow-hidden relative" style={{ background: "linear-gradient(135deg, #10243F 0%, #1e3a5f 100%)" }}>
-                                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 100% 0%, #F1E0A6 0%, transparent 60%)" }} />
-                                    <div className="relative z-10 p-5">
-                                        <div className="flex justify-between items-start mb-3">
-                                            <h3 className="text-[#F1E0A6] font-semibold">Status Perks</h3>
-                                            <span className="bg-[#ffe088] text-[#241a00] px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
-                                                ⚡ Bonus Active
-                                            </span>
-                                        </div>
-                                        <p className="text-[#8aa4cf]/90 text-sm leading-relaxed mb-3">
-                                            Member has achieved <span className="text-[#F1E0A6] font-medium">Early Renewal Bonus</span> status.
-                                        </p>
-                                        {detail.signup_bonus_expires_on && (
-                                            <div className="bg-white/10 border border-[#F1E0A6]/20 rounded-lg p-3">
-                                                <p className="text-[10px] font-semibold tracking-widest uppercase text-[#F1E0A6]/70 mb-1">Bonus Expires</p>
-                                                <p className="text-white font-semibold text-sm">{formatDate(detail.signup_bonus_expires_on)}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
+
                         </div>
                     )}
                 </div>
@@ -515,7 +493,7 @@ export default function SubscriptionsPage() {
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Member Name</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Plan</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Status</th>
-                                        <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Monthly Credit</th>
+                                        <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">F&B Spent (Month)</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Swag Fulfilled</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Period End</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap text-right">Actions</th>
@@ -561,7 +539,7 @@ export default function SubscriptionsPage() {
                                                     <StatusBadge status={sub.status} />
                                                 </td>
                                                 <td className="py-4 px-6 text-[#10243F] font-medium text-sm">
-                                                    {pesewasToGHS(sub.monthly_spend_credit_pesewas)}
+                                                    {pesewasToGHS(sub.fb_spend_this_month_pesewas)}
                                                 </td>
                                                 <td className="py-4 px-6">
                                                     <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${sub.swag_fulfilled ? 'bg-teal-50 text-teal-700' : 'bg-gray-100 text-gray-600'}`}>

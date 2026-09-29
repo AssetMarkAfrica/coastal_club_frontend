@@ -21,6 +21,7 @@ import {
   fetchAdminMembershipApplications,
   fetchAdminMembershipApplicationDetail,
   fetchMembershipPlans,
+  fetchMembershipPlanById,
   fetchMyMembership,
   fetchMyMembershipContract,
   fetchMyMembershipStatus,
@@ -40,6 +41,7 @@ import {
 
 export interface MembershipState {
   plans: MembershipPlan[];
+  planDetail: MembershipPlan | null;
   application: MembershipApplicationSubmission | null;
   myMembershipStatus: MyMembershipStatus | null;
   adminApplications: MembershipApplication[];
@@ -60,6 +62,7 @@ export interface MembershipState {
 
 const initialState: MembershipState = {
   plans: [],
+  planDetail: null,
   application: null,
   myMembershipStatus: null,
   adminApplications: [],
@@ -87,6 +90,7 @@ const membershipSlice = createSlice({
     },
     clearMembershipState(state) {
       state.plans = [];
+      state.planDetail = null;
       state.application = null;
       state.myMembershipStatus = null;
       state.adminApplications = [];
@@ -119,6 +123,22 @@ const membershipSlice = createSlice({
         state.loading = false;
         state.error =
           (action.payload as string) ?? "Failed to fetch membership plans.";
+      });
+
+    builder
+      .addCase(fetchMembershipPlanById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.planDetail = null;
+      })
+      .addCase(fetchMembershipPlanById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.planDetail = action.payload;
+      })
+      .addCase(fetchMembershipPlanById.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ?? "Failed to fetch membership plan.";
       });
 
     builder

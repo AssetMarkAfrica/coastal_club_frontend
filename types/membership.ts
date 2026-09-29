@@ -15,6 +15,14 @@ export interface MembershipBenefit {
   is_currently_available: boolean;
 }
 
+export interface PlanSwagItem {
+  title: string;
+  description: string;
+  image: string | null;
+  quantity: number;
+  sort_order: number;
+}
+
 export interface MembershipPlan {
   id: number;
   tier: MembershipPlanTier;
@@ -29,9 +37,11 @@ export interface MembershipPlan {
   priority_booking: boolean;
   is_subscribed?: boolean;
   benefits?: MembershipBenefit[];
+  swag_items?: PlanSwagItem[];
 }
 
 export type MembershipPlansResponse = ApiResponse<MembershipPlan[]>;
+export type MembershipPlanDetailResponse = ApiResponse<MembershipPlan>;
 
 export enum TShirtSize {
   XS = "XS",

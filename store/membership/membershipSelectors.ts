@@ -2,6 +2,7 @@ import type { RootState } from "../index";
 
 export const selectMembershipState = (state: RootState) => state.membership;
 export const selectMembershipPlans = (state: RootState) => state.membership.plans;
+export const selectPlanDetail = (state: RootState) => state.membership.planDetail;
 export const selectMembershipApplication = (state: RootState) =>
   state.membership.application;
 export const selectAdminMembershipApplications = (state: RootState) =>

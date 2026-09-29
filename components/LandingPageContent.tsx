@@ -44,7 +44,7 @@ function HeroVideoCarousel() {
       const nextVid = videoRefs.current[next];
       if (nextVid) {
         nextVid.currentTime = 0;
-        nextVid.play().catch(() => {});
+        nextVid.play().catch(() => { });
       }
     }, 600); // half the CSS transition duration
   }, [active]);
@@ -55,7 +55,7 @@ function HeroVideoCarousel() {
       if (!vid) return;
       if (i === active) {
         vid.currentTime = 0;
-        vid.play().catch(() => {});
+        vid.play().catch(() => { });
       } else {
         vid.pause();
       }
@@ -243,11 +243,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
           {/* ── Main hero content — centred vertically ── */}
           <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 pt-24 pb-16">
             {/* Eyebrow label */}
-            <div className="flex items-center gap-3 mb-8" style={{ animation: "wordDrop 0.6s ease 150ms both" }}>
-              <div className="h-px w-10 md:w-16" style={{ background: "rgba(193,160,76,0.6)" }} />
-              <span className="text-base md:text-xl font-bold tracking-[0.25em] uppercase drop-shadow-md" style={{ color: "#f0dfa0" }}>Laboma Beach · Accra, Ghana</span>
-              <div className="h-px w-10 md:w-16" style={{ background: "rgba(193,160,76,0.6)" }} />
-            </div>
+
 
             {/* Main headline */}
             <h1 className="font-bold text-white leading-[1.08] mb-6" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(3rem, 8vw, 6.5rem)", animation: "wordDrop 0.7s ease 300ms both", textShadow: "0 4px 32px rgba(0,0,0,0.5)" }}>

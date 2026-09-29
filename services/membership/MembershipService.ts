@@ -7,6 +7,7 @@ import type {
   ApproveMembershipApplicationPayload,
   ApproveMembershipApplicationResponse,
   MembershipPlansResponse,
+  MembershipPlanDetailResponse,
   MyMembershipContractResponse,
   MyMembershipResponse,
   MyMembershipStatusResponse,
@@ -43,9 +44,11 @@ export type {
   MembershipContract,
   MembershipContractPaymentDetails,
   MembershipPlan,
+  MembershipPlanDetailResponse,
   MembershipPlanSummary,
   MembershipPlanTier,
   MembershipPlansResponse,
+  PlanSwagItem,
   MyMembership,
   MyMembershipContractResponse,
   MyMembershipResponse,
@@ -72,6 +75,9 @@ const BOOKING_BASE = process.env.NEXT_PUBLIC_BOOKING_API;
 
 export const getMembershipPlans = () =>
   api.get<MembershipPlansResponse>(`${BASE}/plans/`);
+
+export const getMembershipPlanById = (planId: number) =>
+  api.get<MembershipPlanDetailResponse>(`${BASE}/plans/${planId}/`);
 
 export const submitMembershipApplication = (
   payload: SubmitMembershipApplicationPayload

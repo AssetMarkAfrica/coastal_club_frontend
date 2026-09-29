@@ -39,6 +39,20 @@ export const fetchMembershipPlans = createAsyncThunk(
   }
 );
 
+export const fetchMembershipPlanById = createAsyncThunk(
+  "membership/fetchPlanById",
+  async (planId: number, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getMembershipPlanById(planId);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch membership plan.")
+      );
+    }
+  }
+);
+
 export const submitMembershipApplication = createAsyncThunk(
   "membership/submitApplication",
   async (payload: SubmitMembershipApplicationPayload, { dispatch, rejectWithValue }) => {

@@ -13,7 +13,7 @@ import {
 } from "@/store/membership/membershipSelectors";
 import { fetchMyMembership, fetchMyMembershipStatus } from "@/store/membership/membershipThunks";
 import WaitlistExperience from "./WaitlistExperience";
-import { IconBill, IconShield, IconSpend, IconTicket, IconTrendUp } from "./icons";
+import { IconShield, IconSpend, IconTicket, IconTrendUp } from "./icons";
 import { formatMoney, formatDate, toTitleCase } from "./utils";
 import {
   Utensils,
@@ -350,32 +350,7 @@ export default function MembershipDashboardPage() {
             </div>
           </div>
 
-          {/* Signup Bonus */}
-          <div className="rounded-2xl border border-gold-muted/25 bg-white p-5 shadow-[0_4px_20px_rgba(16,36,63,0.06)] hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-navy-deep/60 uppercase tracking-widest">
-                Signup Bonus
-              </span>
-              <div className="p-2 rounded-xl bg-amber-50 text-amber-600">
-                <IconBill />
-              </div>
-            </div>
-            <p
-              className="text-2xl sm:text-3xl font-bold text-navy-deep"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              {membership?.is_signup_bonus_active ? "Active" : "—"}
-            </p>
-            <div className="mt-3 flex items-center justify-between pt-2 border-t border-gray-100">
-              {membership?.is_signup_bonus_active ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
-                  <ShieldCheck className="w-3 h-3" /> Expires {membership.signup_bonus_expires_on ?? "soon"}
-                </span>
-              ) : (
-                <span className="text-[11px] text-navy-deep/50">No active bonus</span>
-              )}
-            </div>
-          </div>
+
 
           {/* Validity / Status */}
           <div className="rounded-2xl border border-gold-muted/25 bg-white p-5 shadow-[0_4px_20px_rgba(16,36,63,0.06)] hover:shadow-md transition-shadow">

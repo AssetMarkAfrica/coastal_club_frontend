@@ -105,7 +105,6 @@ export default function MemberCardPage() {
   const spendPct = fbMinimum > 0 ? Math.min((fbSpend / fbMinimum) * 100, 100) : 0;
 
   const isActive = card.status === "active";
-  const isBonusActive = card.is_signup_bonus_active;
 
   return (
     <main
@@ -382,34 +381,6 @@ export default function MemberCardPage() {
                   </span>
                 </div>
 
-                {/* Divider */}
-                <div style={{ height: "1px", background: "rgba(201,168,76,0.1)" }} />
-
-                {/* Signup bonus */}
-                {card.is_signup_bonus_active && card.signup_bonus_expires_on && (
-                  <>
-                    <div style={{ height: "1px", background: "rgba(201,168,76,0.1)" }} />
-                    <div className="flex items-center justify-between">
-                      <span
-                        className="text-sm font-medium"
-                        style={{ color: "rgba(12,31,58,0.6)", fontFamily: "var(--font-inter)" }}
-                      >
-                        Signup Bonus
-                      </span>
-                      <span
-                        className="text-[11px] font-medium"
-                        style={{ color: "rgba(12,31,58,0.45)", fontFamily: "var(--font-inter)" }}
-                      >
-                        Expires{" "}
-                        {new Date(card.signup_bonus_expires_on).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </span>
-                    </div>
-                  </>
-                )}
 
 
               </div>

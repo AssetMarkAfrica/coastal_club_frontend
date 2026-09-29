@@ -321,6 +321,15 @@ export default function MembershipPlansPage() {
                       ))}
                     </ul>
 
+                    <Link
+                      href={`/membership/plans/${plan.id}`}
+                      className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded border border-gold-muted/30 px-4 py-2 text-[10px] font-semibold tracking-[0.12em] uppercase text-gold-muted transition-colors hover:border-gold-muted hover:text-primary"
+                      style={{ fontFamily: "var(--font-inter)" }}
+                    >
+                      View Full Details
+                      <span aria-hidden>→</span>
+                    </Link>
+
                     {/* CTA */}
                     <div className="mt-6">
                       {isAuthenticated ? (

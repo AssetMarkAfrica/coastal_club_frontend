@@ -108,7 +108,7 @@ export default function AdminLatePaymentsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<
-    "all" | "application" | "initiation" | "renewal" | "maintenance"
+    "all" | "application" | "initiation" | "renewal"
   >("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [activeView, setActiveView] = useState<"table" | "analytics">("table");
@@ -125,7 +125,7 @@ export default function AdminLatePaymentsPage() {
     const items: Array<{
       id: string;
       user: { first_name: string; last_name: string; email: string };
-      type: "application" | "initiation" | "renewal" | "maintenance";
+      type: "application" | "initiation" | "renewal";
       typeDisplay: string;
       amountDue: number;
       dueDate: string | null;
@@ -180,21 +180,6 @@ export default function AdminLatePaymentsPage() {
       });
     });
 
-    latePaymentsData.late_maintenance_subscriptions.forEach((sub: AdminSubscriptionDetail) => {
-      items.push({
-        id: sub.id,
-        user: {
-          first_name: sub.member.first_name,
-          last_name: sub.member.last_name,
-          email: sub.member.email,
-        },
-        type: "maintenance",
-        typeDisplay: "Monthly Maintenance",
-        amountDue: sub.maintenance_fee_due_pesewas,
-        dueDate: sub.maintenance_fee_paid_through_month,
-        planTier: sub.plan.tier,
-      });
-    });
 
     return items.sort((a, b) => {
       if (!a.dueDate) return 1;
@@ -218,7 +203,6 @@ export default function AdminLatePaymentsPage() {
   }, [flattenedLatePayments, searchQuery, filterType]);
 
   const stats = useMemo(() => {
-    const maintenance = flattenedLatePayments.filter((p) => p.type === "maintenance");
     const renewal = flattenedLatePayments.filter((p) => p.type === "renewal");
     const initiation = flattenedLatePayments.filter((p) => p.type === "initiation");
     const application = flattenedLatePayments.filter((p) => p.type === "application");
@@ -230,7 +214,6 @@ export default function AdminLatePaymentsPage() {
 
     return {
       total: flattenedLatePayments.length,
-      maintenance: maintenance.length,
       renewal: renewal.length,
       initiation: initiation.length,
       application: application.length,
@@ -278,11 +261,6 @@ export default function AdminLatePaymentsPage() {
     string,
     { color: string; label: string; badgeClass: string }
   > = {
-    maintenance: {
-      color: "#e63946",
-      label: "Maintenance",
-      badgeClass: "bg-red-50 text-danger border-danger/25",
-    },
     renewal: {
       color: "#f4a261",
       label: "Renewal",
@@ -301,11 +279,6 @@ export default function AdminLatePaymentsPage() {
   };
 
   const stackedSegments = [
-    {
-      label: "Maintenance",
-      value: stats.maintenance,
-      color: TYPE_META.maintenance.color,
-    },
     {
       label: "Renewal",
       value: stats.renewal,
@@ -361,17 +334,7 @@ export default function AdminLatePaymentsPage() {
 
           {/* ── Stat Cards */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-xl border border-gold-muted/25 border-t-4 border-t-danger bg-white p-5 shadow-sm">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-muted">
-                Late Maintenance
-              </p>
-              <p
-                className="mt-2 text-3xl font-semibold text-navy-deep"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                {stats.maintenance.toLocaleString()}
-              </p>
-            </div>
+
             <div className="rounded-xl border border-gold-muted/25 border-t-4 border-t-warning bg-white p-5 shadow-sm">
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-muted">
                 Overdue Renewal
@@ -510,7 +473,7 @@ export default function AdminLatePaymentsPage() {
                   </p>
                   <div className="space-y-4">
                     {(
-                      ["maintenance", "renewal", "initiation", "application"] as const
+                      ["renewal", "initiation", "application"] as const
                     ).map((type) => {
                       const meta = TYPE_META[type];
                       const items = flattenedLatePayments.filter(
@@ -691,7 +654,6 @@ export default function AdminLatePaymentsPage() {
                     {(
                       [
                         "all",
-                        "maintenance",
                         "renewal",
                         "initiation",
                         "application",

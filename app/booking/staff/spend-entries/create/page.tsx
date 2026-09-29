@@ -57,7 +57,7 @@ function PaymentModal({
   onCancel,
   verifying,
   verified,
-}: ShortfallModalProps) {
+}: PaymentModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#10243F]/70 backdrop-blur-sm">
       <div className="bg-white w-full max-w-md rounded-xl overflow-hidden shadow-2xl border border-[#F1E0A6]/50 animate-fade-in-up opacity-0">
