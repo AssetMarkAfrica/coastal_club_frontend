@@ -60,9 +60,10 @@ export interface SubmitMembershipApplicationPayload {
 
 export interface MembershipApplicationSubmission {
   application_id: string;
-  application_fee_pesewas: number;
-  authorization_url: string;
-  reference: string;
+  is_upgrade?: boolean;
+  application_fee_pesewas?: number;
+  authorization_url?: string;
+  reference?: string;
 }
 
 export type SubmitMembershipApplicationResponse = ApiResponse<MembershipApplicationSubmission>;

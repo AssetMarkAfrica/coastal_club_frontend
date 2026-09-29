@@ -36,6 +36,13 @@ const APPLICATION_PROCESS_STEPS = [
   "Accept the contract terms before paying your membership dues.",
 ];
 
+const UPGRADE_PROCESS_STEPS = [
+  "Your upgrade request is instantly approved — no waiting period.",
+  "A new contract with your prorated credit is generated immediately.",
+  "Accept the new contract terms in the contract page.",
+  "Pay the prorated difference to activate your upgraded membership.",
+];
+
 // Tier colour palette (primary tint for gradient accents)
 const TIER_COLOURS: Record<string, { from: string; via: string; accent: string }> = {
   social:    { from: "#6b7280", via: "#9ca3af", accent: "#6b7280" },
@@ -84,7 +91,10 @@ export default function MembershipPlanDetailPage() {
   };
 
   const onConfirmApplication = async () => {
-    if (!isAuthenticated || !plan || !selectedTShirtSize) return;
+    if (!isAuthenticated || !plan) return;
+    // For upgrades no t-shirt size is required; for new apps it must be selected
+    const isUpgrade = hasActiveMembership && !isSubscribed;
+    if (!isUpgrade && !selectedTShirtSize) return;
     dispatch(clearMembershipError());
     setSubmitting(true);
     try {
@@ -96,7 +106,9 @@ export default function MembershipPlanDetailPage() {
           t_shirt_size: selectedTShirtSize as TShirtSize,
         })
       ).unwrap();
-      if (response.authorization_url) {
+      if (response.is_upgrade) {
+        window.location.assign("/membership/contract");
+      } else if (response.authorization_url) {
         window.location.assign(response.authorization_url);
       }
     } catch {
@@ -509,11 +521,15 @@ export default function MembershipPlanDetailPage() {
                 <button
                   type="button"
                   onClick={() => setShowModal(true)}
-                  disabled={isSubscribed || hasActiveMembership || submitting}
+                  disabled={isSubscribed || submitting}
                   className="rounded border border-gold-muted bg-primary px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  {isSubscribed ? "Subscribed" : `Apply for ${plan ? toTitleCase(plan.tier) : ""}` }
+                  {isSubscribed
+                    ? "Subscribed"
+                    : hasActiveMembership
+                    ? `Upgrade to ${plan ? toTitleCase(plan.tier) : ""}`
+                    : `Apply for ${plan ? toTitleCase(plan.tier) : ""}`}
                 </button>
               ) : (
                 <Link
@@ -530,105 +546,124 @@ export default function MembershipPlanDetailPage() {
       </main>
 
       {/* ── Application modal ─────────────────────────────────────── */}
-      {showModal && plan && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-primary/65 px-4 py-6 backdrop-blur-sm"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="plan-detail-application-title"
-        >
-          <section className="w-full max-w-lg rounded border border-gold-muted/35 bg-surface-container-lowest shadow-[0_24px_80px_rgba(16,36,63,0.28)]">
-            <div className="border-b border-gold-muted/20 px-6 py-5">
-              <p
-                className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Membership Application
-              </p>
-              <h2
-                id="plan-detail-application-title"
-                className="mt-2 text-2xl font-semibold text-primary"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                Application Fee: {APPLICATION_FEE_LABEL}. Ready to proceed?
-              </h2>
-              <p className="mt-2 text-sm text-text-secondary">
-                You are applying for the <strong>{toTitleCase(plan.tier)}</strong> membership plan.
-              </p>
-            </div>
-
-            <div className="px-6 py-5">
-              <p className="text-sm leading-relaxed text-text-secondary">
-                After payment, you will be added to the waiting list. Admin will review your
-                application within the next 48 hours. If approved, you will receive an email
-                with the contract, and you must accept its terms before making your membership payment.
-              </p>
-
-              <div className="mt-5">
-                <label
-                  htmlFor="plan-detail-tshirt-size"
-                  className="block text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2"
+      {showModal && plan && (() => {
+        const isUpgrade = hasActiveMembership && !isSubscribed;
+        const stepsToShow = isUpgrade ? UPGRADE_PROCESS_STEPS : APPLICATION_PROCESS_STEPS;
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-primary/65 px-4 py-6 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="plan-detail-application-title"
+          >
+            <section className="w-full max-w-lg rounded border border-gold-muted/35 bg-surface-container-lowest shadow-[0_24px_80px_rgba(16,36,63,0.28)]">
+              <div className="border-b border-gold-muted/20 px-6 py-5">
+                <p
+                  className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
+                  style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  Select T-Shirt Size *
-                </label>
-                <select
-                  id="plan-detail-tshirt-size"
-                  value={selectedTShirtSize}
-                  onChange={(e) => setSelectedTShirtSize(e.target.value as TShirtSize)}
-                  className="w-full rounded border border-gold-muted/25 bg-surface-container-lowest px-4 py-2.5 text-sm text-text-primary focus:border-gold-muted focus:outline-none focus:ring-1 focus:ring-gold-muted transition-colors"
-                  disabled={submitting}
-                  required
-                >
-                  <option value="" disabled>Choose a size...</option>
-                  <option value={TShirtSize.XS}>Extra Small</option>
-                  <option value={TShirtSize.S}>Small</option>
-                  <option value={TShirtSize.M}>Medium</option>
-                  <option value={TShirtSize.L}>Large</option>
-                  <option value={TShirtSize.XL}>Extra Large</option>
-                  <option value={TShirtSize.XXL}>2XL</option>
-                </select>
-              </div>
-
-              <div className="mt-5 rounded border border-gold-muted/25 bg-cream px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                  Next steps
+                  {isUpgrade ? "Membership Upgrade" : "Membership Application"}
                 </p>
-                <ol className="mt-3 space-y-2 text-sm text-text-primary">
-                  {APPLICATION_PROCESS_STEPS.map((step, index) => (
-                    <li key={`modal-${step}`} className="flex gap-3">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-gold-light">
-                        {index + 1}
-                      </span>
-                      <span>{step}</span>
-                    </li>
-                  ))}
-                </ol>
+                <h2
+                  id="plan-detail-application-title"
+                  className="mt-2 text-2xl font-semibold text-primary"
+                  style={{ fontFamily: "var(--font-playfair)" }}
+                >
+                  {isUpgrade
+                    ? `Upgrade to ${toTitleCase(plan.tier)}`
+                    : `Application Fee: ${APPLICATION_FEE_LABEL}. Ready to proceed?`}
+                </h2>
+                <p className="mt-2 text-sm text-text-secondary">
+                  {isUpgrade
+                    ? `Upgrading to the ${toTitleCase(plan.tier)} tier. Your unused time will be credited toward the new plan cost.`
+                    : <>You are applying for the <strong>{toTitleCase(plan.tier)}</strong> membership plan.</>}
+                </p>
               </div>
-            </div>
 
-            <div className="flex flex-col-reverse gap-3 border-t border-gold-muted/20 px-6 py-4 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={closeModal}
-                disabled={submitting}
-                className="rounded border border-primary/25 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:border-gold-muted hover:text-gold-muted disabled:opacity-60"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={onConfirmApplication}
-                disabled={submitting || !selectedTShirtSize}
-                className="rounded border border-gold-muted bg-primary px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                {submitting ? "Preparing Payment..." : "Proceed to Payment"}
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
+              <div className="px-6 py-5">
+                {isUpgrade ? (
+                  <div className="rounded border border-amber-300/40 bg-amber-50/40 px-4 py-3 text-sm text-amber-800">
+                    <p className="font-semibold">✦ No application fee required</p>
+                    <p className="mt-1 text-xs">As an existing member, your upgrade is instant. A prorated credit for your remaining subscription period will be applied to the new membership cost.</p>
+                  </div>
+                ) : (
+                  <p className="text-sm leading-relaxed text-text-secondary">
+                    After payment, you will be added to the waiting list. Admin will review your
+                    application within the next 48 hours. If approved, you will receive an email
+                    with the contract, and you must accept its terms before making your membership payment.
+                  </p>
+                )}
+
+                {!isUpgrade && (
+                  <div className="mt-5">
+                    <label
+                      htmlFor="plan-detail-tshirt-size"
+                      className="block text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2"
+                    >
+                      Select T-Shirt Size *
+                    </label>
+                    <select
+                      id="plan-detail-tshirt-size"
+                      value={selectedTShirtSize}
+                      onChange={(e) => setSelectedTShirtSize(e.target.value as TShirtSize)}
+                      className="w-full rounded border border-gold-muted/25 bg-surface-container-lowest px-4 py-2.5 text-sm text-text-primary focus:border-gold-muted focus:outline-none focus:ring-1 focus:ring-gold-muted transition-colors"
+                      disabled={submitting}
+                      required
+                    >
+                      <option value="" disabled>Choose a size...</option>
+                      <option value={TShirtSize.XS}>Extra Small</option>
+                      <option value={TShirtSize.S}>Small</option>
+                      <option value={TShirtSize.M}>Medium</option>
+                      <option value={TShirtSize.L}>Large</option>
+                      <option value={TShirtSize.XL}>Extra Large</option>
+                      <option value={TShirtSize.XXL}>2XL</option>
+                    </select>
+                  </div>
+                )}
+
+                <div className="mt-5 rounded border border-gold-muted/25 bg-cream px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                    Next steps
+                  </p>
+                  <ol className="mt-3 space-y-2 text-sm text-text-primary">
+                    {stepsToShow.map((step, index) => (
+                      <li key={`modal-${step}`} className="flex gap-3">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-gold-light">
+                          {index + 1}
+                        </span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 border-t border-gold-muted/20 px-6 py-4 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  disabled={submitting}
+                  className="rounded border border-primary/25 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:border-gold-muted hover:text-gold-muted disabled:opacity-60"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={onConfirmApplication}
+                  disabled={submitting || (!isUpgrade && !selectedTShirtSize)}
+                  className="rounded border border-gold-muted bg-primary px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  {submitting
+                    ? isUpgrade ? "Upgrading..." : "Preparing Payment..."
+                    : isUpgrade ? "Confirm Upgrade" : "Proceed to Payment"}
+                </button>
+              </div>
+            </section>
+          </div>
+        );
+      })()}
     </>
   );
 }

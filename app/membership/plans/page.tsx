@@ -39,6 +39,13 @@ const APPLICATION_PROCESS_STEPS = [
   "Accept the contract terms before paying your membership dues.",
 ];
 
+const UPGRADE_PROCESS_STEPS = [
+  "Your upgrade request is instantly approved — no waiting period.",
+  "A new contract with your prorated credit is generated immediately.",
+  "Accept the new contract terms in the contract page.",
+  "Pay the prorated difference to activate your upgraded membership.",
+];
+
 const buildPlanHighlights = (plan: MembershipPlan) => {
   const apiBenefits = (plan.benefits ?? []).map((benefit) => benefit.title.trim());
 
@@ -96,7 +103,10 @@ export default function MembershipPlansPage() {
   };
 
   const onConfirmApplication = async () => {
-    if (!isAuthenticated || !selectedPlan || !selectedTShirtSize) return;
+    if (!isAuthenticated || !selectedPlan) return;
+    
+    const isUpgrading = hasActiveMembership && !selectedPlan.is_subscribed;
+    if (!isUpgrading && !selectedTShirtSize) return;
 
     const planTier = selectedPlan.tier;
     dispatch(clearMembershipError());
@@ -110,7 +120,10 @@ export default function MembershipPlansPage() {
           t_shirt_size: selectedTShirtSize as TShirtSize
         })
       ).unwrap();
-      if (response.authorization_url) {
+      if (response.is_upgrade) {
+        // Auto-approved upgrade: go straight to the contract page
+        window.location.assign("/membership/contract");
+      } else if (response.authorization_url) {
         window.location.assign(response.authorization_url);
       }
     } catch {
@@ -265,6 +278,8 @@ export default function MembershipPlansPage() {
                 const highlights = buildPlanHighlights(plan);
                 const isSubmitting = submittingTier === plan.tier;
                 const isSubscribed = Boolean(plan.is_subscribed);
+                // Active on a DIFFERENT plan → this card is an upgrade target
+                const isUpgradeTarget = hasActiveMembership && !isSubscribed;
 
                 return (
                   <article
@@ -337,17 +352,20 @@ export default function MembershipPlansPage() {
                           type="button"
                           onClick={() => setSelectedPlan(plan)}
                           disabled={isSubmitting || loading || isSubscribed}
-                          className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${isFeatured
-                            ? "border-gold-muted bg-primary text-gold-light hover:bg-gold-muted hover:text-primary"
-                            : "border-gold-muted text-gold-muted hover:bg-gold-muted hover:text-primary"
-                            } disabled:opacity-60 disabled:cursor-not-allowed`}
+                          className={`w-full rounded border px-4 py-2.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
+                            isFeatured
+                              ? "border-gold-muted bg-primary text-gold-light hover:bg-gold-muted hover:text-primary"
+                              : "border-gold-muted text-gold-muted hover:bg-gold-muted hover:text-primary"
+                          } disabled:opacity-60 disabled:cursor-not-allowed`}
                           style={{ fontFamily: "var(--font-inter)" }}
                         >
                           {isSubscribed
                             ? "Subscribed"
                             : isSubmitting
-                              ? "Processing…"
-                              : `Apply for ${toTitleCase(plan.tier)}`}
+                            ? "Processing…"
+                            : isUpgradeTarget
+                            ? `Upgrade to ${toTitleCase(plan.tier)}`
+                            : `Apply for ${toTitleCase(plan.tier)}`}
                         </button>
                       ) : (
                         <p className="text-xs text-text-secondary text-center">
@@ -369,108 +387,125 @@ export default function MembershipPlansPage() {
         </div>
       </section>
 
-      {selectedPlan && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-primary/65 px-4 py-6 backdrop-blur-sm"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="application-confirmation-title"
-        >
-          <section className="w-full max-w-lg rounded border border-gold-muted/35 bg-surface-container-lowest shadow-[0_24px_80px_rgba(16,36,63,0.28)]">
-            <div className="border-b border-gold-muted/20 px-6 py-5">
-              <p
-                className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Membership Application
-              </p>
-              <h2
-                id="application-confirmation-title"
-                className="mt-2 text-2xl font-semibold text-primary"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                Application Fee: {APPLICATION_FEE_LABEL}. Ready to Proceed with payment?
-              </h2>
-              <p className="mt-2 text-sm text-text-secondary">
-                You are applying for the {toTitleCase(selectedPlan.tier)} membership plan.
-              </p>
-            </div>
-
-            <div className="px-6 py-5">
-              <p className="text-sm leading-relaxed text-text-secondary">
-                After payment, you will be added to the waiting list. Admin will review your
-                application within the next 48 hours. If approved, you will receive an email
-                with the contract, and you must accept its terms before making your
-                membership payment.
-              </p>
-
-              <div className="mt-5">
-                <label
-                  htmlFor="tshirt-size"
-                  className="block text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2"
+      {selectedPlan && (() => {
+        const isUpgradingPlan = hasActiveMembership && !selectedPlan.is_subscribed;
+        const stepsToShow = isUpgradingPlan ? UPGRADE_PROCESS_STEPS : APPLICATION_PROCESS_STEPS;
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-primary/65 px-4 py-6 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="application-confirmation-title"
+          >
+            <section className="w-full max-w-lg rounded border border-gold-muted/35 bg-surface-container-lowest shadow-[0_24px_80px_rgba(16,36,63,0.28)]">
+              <div className="border-b border-gold-muted/20 px-6 py-5">
+                <p
+                  className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gold-muted"
+                  style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  Select T-Shirt Size *
-                </label>
-                <select
-                  id="tshirt-size"
-                  value={selectedTShirtSize}
-                  onChange={(e) => setSelectedTShirtSize(e.target.value as TShirtSize)}
-                  className="w-full rounded border border-gold-muted/25 bg-surface-container-lowest px-4 py-2.5 text-sm text-text-primary focus:border-gold-muted focus:outline-none focus:ring-1 focus:ring-gold-muted transition-colors"
-                  disabled={Boolean(submittingTier)}
-                  required
-                >
-                  <option value="" disabled>
-                    Choose a size...
-                  </option>
-                  <option value={TShirtSize.XS}>Extra Small</option>
-                  <option value={TShirtSize.S}>Small</option>
-                  <option value={TShirtSize.M}>Medium</option>
-                  <option value={TShirtSize.L}>Large</option>
-                  <option value={TShirtSize.XL}>Extra Large</option>
-                  <option value={TShirtSize.XXL}>2XL</option>
-                </select>
-              </div>
-
-              <div className="mt-5 rounded border border-gold-muted/25 bg-cream px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                  Next steps
+                  {isUpgradingPlan ? "Membership Upgrade" : "Membership Application"}
                 </p>
-                <ol className="mt-3 space-y-2 text-sm text-text-primary">
-                  {APPLICATION_PROCESS_STEPS.map((step, index) => (
-                    <li key={`modal-${step}`} className="flex gap-3">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-gold-light">
-                        {index + 1}
-                      </span>
-                      <span>{step}</span>
-                    </li>
-                  ))}
-                </ol>
+                <h2
+                  id="application-confirmation-title"
+                  className="mt-2 text-2xl font-semibold text-primary"
+                  style={{ fontFamily: "var(--font-playfair)" }}
+                >
+                  {isUpgradingPlan
+                    ? `Upgrade to ${toTitleCase(selectedPlan.tier)}`
+                    : `Application Fee: ${APPLICATION_FEE_LABEL}. Ready to proceed?`}
+                </h2>
+                <p className="mt-2 text-sm text-text-secondary">
+                  {isUpgradingPlan
+                    ? `You are upgrading from your current plan to the ${toTitleCase(selectedPlan.tier)} tier. Your unused time will be credited toward the new plan cost.`
+                    : `You are applying for the ${toTitleCase(selectedPlan.tier)} membership plan.`}
+                </p>
               </div>
-            </div>
 
-            <div className="flex flex-col-reverse gap-3 border-t border-gold-muted/20 px-6 py-4 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={closeApplicationModal}
-                disabled={Boolean(submittingTier)}
-                className="rounded border border-primary/25 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:border-gold-muted hover:text-gold-muted disabled:opacity-60"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Review Plans
-              </button>
-              <button
-                type="button"
-                onClick={onConfirmApplication}
-                disabled={Boolean(submittingTier) || !selectedTShirtSize}
-                className="rounded border border-gold-muted bg-primary px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                {submittingTier ? "Preparing Payment..." : "Proceed to Payment"}
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
+              <div className="px-6 py-5">
+                {isUpgradingPlan ? (
+                  <div className="rounded border border-amber-300/40 bg-amber-50/40 px-4 py-3 text-sm text-amber-800">
+                    <p className="font-semibold">✦ No application fee required</p>
+                    <p className="mt-1 text-xs">As an existing member, your upgrade is instant. A prorated credit for your remaining subscription period will be applied to the new membership cost.</p>
+                  </div>
+                ) : (
+                  <p className="text-sm leading-relaxed text-text-secondary">
+                    After payment, you will be added to the waiting list. Admin will review your
+                    application within the next 48 hours. If approved, you will receive an email
+                    with the contract, and you must accept its terms before making your
+                    membership payment.
+                  </p>
+                )}
+
+                {!isUpgradingPlan && (
+                  <div className="mt-5">
+                    <label
+                      htmlFor="tshirt-size"
+                      className="block text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2"
+                    >
+                      Select T-Shirt Size *
+                    </label>
+                    <select
+                      id="tshirt-size"
+                      value={selectedTShirtSize}
+                      onChange={(e) => setSelectedTShirtSize(e.target.value as TShirtSize)}
+                      className="w-full rounded border border-gold-muted/25 bg-surface-container-lowest px-4 py-2.5 text-sm text-text-primary focus:border-gold-muted focus:outline-none focus:ring-1 focus:ring-gold-muted transition-colors"
+                      disabled={Boolean(submittingTier)}
+                      required
+                    >
+                      <option value="" disabled>Choose a size...</option>
+                      <option value={TShirtSize.XS}>Extra Small</option>
+                      <option value={TShirtSize.S}>Small</option>
+                      <option value={TShirtSize.M}>Medium</option>
+                      <option value={TShirtSize.L}>Large</option>
+                      <option value={TShirtSize.XL}>Extra Large</option>
+                      <option value={TShirtSize.XXL}>2XL</option>
+                    </select>
+                  </div>
+                )}
+
+                <div className="mt-5 rounded border border-gold-muted/25 bg-cream px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                    Next steps
+                  </p>
+                  <ol className="mt-3 space-y-2 text-sm text-text-primary">
+                    {stepsToShow.map((step, index) => (
+                      <li key={`modal-${step}`} className="flex gap-3">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-gold-light">
+                          {index + 1}
+                        </span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 border-t border-gold-muted/20 px-6 py-4 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={closeApplicationModal}
+                  disabled={Boolean(submittingTier)}
+                  className="rounded border border-primary/25 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:border-gold-muted hover:text-gold-muted disabled:opacity-60"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  Review Plans
+                </button>
+                <button
+                  type="button"
+                  onClick={onConfirmApplication}
+                  disabled={Boolean(submittingTier) || (!isUpgradingPlan && !selectedTShirtSize)}
+                  className="rounded border border-gold-muted bg-primary px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light transition-colors hover:bg-gold-muted hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  {submittingTier
+                    ? isUpgradingPlan ? "Upgrading..." : "Preparing Payment..."
+                    : isUpgradingPlan ? "Confirm Upgrade" : "Proceed to Payment"}
+                </button>
+              </div>
+            </section>
+          </div>
+        );
+      })()}
     </main>
   );
 }

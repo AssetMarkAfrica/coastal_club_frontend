@@ -58,16 +58,25 @@ export const submitMembershipApplication = createAsyncThunk(
   async (payload: SubmitMembershipApplicationPayload, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await membershipService.submitMembershipApplication(payload);
+      const responseData = data.data;
+
+      if (responseData.is_upgrade) {
+        // Upgrade path: application is auto-approved, no payment needed now.
+        // The caller should redirect to /membership/contract to accept the new contract.
+        return responseData;
+      }
+
+      // New application path: redirect to Paystack to pay the application fee.
       dispatch(
         setPendingApplicationPayment({
           kind: "application_fee",
-          application_id: data.data.application_id,
-          application_fee_pesewas: data.data.application_fee_pesewas,
-          authorization_url: data.data.authorization_url,
-          reference: data.data.reference,
+          application_id: responseData.application_id,
+          application_fee_pesewas: responseData.application_fee_pesewas,
+          authorization_url: responseData.authorization_url,
+          reference: responseData.reference,
         })
       );
-      return data.data;
+      return responseData;
     } catch (error) {
       return rejectWithValue(
         getErrorMessage(error, "Failed to submit membership application.")
