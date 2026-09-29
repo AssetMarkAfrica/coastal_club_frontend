@@ -4,11 +4,12 @@ import { Minus, Plus } from "lucide-react";
 interface GuestSelectorProps {
   value: number;
   onChange: (value: number) => void;
+  maxGuests?: number;
 }
 
-export default function GuestSelector({ value, onChange }: GuestSelectorProps) {
+export default function GuestSelector({ value, onChange, maxGuests = 20 }: GuestSelectorProps) {
   const increment = () => {
-    if (value < 20) onChange(value + 1);
+    if (value < maxGuests) onChange(value + 1);
   };
 
   const decrement = () => {
@@ -33,7 +34,7 @@ export default function GuestSelector({ value, onChange }: GuestSelectorProps) {
         </span>
         <button
           onClick={increment}
-          disabled={value >= 20}
+          disabled={value >= maxGuests}
           className="w-8 h-8 rounded-full bg-white border border-cream-dark flex items-center justify-center text-primary-container hover:bg-gold-light/10 active:scale-95 transition-all disabled:opacity-50"
         >
           <Plus className="w-5 h-5" />

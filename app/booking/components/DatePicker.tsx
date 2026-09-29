@@ -3,22 +3,32 @@
 import { useMemo } from "react";
 import { MoreHorizontal } from "lucide-react";
 
+import { BookingBlackoutPeriod } from "../../../types/membership";
+
 interface DatePickerProps {
   value: Date;
   onChange: (date: Date) => void;
+  disableSameDayIfPastNoon?: boolean;
+  blackoutPeriods?: BookingBlackoutPeriod[];
 }
 
-export default function DatePicker({ value, onChange }: DatePickerProps) {
+export default function DatePicker({ value, onChange, disableSameDayIfPastNoon = false, blackoutPeriods = [] }: DatePickerProps) {
   const dates = useMemo(() => {
     const arr = [];
     const today = new Date();
-    for (let i = 0; i < 14; i++) {
+    
+    let startIndex = 0;
+    if (disableSameDayIfPastNoon && today.getHours() >= 12) {
+      startIndex = 1;
+    }
+    
+    for (let i = startIndex; i < startIndex + 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       arr.push(date);
     }
     return arr;
-  }, []);
+  }, [disableSameDayIfPastNoon]);
 
   const isSameDay = (d1: Date, d2: Date) => {
     return (
@@ -26,6 +36,16 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
       d1.getMonth() === d2.getMonth() &&
       d1.getDate() === d2.getDate()
     );
+  };
+
+  const isBlackoutDate = (date: Date) => {
+    return blackoutPeriods.some(period => {
+      const start = new Date(period.start_date);
+      const end = new Date(period.end_date);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+      return date >= start && date <= end;
+    });
   };
 
   return (
@@ -36,16 +56,21 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide snap-x">
         {dates.map((date, idx) => {
           const isSelected = isSameDay(date, value);
+          const isBlackout = isBlackoutDate(date);
           const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
           const dayNum = date.getDate();
 
           return (
             <button
               key={idx}
-              onClick={() => onChange(date)}
+              onClick={() => !isBlackout && onChange(date)}
+              disabled={isBlackout}
+              title={isBlackout ? "Blackout period - not available" : undefined}
               className={`flex-shrink-0 w-16 h-20 rounded-lg flex flex-col items-center justify-center snap-center relative transition-colors ${
                 isSelected
                   ? "bg-primary-container border border-gold-light/50 shadow-md"
+                  : isBlackout 
+                  ? "bg-gray-100 border border-gray-200 opacity-50 cursor-not-allowed" 
                   : "bg-white border border-cream-dark hover:border-gold-light/30"
               }`}
             >

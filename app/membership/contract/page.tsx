@@ -260,14 +260,8 @@ export default function MembershipContractPage() {
                   </div>
                 </div>
 
-                <div className="border-t border-outline-variant/30 bg-surface-dim px-6 py-3 text-sm text-text-secondary">
-                  <span className="italic">
-                    Plus Monthly Maintenance Fee:{" "}
-                    {formatContractMoney(contract.monthly_maintenance_fee_pesewas)} billed
-                    separately.
-                  </span>
-                </div>
               </div>
+
 
               <div className="relative mb-10 h-96 overflow-y-auto rounded-lg border border-gold-muted/20 bg-[#FBF9F6] p-6 shadow-inner sm:p-8 md:p-10">
                 <article className="max-w-none">
@@ -314,10 +308,9 @@ export default function MembershipContractPage() {
                   </h3>
                   <p className="mb-6 text-base leading-7 text-text-secondary">
                     The Member agrees to pay all applicable fees, including but not limited to
-                    the Initiation Fee, Annual Membership Fee, and Monthly Maintenance Fees,
-                    as outlined in the Financial Summary above. Failure to remit payment
-                    within thirty days of the due date may result in suspension of Club
-                    privileges.
+                    the Initiation Fee and Annual Membership Fee as outlined in the Financial
+                    Summary above. Failure to remit payment within thirty days of the due date
+                    may result in suspension of Club privileges.
                   </p>
 
                   <h3

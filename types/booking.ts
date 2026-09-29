@@ -2,13 +2,15 @@ export type VenueType =
   | 'fine_dining'
   | 'executive_lounge'
   | 'private_room'
-  | 'skybar';
+  | 'skybar'
+  | 'sunset_bar';
 
 export const VENUE_OPTIONS: { value: VenueType; label: string }[] = [
   { value: 'fine_dining',      label: 'Fine Dining' },
   { value: 'executive_lounge', label: 'Executive Lounge' },
   { value: 'private_room',     label: 'Private Room' },
   { value: 'skybar',           label: 'Skybar' },
+  { value: 'sunset_bar',       label: 'Sunset Bar' },
 ];
 
 export interface Reservation {

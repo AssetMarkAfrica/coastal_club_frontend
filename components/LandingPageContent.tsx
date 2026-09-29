@@ -14,12 +14,16 @@ const HERO_VIDEOS = [
     label: "The Private Room",
   },
   {
-    src: "https://res.cloudinary.com/dqwub0fhb/video/upload/v1787759440/FineDiningVideo_a6wgj6.mp4",
+    src: "https://res.cloudinary.com/dqwub0fhb/video/upload/v1789925589/Fine_Dining_sonwgo.mp4",
     label: "Fine Dining",
   },
   {
     src: "https://res.cloudinary.com/dqwub0fhb/video/upload/v1787758817/SkybarVideo_zarrv5.mp4",
     label: "The Sky Bar",
+  },
+  {
+    src: "https://res.cloudinary.com/dqwub0fhb/video/upload/v1789927472/SunsetBarVideo_wtmj1l.mp4",
+    label: "Sunset Bar",
   },
 ];
 
@@ -240,9 +244,9 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
           <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 pt-24 pb-16">
             {/* Eyebrow label */}
             <div className="flex items-center gap-3 mb-8" style={{ animation: "wordDrop 0.6s ease 150ms both" }}>
-              <div className="h-px w-10" style={{ background: "rgba(193,160,76,0.6)" }} />
-              <span className="text-[11px] font-semibold tracking-[0.28em] uppercase" style={{ color: "#c9a84c" }}>Laboma Beach · Accra, Ghana</span>
-              <div className="h-px w-10" style={{ background: "rgba(193,160,76,0.6)" }} />
+              <div className="h-px w-10 md:w-16" style={{ background: "rgba(193,160,76,0.6)" }} />
+              <span className="text-base md:text-xl font-bold tracking-[0.25em] uppercase drop-shadow-md" style={{ color: "#f0dfa0" }}>Laboma Beach · Accra, Ghana</span>
+              <div className="h-px w-10 md:w-16" style={{ background: "rgba(193,160,76,0.6)" }} />
             </div>
 
             {/* Main headline */}
@@ -280,7 +284,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
             {/* Inline stats row */}
             <div className="flex flex-wrap justify-center gap-8 md:gap-14" style={{ animation: "wordDrop 0.6s ease 950ms both" }}>
               {[
-                { v: "4", label: "Curated Venues" },
+                { v: "5", label: "Curated Venues" },
                 { v: "3", label: "Membership Tiers" },
                 { v: "100%", label: "Private & Exclusive" },
                 { v: "1", label: "Coastal Location" },
@@ -295,9 +299,10 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
 
           {/* ── Bottom venue quick-nav bar ── */}
           <div className="relative z-10 w-full" style={{ borderTop: "1px solid rgba(193,160,76,0.2)", background: "rgba(16,36,63,0.75)", backdropFilter: "blur(16px)" }}>
-            <div className="max-w-7xl mx-auto px-6 py-0 grid grid-cols-2 md:grid-cols-4 divide-x" style={{ borderColor: "rgba(193,160,76,0.15)" }}>
+            <div className="max-w-7xl mx-auto px-6 py-0 grid grid-cols-2 md:grid-cols-5 divide-x" style={{ borderColor: "rgba(193,160,76,0.15)" }}>
               {[
                 { label: "The Sky Bar", tag: "Rooftop Terrace", href: "/skybar", icon: "roofing" },
+                { label: "Sunset Bar", tag: "Glass Canopy", href: "/sunset-bar", icon: "local_bar" },
                 { label: "Fine Dining", tag: "Ground Floor", href: "/fine-dining", icon: "restaurant" },
                 { label: "Executive Lounge", tag: "Members Only", href: "/executive-lounge", icon: "diamond" },
                 { label: "The Private Room", tag: "Exclusive Hire", href: "/private-room", icon: "meeting_room" },
@@ -337,7 +342,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
               <h2 className="text-4xl md:text-5xl font-semibold mb-5" style={{ fontFamily: "var(--font-playfair)", color: "#f0dfa0" }}>Our Exclusive Destinations</h2>
               <div className="mx-auto mb-6" style={{ width: "64px", height: "1.5px", background: "rgba(193,160,76,0.5)" }} />
               <p className="text-base max-w-xl mx-auto" style={{ color: "rgba(240,223,160,0.6)", lineHeight: "1.75" }}>
-                Four distinct culinary and social destinations — each architected for an unforgettable experience.
+                Five distinct culinary and social destinations — each architected for an unforgettable experience.
               </p>
             </FadeUp>
 
@@ -363,7 +368,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
               <div className="relative bg-cream-dark p-2 rounded-lg shadow-xl">
                 <div className="bg-navy-deep rounded overflow-hidden relative h-[500px] w-full flex items-center justify-center">
                   <img
-                    src="https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining3_ulq0dx.png"
+                    src="https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining3_zpycce.png"
                     alt="Estrella del Mar Main Hall"
                     className="w-full h-full object-cover opacity-60"
                   />
@@ -435,6 +440,7 @@ export default function LandingPageContent({ isAuthenticated = false }: { isAuth
           <div className="flex flex-wrap justify-center gap-8 mb-4">
             {[
               { label: "The Sky Bar", href: "/skybar" },
+              { label: "Sunset Bar", href: "/sunset-bar" },
               { label: "Fine Dining", href: "/fine-dining" },
               { label: "Executive Lounge", href: "/executive-lounge" },
               { label: "The Private Room", href: "/private-room" },

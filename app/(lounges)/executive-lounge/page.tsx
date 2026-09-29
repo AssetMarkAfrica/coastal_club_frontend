@@ -60,8 +60,7 @@ export default function ExecutiveLoungePage() {
                             playsInline
                             className="w-full h-full object-cover"
                         >
-                            {/* Replace the src with the actual background video file path */}
-                            <source src="/videos/executive-lounge-bg.mp4" type="video/mp4" />
+                            <source src="https://res.cloudinary.com/dqwub0fhb/video/upload/v1789925682/ExecutiveLoungeVideo_xjiktp.mp4" type="video/mp4" />
                         </video>
                     </div>
                     {/* Atmospheric Gradient Overlay */}
@@ -167,7 +166,7 @@ export default function ExecutiveLoungePage() {
                         </div>
                         <div className="relative h-[600px] w-full rounded-2xl overflow-hidden border border-[#F1E0A6]/15 group order-1 lg:order-2 shadow-2xl shadow-black/50">
                             <img
-                                src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070&auto=format&fit=crop"
+                                src="https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925665/ExecutiveLounge1_zsodlx.png"
                                 alt="Craft cocktails being prepared"
                                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                             />

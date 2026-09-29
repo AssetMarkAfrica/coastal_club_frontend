@@ -14,12 +14,6 @@ const pesewasToGHS = (p: number) =>
 const tierLabel = (tier: string) =>
   tier.charAt(0).toUpperCase() + tier.slice(1);
 
-const maintenanceLabel = (status: string) => {
-  if (status === "bonus_active") return "Bonus Active";
-  if (status === "paid") return "Paid";
-  if (status === "overdue") return "Overdue";
-  return status.replace(/_/g, " ");
-};
 
 /* ── component ───────────────────────────────────────── */
 export default function MemberCardPage() {
@@ -34,12 +28,9 @@ export default function MemberCardPage() {
 
   useEffect(() => {
     if (!card || !progressRef.current) return;
-    const used =
-      card.monthly_spend_credit_pesewas - card.spend_credit_remaining_pesewas;
-    const pct =
-      card.monthly_spend_credit_pesewas > 0
-        ? Math.min((used / card.monthly_spend_credit_pesewas) * 100, 100)
-        : 0;
+    const used = card.fb_spend_this_month_pesewas;
+    const minimum = card.plan_fb_minimum_pesewas;
+    const pct = minimum > 0 ? Math.min((used / minimum) * 100, 100) : 0;
     const timer = setTimeout(() => {
       if (progressRef.current) progressRef.current.style.width = `${pct}%`;
     }, 600);
@@ -109,12 +100,9 @@ export default function MemberCardPage() {
 
   if (!card) return null;
 
-  const spendUsed =
-    card.monthly_spend_credit_pesewas - card.spend_credit_remaining_pesewas;
-  const spendPct =
-    card.monthly_spend_credit_pesewas > 0
-      ? Math.min((spendUsed / card.monthly_spend_credit_pesewas) * 100, 100)
-      : 0;
+  const fbSpend = card ? card.fb_spend_this_month_pesewas : 0;
+  const fbMinimum = card ? card.plan_fb_minimum_pesewas : 0;
+  const spendPct = fbMinimum > 0 ? Math.min((fbSpend / fbMinimum) * 100, 100) : 0;
 
   const isActive = card.status === "active";
   const isBonusActive = card.is_signup_bonus_active;
@@ -397,28 +385,6 @@ export default function MemberCardPage() {
                 {/* Divider */}
                 <div style={{ height: "1px", background: "rgba(201,168,76,0.1)" }} />
 
-                {/* Maintenance fee */}
-                <div className="flex items-center justify-between">
-                  <span
-                    className="text-sm font-medium"
-                    style={{ color: "rgba(12,31,58,0.6)", fontFamily: "var(--font-inter)" }}
-                  >
-                    Maintenance Fee
-                  </span>
-                  <span
-                    className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold border"
-                    style={{
-                      background: isBonusActive
-                        ? "rgba(183,146,43,0.1)"
-                        : "rgba(237,227,204,0.4)",
-                      color: isBonusActive ? "#7a5200" : "#4a3a00",
-                      borderColor: "rgba(183,146,43,0.22)",
-                    }}
-                  >
-                    {maintenanceLabel(card.maintenance_fee_status)}
-                  </span>
-                </div>
-
                 {/* Signup bonus */}
                 {card.is_signup_bonus_active && card.signup_bonus_expires_on && (
                   <>
@@ -445,30 +411,7 @@ export default function MemberCardPage() {
                   </>
                 )}
 
-                {/* Due this month */}
-                {card.maintenance_fee_due_pesewas > 0 &&
-                  !card.is_maintenance_fee_paid_current_month && (
-                    <>
-                      <div style={{ height: "1px", background: "rgba(201,168,76,0.1)" }} />
-                      <div
-                        className="flex items-center justify-between rounded-lg px-4 py-3"
-                        style={{ background: "rgba(180,35,24,0.05)", border: "1px solid rgba(180,35,24,0.12)" }}
-                      >
-                        <span
-                          className="text-xs font-medium"
-                          style={{ color: "rgba(12,31,58,0.5)", fontFamily: "var(--font-inter)" }}
-                        >
-                          Due this month
-                        </span>
-                        <span
-                          className="text-sm font-bold"
-                          style={{ color: "#b42318", fontFamily: "var(--font-playfair)" }}
-                        >
-                          GHS {pesewasToGHS(card.maintenance_fee_due_pesewas)}
-                        </span>
-                      </div>
-                    </>
-                  )}
+
               </div>
 
               {/* Member since */}
@@ -511,19 +454,21 @@ export default function MemberCardPage() {
                   className="text-[10px] font-semibold tracking-[0.22em] uppercase"
                   style={{ color: "#B7922B", fontFamily: "var(--font-inter)" }}
                 >
-                  Dining &amp; Spa Credit
+                  Spend This Month
                 </p>
-                <span
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
-                  style={{
-                    background: "rgba(183,146,43,0.1)",
-                    color: "#7a5200",
-                    border: "1px solid rgba(183,146,43,0.2)",
-                    fontFamily: "var(--font-inter)",
-                  }}
-                >
-                  GHS {pesewasToGHS(card.spend_credit_remaining_pesewas)} left
-                </span>
+                {fbMinimum > 0 && (
+                  <span
+                    className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                    style={{
+                      background: "rgba(183,146,43,0.1)",
+                      color: "#7a5200",
+                      border: "1px solid rgba(183,146,43,0.2)",
+                      fontFamily: "var(--font-inter)",
+                    }}
+                  >
+                    Min: GHS {pesewasToGHS(fbMinimum)}
+                  </span>
+                )}
               </div>
 
               {/* Big number */}
@@ -532,13 +477,13 @@ export default function MemberCardPage() {
                   className="text-[36px] font-bold leading-none"
                   style={{ fontFamily: "var(--font-playfair)", color: "#0C1F3A" }}
                 >
-                  GHS {pesewasToGHS(spendUsed)}
+                  GHS {pesewasToGHS(fbSpend)}
                 </p>
                 <p
                   className="text-xs mt-1"
                   style={{ color: "rgba(12,31,58,0.45)", fontFamily: "var(--font-inter)" }}
                 >
-                  spent of GHS {pesewasToGHS(card.monthly_spend_credit_pesewas)} monthly credit
+                  {fbMinimum > 0 ? `of GHS ${pesewasToGHS(fbMinimum)} monthly minimum` : "this month"}
                 </p>
               </div>
 
@@ -582,7 +527,7 @@ export default function MemberCardPage() {
                 </div>
               </div>
 
-              {/* Resets note */}
+              {/* Minimum note */}
               <p
                 className="text-xs italic pt-4 border-t"
                 style={{
@@ -591,7 +536,7 @@ export default function MemberCardPage() {
                   fontFamily: "var(--font-inter)",
                 }}
               >
-                Credit resets monthly.
+                {fbMinimum > 0 ? "Spend resets monthly. Minimum spend may apply." : "No minimum spend required for your tier."}
               </p>
             </div>
           </div>

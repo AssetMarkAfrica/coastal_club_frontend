@@ -479,8 +479,7 @@ export default function ApplicationDetailPage() {
                 <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-primary">Application Snapshot</p>
                 <div className="grid grid-cols-1 gap-4">
                   <MetaField label="Plan Tier" value={toTitleCase(plan?.tier ?? "")} />
-                  <MetaField label="F and B Minimum" value={plan ? formatCedis(plan.fb_minimum_pesewas) : "Not available"} />
-                  <MetaField label="Points Multiplier" value={plan?.points_multiplier || "Not available"} />
+                  <MetaField label="Minimum Monthly Spend" value={plan ? formatCedis(plan.fb_minimum_pesewas) : "Not available"} />
                   <MetaField label="Guest Passes / Visit" value={plan?.guest_passes_per_visit?.toString() || "Not available"} />
                   <MetaField label="Last Updated" value={formatDateTime(application.updated_at)} />
                 </div>

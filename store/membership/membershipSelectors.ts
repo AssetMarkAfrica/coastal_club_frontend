@@ -29,5 +29,7 @@ export const selectAdminPaymentHistory = (state: RootState) =>
   state.membership.paymentHistory;
 export const selectAdminLatePayments = (state: RootState) =>
   state.membership.latePayments;
-export const selectMaintenanceFeeLoading = (state: RootState) =>
-  state.membership.maintenanceFeeLoading;
+export const selectBlackoutPeriods = (state: RootState) =>
+  state.membership.blackoutPeriods;
+export const selectAllowedVenues = (state: RootState) =>
+  state.membership.allowedVenues;

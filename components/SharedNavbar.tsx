@@ -77,10 +77,14 @@ export default function SharedNavbar() {
                 {/* Logo */}
                 <Link
                     href="/"
-                    className="text-2xl font-semibold text-[#F1E0A6] tracking-tight hover:opacity-80 transition-opacity shrink-0"
-                    style={{ fontFamily: "var(--font-playfair)" }}
+                    className="flex flex-col items-start hover:opacity-80 transition-opacity shrink-0"
                 >
-                    Estrella del Mar
+                    <span className="text-2xl font-semibold text-[#F1E0A6] tracking-tight" style={{ fontFamily: "var(--font-playfair)" }}>
+                        Estrella del Mar
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#F1E0A6]/70 mt-0.5">
+                        Beach Club
+                    </span>
                 </Link>
 
                 {/* Links */}
@@ -154,10 +158,14 @@ export default function SharedNavbar() {
             >
                 <Link
                     href="/"
-                    className="text-xl font-semibold text-[#F1E0A6]"
-                    style={{ fontFamily: "var(--font-playfair)" }}
+                    className="flex flex-col items-start hover:opacity-80 transition-opacity"
                 >
-                    Estrella del Mar
+                    <span className="text-xl font-semibold text-[#F1E0A6]" style={{ fontFamily: "var(--font-playfair)" }}>
+                        Estrella del Mar
+                    </span>
+                    <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#F1E0A6]/70">
+                        Beach Club
+                    </span>
                 </Link>
                 <button
                     onClick={() => setMobileOpen((v) => !v)}

@@ -34,7 +34,7 @@ const VENUE_META: Record<
     label: "Fine Dining",
     tagline: "An exquisite à la carte dining journey",
     image:
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761397/FineDining7_fepbsb.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining1_eielrg.png",
     Icon: Utensils,
   },
   executive_lounge: {
@@ -55,6 +55,13 @@ const VENUE_META: Record<
     tagline: "Cocktails beneath an open sky",
     image:
       "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757506/Skybar1_akorqw.png",
+    Icon: Sunset,
+  },
+  sunset_bar: {
+    label: "Sunset Bar",
+    tagline: "Glass-canopied rooftop drinks",
+    image:
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789927332/SunsetBar1_yuqcpe.png",
     Icon: Sunset,
   },
 };
@@ -115,15 +122,21 @@ export default function CreateReservationPage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const v = (params.get("venue") || params.get("venue_type")) as VenueType | null;
-      const validVenues: VenueType[] = ["fine_dining", "executive_lounge", "private_room", "skybar"];
+      const validVenues: VenueType[] = ["fine_dining", "executive_lounge", "private_room", "skybar", "sunset_bar"];
       if (v && validVenues.includes(v)) {
         setVenueType(v);
       }
     }
   }, []);
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(() => {
+    const d = new Date();
+    if (d.getHours() >= 12) {
+      d.setDate(d.getDate() + 1);
+    }
+    return d;
+  });
   const [time, setTime] = useState<string>("19:00");
-  const [guests, setGuests] = useState<number>(2);
+  const [guests, setGuests] = useState<number>(1);
   const [specialRequests, setSpecialRequests] = useState<string>("");
   const [depositAmount, setDepositAmount] = useState<number>(500);
 
@@ -206,7 +219,7 @@ export default function CreateReservationPage() {
               title="Date & Time"
             >
               <div className="flex flex-col gap-5">
-                <DatePicker value={date} onChange={setDate} />
+                <DatePicker value={date} onChange={setDate} disableSameDayIfPastNoon={true} />
                 <TimePicker
                   value={time}
                   onChange={setTime}

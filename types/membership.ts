@@ -18,14 +18,15 @@ export interface MembershipBenefit {
 export interface MembershipPlan {
   id: number;
   tier: MembershipPlanTier;
+  tier_rank: number;
   name: string;
   annual_fee_pesewas: number;
-  club_maintenance_fee_pesewas: number;
   signup_bonus_spend_credit_pesewas: number;
   initiation_fee_pesewas: number;
   fb_minimum_pesewas: number;
-  points_multiplier: string;
   guest_passes_per_visit: number;
+  bypass_blackout_window: boolean;
+  priority_booking: boolean;
   is_subscribed?: boolean;
   benefits?: MembershipBenefit[];
 }
@@ -159,7 +160,6 @@ export interface MembershipContract {
   initiation_fee_pesewas: string | number;
   annual_fee_pesewas: string | number;
   total_due_now_pesewas: string | number;
-  monthly_maintenance_fee_pesewas: string | number;
   accepted_terms: boolean;
   accepted_privacy: boolean;
   accepted_club_rules: boolean;
@@ -194,16 +194,16 @@ export interface MyMembership {
   billing_cycle: string;
   current_period_start: string;
   current_period_end: string;
+  /** Cumulative F&B spend this month (tracked toward the monthly minimum). */
   fb_spend_this_month_pesewas: number;
-  monthly_spend_credit_pesewas: number;
-  spend_credit_remaining_pesewas: number;
-  maintenance_fee_due_pesewas: number;
-  maintenance_fee_status: string;
-  is_maintenance_fee_paid_current_month: boolean;
+  /** Signup bonus credit expiry — null if no active bonus. */
   is_signup_bonus_active: boolean;
   signup_bonus_expires_on: string | null;
-  maintenance_fee_paid_through_month: string | null;
-  maintenance_fee_paid_at: string | null;
+  /** Swag / welcome package */
+  swag_fulfilled: boolean;
+  swag_fulfilled_at: string | null;
+  /** Corporate account manager (user id) */
+  account_manager: string | null;
   created_at: string;
 }
 export type MyMembershipResponse = ApiResponse<MyMembership>;
@@ -240,23 +240,6 @@ export interface MembershipContractPaymentDetails {
   total_due_now_pesewas: number;
 }
 
-export interface CheckoutMaintenanceFeePayload {
-  callback_url?: string;
-}
-
-export interface CheckoutMaintenanceFeeData {
-  authorization_url: string;
-  reference: string;
-  maintenance_fee_pesewas: number;
-  month: string;
-}
-
-export type CheckoutMaintenanceFeeResponse = ApiResponse<CheckoutMaintenanceFeeData>;
-
-export interface VerifyMaintenanceFeePayload {
-  reference: string;
-}
-
 export interface ContractAcceptanceContractSummary {
   id: string;
   status: string;
@@ -274,6 +257,7 @@ export interface AcceptMembershipContractData {
 }
 
 export type AcceptMembershipContractResponse = ApiResponse<AcceptMembershipContractData>;
+
 export interface MembershipCard {
   id: string;
   member_number: string;
@@ -281,13 +265,11 @@ export interface MembershipCard {
   tier: MembershipPlanTier;
   plan_name: string;
   status: string;
-  maintenance_fee_status: string;
-  maintenance_fee_due_pesewas: number;
-  is_maintenance_fee_paid_current_month: boolean;
+  is_active: boolean;
   is_signup_bonus_active: boolean;
   signup_bonus_expires_on: string | null;
-  monthly_spend_credit_pesewas: number;
-  spend_credit_remaining_pesewas: number;
+  fb_spend_this_month_pesewas: number;
+  plan_fb_minimum_pesewas: number;
   qr_image_url: string;
   issued_at: string;
 }
@@ -310,10 +292,8 @@ export interface SubscriptionListItem {
   is_active: boolean;
   plan: MembershipPlanSummary;
   member: SubscriptionMember;
-  spend_credit_remaining_pesewas: number;
-  monthly_spend_credit_pesewas: number;
   fb_spend_this_month_pesewas: number;
-  maintenance_fee_status: string;
+  swag_fulfilled: boolean;
   current_period_end: string;
   created_at: string;
 }
@@ -334,6 +314,45 @@ export type SubscriptionDetailResponse = ApiResponse<SubscriptionDetail>;
 // Both endpoints return the updated subscription (same shape as SubscriptionDetail).
 export type SuspendSubscriptionResponse = ApiResponse<SubscriptionDetail>;
 export type ReactivateSubscriptionResponse = ApiResponse<SubscriptionDetail>;
+
+// ---------------------------------------------------------------------------
+// Admin: fulfill swag / assign account manager
+// ---------------------------------------------------------------------------
+
+export interface FulfillSwagResponse extends MyMembership {}
+export type AdminFulfillSwagResponse = ApiResponse<FulfillSwagResponse>;
+
+export interface AssignAccountManagerPayload {
+  account_manager_id: string;
+}
+export type AdminAssignAccountManagerResponse = ApiResponse<SubscriptionDetail>;
+
+// ---------------------------------------------------------------------------
+// Blackout periods
+// ---------------------------------------------------------------------------
+
+export interface BookingBlackoutPeriod {
+  id: number;
+  start_date: string;
+  end_date: string;
+  reason: string;
+  created_by_email: string;
+  created_at: string;
+}
+
+export interface CreateBlackoutPeriodPayload {
+  start_date: string;
+  end_date: string;
+  reason?: string;
+}
+
+export type BlackoutPeriodsResponse = ApiResponse<BookingBlackoutPeriod[]>;
+export type CreateBlackoutPeriodResponse = ApiResponse<BookingBlackoutPeriod>;
+
+// ---------------------------------------------------------------------------
+// Allowed Venues
+// ---------------------------------------------------------------------------
+export type AllowedVenuesResponse = ApiResponse<string[]>;
 
 // ---------------------------------------------------------------------------
 // Admin: payments and late payments
@@ -374,7 +393,6 @@ export interface AdminLatePaymentsData {
   pending_applications: MembershipApplication[];
   pending_subscriptions: AdminSubscriptionDetail[];
   expired_subscriptions: AdminSubscriptionDetail[];
-  late_maintenance_subscriptions: AdminSubscriptionDetail[];
 }
 
 export type AdminLatePaymentsResponse = ApiResponse<AdminLatePaymentsData>;

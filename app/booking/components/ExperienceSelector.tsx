@@ -14,7 +14,7 @@ const VENUES: {
     value: "fine_dining",
     label: "Fine Dining",
     tagline: "An exquisite à la carte dining journey",
-    image: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761397/FineDining7_fepbsb.png",
+    image: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining1_eielrg.png",
     Icon: Utensils,
     placeholderBg: "linear-gradient(135deg, #1a2744 0%, #0a1628 100%)",
   },
@@ -42,15 +42,25 @@ const VENUES: {
     Icon: Sunset,
     placeholderBg: "linear-gradient(135deg, #0d2030 0%, #050d18 100%)",
   },
+  {
+    value: "sunset_bar",
+    label: "Sunset Bar",
+    tagline: "Glass-canopied rooftop drinks",
+    image: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789927332/SunsetBar1_yuqcpe.png",
+    Icon: Sunset,
+    placeholderBg: "linear-gradient(135deg, #10243f 0%, #2a162b 100%)",
+  },
 ];
 
 interface Props {
   value: VenueType | null;
   onChange: (value: VenueType) => void;
+  validVenues?: VenueType[];
 }
 
-export default function ExperienceSelector({ value, onChange }: Props) {
-  const selected = VENUES.find((v) => v.value === value) ?? VENUES[0];
+export default function ExperienceSelector({ value, onChange, validVenues }: Props) {
+  const filteredVenues = validVenues ? VENUES.filter(v => validVenues.includes(v.value)) : VENUES;
+  const selected = filteredVenues.find((v) => v.value === value) ?? filteredVenues[0] ?? VENUES[0];
 
   return (
     <div className="flex flex-col gap-3">
@@ -119,7 +129,7 @@ export default function ExperienceSelector({ value, onChange }: Props) {
 
       {/* ── Thumbnail selector strip ── */}
       <div className="grid grid-cols-4 gap-2">
-        {VENUES.map(({ value: v, label, image, Icon, placeholderBg }) => {
+        {filteredVenues.map(({ value: v, label, image, Icon, placeholderBg }) => {
           const active = value === v;
           return (
             <button

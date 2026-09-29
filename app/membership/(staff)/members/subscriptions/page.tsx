@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchSubscriptions, fetchSubscriptionDetail } from "@/store/membership/membershipThunks";
+import { fetchSubscriptions, fetchSubscriptionDetail, fulfillSwag } from "@/store/membership/membershipThunks";
 import {
     selectSubscriptions,
     selectSubscriptionDetail,
@@ -63,39 +63,6 @@ function StatusBadge({ status }: { status: string }) {
     return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200 text-xs font-semibold">
             {status}
-        </span>
-    );
-}
-
-function MaintenanceBadge({ status }: { status: string }) {
-    const s = status.toLowerCase();
-    if (s === "bonus_active" || s === "bonus active")
-        return (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200 text-xs font-medium">
-                ⚡ Bonus Active
-            </span>
-        );
-    if (s === "paid")
-        return (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-teal-50 text-teal-700 border border-teal-200 text-xs font-medium">
-                ✓ Paid
-            </span>
-        );
-    if (s === "unpaid" || s === "overdue")
-        return (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-red-50 text-red-700 border border-red-200 text-xs font-medium">
-                Unpaid
-            </span>
-        );
-    if (s === "clear")
-        return (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 border border-gray-200 text-xs font-medium">
-                Clear
-            </span>
-        );
-    return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-100 text-gray-500 border border-gray-200 text-xs font-medium">
-            {status || "—"}
         </span>
     );
 }
@@ -283,8 +250,20 @@ function DetailPanel({
                                         <p className="text-[#10243F] font-semibold text-sm">{formatDate(detail.created_at)}</p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Maintenance</p>
-                                        <MaintenanceBadge status={detail.maintenance_fee_status} />
+                                        <p className="text-[10px] font-semibold tracking-widest uppercase text-[#6B7280] mb-1">Swag Fulfilled</p>
+                                        <div className="flex items-center gap-3">
+                                            <p className="text-[#10243F] font-semibold text-sm">
+                                                {detail.swag_fulfilled ? "Yes" : "No"}
+                                            </p>
+                                            {!detail.swag_fulfilled && (
+                                                <button
+                                                    onClick={() => dispatch(fulfillSwag(detail.id))}
+                                                    className="px-2 py-1 bg-[#10243F] text-[#F1E0A6] text-[10px] rounded hover:bg-[#1e3a5f] transition-colors uppercase tracking-wider font-semibold"
+                                                >
+                                                    Fulfill Now
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -407,7 +386,6 @@ export default function SubscriptionsPage() {
     // Filter / search state
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
-    const [maintenanceFilter, setMaintenanceFilter] = useState("all");
     const [activeMobileChip, setActiveMobileChip] = useState("all");
 
     // Pagination
@@ -420,7 +398,7 @@ export default function SubscriptionsPage() {
     // Reset page when filters change
     useEffect(() => {
         setPage(1);
-    }, [search, statusFilter, maintenanceFilter, activeMobileChip]);
+    }, [search, statusFilter, activeMobileChip]);
 
     const filtered = useMemo(() => {
         const chipStatus = activeMobileChip !== "all" ? activeMobileChip : statusFilter;
@@ -430,12 +408,9 @@ export default function SubscriptionsPage() {
                 s.member.email.toLowerCase().includes(search.toLowerCase()) ||
                 s.plan.name.toLowerCase().includes(search.toLowerCase());
             const statusMatch = chipStatus === "all" || s.status.toLowerCase() === chipStatus;
-            const maintenanceMatch =
-                maintenanceFilter === "all" ||
-                s.maintenance_fee_status.toLowerCase().replace("_", " ") === maintenanceFilter.toLowerCase();
-            return nameMatch && statusMatch && maintenanceMatch;
+            return nameMatch && statusMatch;
         });
-    }, [subscriptions, search, statusFilter, maintenanceFilter, activeMobileChip]);
+    }, [subscriptions, search, statusFilter, activeMobileChip]);
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -510,19 +485,7 @@ export default function SubscriptionsPage() {
                                     <option value="cancelled">Cancelled</option>
                                 </select>
                             </div>
-                            <div className="flex items-center gap-2 px-3 py-2 border-r border-[#EDE3CC]">
-                                <select
-                                    value={maintenanceFilter}
-                                    onChange={(e) => setMaintenanceFilter(e.target.value)}
-                                    className="bg-transparent border-none focus:ring-0 text-[#10243F] text-xs font-semibold uppercase tracking-widest cursor-pointer pr-1 outline-none"
-                                >
-                                    <option value="all">Maintenance: All</option>
-                                    <option value="bonus active">Bonus Active</option>
-                                    <option value="paid">Paid</option>
-                                    <option value="unpaid">Unpaid</option>
-                                    <option value="clear">Clear</option>
-                                </select>
-                            </div>
+
                             <div className="px-3 py-2 flex items-center gap-2">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                                 <input
@@ -553,7 +516,7 @@ export default function SubscriptionsPage() {
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Plan</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Status</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Monthly Credit</th>
-                                        <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Maintenance</th>
+                                        <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Swag Fulfilled</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap">Period End</th>
                                         <th className="py-4 px-6 text-[11px] font-semibold tracking-widest uppercase whitespace-nowrap text-right">Actions</th>
                                     </tr>
@@ -601,7 +564,9 @@ export default function SubscriptionsPage() {
                                                     {pesewasToGHS(sub.monthly_spend_credit_pesewas)}
                                                 </td>
                                                 <td className="py-4 px-6">
-                                                    <MaintenanceBadge status={sub.maintenance_fee_status} />
+                                                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${sub.swag_fulfilled ? 'bg-teal-50 text-teal-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                        {sub.swag_fulfilled ? "Yes" : "No"}
+                                                    </span>
                                                 </td>
                                                 <td className="py-4 px-6 text-[#6B7280] text-sm">
                                                     {formatDate(sub.current_period_end)}
@@ -781,7 +746,9 @@ export default function SubscriptionsPage() {
                                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7922B" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
                                                 <span className="text-xs">Renews: {formatDate(sub.current_period_end)}</span>
                                             </div>
-                                            <MaintenanceBadge status={sub.maintenance_fee_status} />
+                                            <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${sub.swag_fulfilled ? 'bg-teal-50 text-teal-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                Swag: {sub.swag_fulfilled ? "Done" : "Pending"}
+                                            </span>
                                         </div>
                                     </div>
                                 );

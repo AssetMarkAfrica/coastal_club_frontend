@@ -33,9 +33,9 @@ import {
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
-/*  ShortfallPaymentModal                                                       */
+/*  PaymentModal                                                               */
 /* ─────────────────────────────────────────────────────────────────────────── */
-interface ShortfallModalProps {
+interface PaymentModalProps {
   billAmount: number;
   creditApplied: number;
   amountDue: number;
@@ -47,7 +47,7 @@ interface ShortfallModalProps {
   verified: boolean;
 }
 
-function ShortfallPaymentModal({
+function PaymentModal({
   billAmount,
   creditApplied,
   amountDue,
@@ -87,8 +87,8 @@ function ShortfallPaymentModal({
           </h3>
           <p className="text-[#8aa4cf] mt-2 text-sm">
             {verified
-              ? "The shortfall has been settled. Spend entry is confirmed."
-              : "The bill exceeds the guest's available balance."}
+              ? "The payment has been settled. Spend entry is confirmed."
+              : "A balance is due for this bill."}
           </p>
         </div>
 
@@ -111,7 +111,7 @@ function ShortfallPaymentModal({
               </div>
               <div className="flex justify-between items-center bg-white p-3 rounded border border-red-200 shadow-sm">
                 <span className="text-xs font-semibold uppercase tracking-wider text-red-600">
-                  Shortfall to Cover
+                  Balance Due
                 </span>
                 <span className="text-xl font-bold text-red-600">
                   GHS {amountDue.toFixed(2)}
@@ -211,7 +211,7 @@ function LogSpendEntryContent() {
   // Pre-selected member injected via URL params (from member-reservations pages)
   const [preselectedMember, setPreselectedMember] = useState<{ cardToken: string; name: string; email: string } | null>(null);
   const [inputString, setInputString] = useState("0");
-  const [showShortfallModal, setShowShortfallModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -293,7 +293,7 @@ function LogSpendEntryContent() {
 
     const callbackUrl =
       typeof window !== "undefined"
-        ? `${window.location.origin}/booking/staff/spend-entries`
+        ? `${window.location.origin}/booking/payment-success`
         : "";
 
     const result = await dispatch(
@@ -308,7 +308,7 @@ function LogSpendEntryContent() {
 
     if (logSpendEntry.fulfilled.match(result)) {
       if (result.payload.status === "pending_payment") {
-        setShowShortfallModal(true);
+        setShowPaymentModal(true);
       } else {
         // settled immediately — navigate to list
         router.push("/booking/staff/spend-entries");
@@ -333,7 +333,7 @@ function LogSpendEntryContent() {
 
   /* ── dismiss shortfall modal ── */
   const handleDismissModal = () => {
-    setShowShortfallModal(false);
+    setShowPaymentModal(false);
     if (verified) {
       router.push("/booking/staff/spend-entries");
     } else {
@@ -346,9 +346,9 @@ function LogSpendEntryContent() {
 
   return (
     <>
-      {/* Shortfall modal */}
-      {showShortfallModal && currentSpendEntry?.payment_authorization_url && (
-        <ShortfallPaymentModal
+      {/* Payment modal */}
+      {showPaymentModal && currentSpendEntry?.payment_authorization_url && (
+        <PaymentModal
           billAmount={currentSpendEntry.amount_spent_pesewas / 100}
           creditApplied={currentSpendEntry.credit_applied_pesewas / 100}
           amountDue={currentSpendEntry.amount_due_pesewas / 100}
@@ -613,7 +613,7 @@ function LogSpendEntryContent() {
                   <div className="flex justify-between items-end mt-auto mb-4">
                     <div>
                       <span className="text-xs font-semibold uppercase tracking-wider text-[#F1E0A6]/90">
-                        {hasShortfall ? "Shortfall Due" : "Amount Due"}
+                        {hasShortfall ? "Balance Due" : "Amount Due"}
                       </span>
                       <p className="text-[10px] text-white/50 mt-0.5">
                         {hasShortfall && customerType === "member" ? "To be charged to member's card" : "To be settled by guest"}
@@ -640,7 +640,7 @@ function LogSpendEntryContent() {
                   {loading ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Processing…</>
                   ) : hasShortfall ? (
-                    <><CreditCard className="w-4 h-4" /> Log &amp; Generate Shortfall QR</>
+                    <><CreditCard className="w-4 h-4" /> Log &amp; Generate Payment QR</>
                   ) : (
                     <><CheckCircle2 className="w-4 h-4" /> Confirm Spend</>
                   )}

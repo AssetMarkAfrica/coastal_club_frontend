@@ -38,7 +38,7 @@ const VENUE_SHOWCASE = [
     title: "The Fine Dining Room",
     category: "Gastronomy & Sommelier Cellar",
     description: "An exquisite à la carte culinary journey prepared by master chefs paired with vintage wines.",
-    image: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761397/FineDining7_fepbsb.png",
+    image: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining1_eielrg.png",
     badge: "Signature Dining",
     bookUrl: "/booking/member/create?venue=fine_dining",
     exploreUrl: "/fine-dining",
@@ -84,7 +84,7 @@ const MEMBER_EVENTS = [
     date: "Next Saturday · 7:30 PM",
     location: "Fine Dining Room",
     tag: "Members Only",
-    image: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining2_mluv5r.png",
+    image: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining2_i5qhaz.png",
   },
 ];
 
@@ -113,8 +113,8 @@ export default function MembershipDashboardPage() {
   const lastName = currentUser?.last_name;
   const firstName = currentUser?.first_name;
   const tierLabel = membership ? toTitleCase(membership.plan.tier) : null;
-  const spendCredit = membership ? formatMoney(membership.spend_credit_remaining_pesewas) : null;
-  const monthlyDues = membership ? formatMoney(membership.maintenance_fee_due_pesewas) : null;
+  const fbSpend = membership ? formatMoney(membership.fb_spend_this_month_pesewas) : null;
+  const fbMinimum = membership ? formatMoney(membership.plan.fb_minimum_pesewas) : null;
   const renewsDate = membership ? formatDate(membership.current_period_end) : null;
   const isActive = membership?.is_active ?? null;
   const guestPasses = membership?.plan.guest_passes_per_visit ?? null;
@@ -322,11 +322,11 @@ export default function MembershipDashboardPage() {
       {/* ── 2. Key Privileges & Financial Stats Grid ── */}
       <section className="px-6 py-6 sm:px-10 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {/* Spend Credit */}
+          {/* F&B Spend This Month */}
           <div className="rounded-2xl border border-gold-muted/25 bg-white p-5 shadow-[0_4px_20px_rgba(16,36,63,0.06)] hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-navy-deep/60 uppercase tracking-widest">
-                Spend Credit
+                Monthly Spend
               </span>
               <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
                 <IconSpend />
@@ -336,26 +336,25 @@ export default function MembershipDashboardPage() {
               className="text-2xl sm:text-3xl font-bold text-navy-deep"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
-              {spendCredit ?? "—"}
+              {fbSpend ?? "—"}
             </p>
             <div className="mt-3 flex items-center justify-between pt-2 border-t border-gray-100">
               <span className="flex items-center gap-1 text-emerald-600 text-[11px] font-semibold">
-                <IconTrendUp /> Available to spend
+                <IconTrendUp /> This month
               </span>
-              <Link
-                href="/booking/member/create"
-                className="text-[11px] font-bold text-navy-deep hover:text-gold-muted flex items-center gap-0.5"
-              >
-                Use Credit <ChevronRight className="w-3 h-3" />
-              </Link>
+              {membership && membership.plan.fb_minimum_pesewas > 0 && (
+                <span className="text-[11px] text-navy-deep/50">
+                  Min: {fbMinimum}
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Monthly Dues */}
+          {/* Signup Bonus */}
           <div className="rounded-2xl border border-gold-muted/25 bg-white p-5 shadow-[0_4px_20px_rgba(16,36,63,0.06)] hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-navy-deep/60 uppercase tracking-widest">
-                Monthly Dues
+                Signup Bonus
               </span>
               <div className="p-2 rounded-xl bg-amber-50 text-amber-600">
                 <IconBill />
@@ -365,34 +364,16 @@ export default function MembershipDashboardPage() {
               className="text-2xl sm:text-3xl font-bold text-navy-deep"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
-              {monthlyDues ?? "—"}
+              {membership?.is_signup_bonus_active ? "Active" : "—"}
             </p>
             <div className="mt-3 flex items-center justify-between pt-2 border-t border-gray-100">
-              {(() => {
-                const feeStatus = membership.maintenance_fee_status;
-                if (feeStatus === "bonus_active") {
-                  return (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
-                      ✦ Bonus Active
-                    </span>
-                  );
-                }
-                if (feeStatus === "paid" || membership.is_maintenance_fee_paid_current_month) {
-                  return (
-                    <span className="text-emerald-700 text-[11px] font-semibold flex items-center gap-1">
-                      <ShieldCheck className="w-3.5 h-3.5" /> Paid Current Month
-                    </span>
-                  );
-                }
-                return (
-                  <Link
-                    href="/membership/maintenance"
-                    className="inline-flex items-center gap-1 rounded-lg bg-amber-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white hover:bg-amber-700 transition-colors"
-                  >
-                    Pay Dues Now <ArrowUpRight className="w-3 h-3" />
-                  </Link>
-                );
-              })()}
+              {membership?.is_signup_bonus_active ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+                  <ShieldCheck className="w-3 h-3" /> Expires {membership.signup_bonus_expires_on ?? "soon"}
+                </span>
+              ) : (
+                <span className="text-[11px] text-navy-deep/50">No active bonus</span>
+              )}
             </div>
           </div>
 

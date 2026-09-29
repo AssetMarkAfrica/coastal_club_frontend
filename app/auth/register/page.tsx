@@ -12,10 +12,10 @@ import {
 } from "@/store/auth/authSelectors";
 
 const AUTH_IMAGES = [
-  "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining3_ulq0dx.png",
+  "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining3_zpycce.png",
   "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757506/Skybar1_akorqw.png",
   "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758507/PrivateRoom1_eihid3.png",
-  "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining1_bmcrtp.png"
+  "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining1_eielrg.png"
 ];
 
 export default function RegisterPage() {

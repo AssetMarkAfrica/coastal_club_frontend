@@ -13,6 +13,7 @@ import type {
   SubscriptionListItem,
   MembershipPaymentHistory,
   AdminLatePaymentsData,
+  BookingBlackoutPeriod,
 } from "../../types/membership";
 import {
   acceptMembershipContract,
@@ -30,8 +31,11 @@ import {
   reactivateSubscription,
   fetchAdminPaymentHistory,
   fetchAdminLatePayments,
-  checkoutMaintenanceFee,
-  verifyMaintenanceFee,
+  fulfillSwag,
+  assignAccountManager,
+  fetchBlackoutPeriods,
+  createBlackoutPeriod,
+  fetchMyAllowedVenues,
 } from "./membershipThunks";
 
 export interface MembershipState {
@@ -48,8 +52,9 @@ export interface MembershipState {
   subscriptionDetail: SubscriptionDetail | null;
   paymentHistory: MembershipPaymentHistory[];
   latePayments: AdminLatePaymentsData | null;
+  blackoutPeriods: BookingBlackoutPeriod[];
+  allowedVenues: string[];
   loading: boolean;
-  maintenanceFeeLoading: boolean;
   error: string | null;
 }
 
@@ -67,8 +72,9 @@ const initialState: MembershipState = {
   subscriptionDetail: null,
   paymentHistory: [],
   latePayments: null,
+  blackoutPeriods: [],
+  allowedVenues: [],
   loading: false,
-  maintenanceFeeLoading: false,
   error: null,
 };
 
@@ -93,8 +99,9 @@ const membershipSlice = createSlice({
       state.subscriptionDetail = null;
       state.paymentHistory = [];
       state.latePayments = null;
+      state.blackoutPeriods = [];
+      state.allowedVenues = [];
       state.loading = false;
-      state.maintenanceFeeLoading = false;
       state.error = null;
     },
   },
@@ -295,17 +302,14 @@ const membershipSlice = createSlice({
       })
       .addCase(suspendSubscription.fulfilled, (state, action) => {
         state.loading = false;
-        // Update subscription detail if it's the one currently viewed
         if (state.subscriptionDetail?.id === action.payload.id) {
           state.subscriptionDetail = action.payload;
         }
-        // Also update in the list if it exists there
         const index = state.subscriptions.findIndex(s => s.id === action.payload.id);
         if (index !== -1) {
           state.subscriptions[index].status = action.payload.status;
           state.subscriptions[index].is_active = action.payload.is_active;
         }
-        // Update myMembership if it matches (in case it's an admin looking at their own, or something like that)
         if (state.myMembership?.id === action.payload.id) {
           state.myMembership = action.payload;
         }
@@ -371,36 +375,82 @@ const membershipSlice = createSlice({
           (action.payload as string) ?? "Failed to fetch late payments.";
       });
 
+    // Swag fulfillment
     builder
-      .addCase(checkoutMaintenanceFee.pending, (state) => {
-        state.maintenanceFeeLoading = true;
+      .addCase(fulfillSwag.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
-      .addCase(checkoutMaintenanceFee.fulfilled, (state) => {
-        state.maintenanceFeeLoading = false;
+      .addCase(fulfillSwag.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.subscriptionDetail?.id === action.payload.id) {
+          state.subscriptionDetail = action.payload;
+        }
+        if (state.myMembership?.id === action.payload.id) {
+          state.myMembership = action.payload;
+        }
       })
-      .addCase(checkoutMaintenanceFee.rejected, (state, action) => {
-        state.maintenanceFeeLoading = false;
-        state.error =
-          (action.payload as string) ??
-          "Failed to initialize maintenance fee payment.";
+      .addCase(fulfillSwag.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to mark swag as fulfilled.";
+      });
+
+    // Account manager assignment
+    builder
+      .addCase(assignAccountManager.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(assignAccountManager.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.subscriptionDetail?.id === action.payload.id) {
+          state.subscriptionDetail = action.payload;
+        }
+      })
+      .addCase(assignAccountManager.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to assign account manager.";
+      });
+
+    // Blackout periods
+    builder
+      .addCase(fetchBlackoutPeriods.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBlackoutPeriods.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blackoutPeriods = action.payload;
+      })
+      .addCase(fetchBlackoutPeriods.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to fetch blackout periods.";
       });
 
     builder
-      .addCase(verifyMaintenanceFee.pending, (state) => {
-        state.maintenanceFeeLoading = true;
+      .addCase(createBlackoutPeriod.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
-      .addCase(verifyMaintenanceFee.fulfilled, (state, action) => {
-        state.maintenanceFeeLoading = false;
-        // Refresh myMembership with the updated subscription (paid fees, new credit)
-        state.myMembership = action.payload;
+      .addCase(createBlackoutPeriod.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blackoutPeriods.unshift(action.payload);
       })
-      .addCase(verifyMaintenanceFee.rejected, (state, action) => {
-        state.maintenanceFeeLoading = false;
-        state.error =
-          (action.payload as string) ??
-          "Failed to verify maintenance fee payment.";
+      .addCase(createBlackoutPeriod.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Failed to create blackout period.";
+      });
+
+    // Allowed venues
+    builder
+      .addCase(fetchMyAllowedVenues.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(fetchMyAllowedVenues.fulfilled, (state, action) => {
+        state.allowedVenues = action.payload;
+      })
+      .addCase(fetchMyAllowedVenues.rejected, (state, action) => {
+        state.error = (action.payload as string) ?? "Failed to fetch allowed venues.";
       });
   },
 });

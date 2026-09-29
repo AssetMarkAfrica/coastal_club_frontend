@@ -8,6 +8,8 @@ import TimePicker from "../../components/TimePicker";
 import GuestSelector from "../../components/GuestSelector";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { createMemberReservation } from "../../../../store/booking/bookingThunks";
+import { fetchMyAllowedVenues, fetchMyMembership } from "../../../../store/membership/membershipThunks";
+import { selectMyMembership } from "../../../../store/membership/membershipSelectors";
 import type { RootState } from "../../../../store";
 import type { VenueType } from "../../../../types/booking";
 import {
@@ -33,13 +35,14 @@ const VENUE_META: Record<
     label: "Fine Dining",
     tagline: "An exquisite à la carte dining journey",
     image:
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761397/FineDining7_fepbsb.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining1_eielrg.png",
     Icon: Utensils,
   },
   executive_lounge: {
     label: "Executive Lounge",
     tagline: "An exclusive sanctuary for our members",
-    image: null,
+    image:
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925665/ExecutiveLounge1_zsodlx.png",
     Icon: Sofa,
   },
   private_room: {
@@ -54,6 +57,13 @@ const VENUE_META: Record<
     tagline: "Cocktails beneath an open sky",
     image:
       "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757506/Skybar1_akorqw.png",
+    Icon: Sunset,
+  },
+  sunset_bar: {
+    label: "Sunset Bar",
+    tagline: "Glass-canopied rooftop drinks",
+    image:
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789927332/SunsetBar1_yuqcpe.png",
     Icon: Sunset,
   },
 };
@@ -107,27 +117,50 @@ export default function CreateMemberReservationPage() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state: RootState) => state.auth);
   const { loading, error } = useAppSelector((state: RootState) => state.booking);
+  const { allowedVenues } = useAppSelector((state: RootState) => state.membership);
 
   const [venueType, setVenueType] = useState<VenueType>("fine_dining");
+
+  const membership = useAppSelector(selectMyMembership);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchMyAllowedVenues());
+      if (!membership) {
+        dispatch(fetchMyMembership());
+      }
+    }
+  }, [user, dispatch, membership]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const v = (params.get("venue") || params.get("venue_type")) as VenueType | null;
-      const validVenues: VenueType[] = ["fine_dining", "executive_lounge", "private_room", "skybar"];
+      const validVenues = allowedVenues.length > 0 
+        ? allowedVenues as VenueType[] 
+        : ["fine_dining", "executive_lounge", "private_room", "skybar", "sunset_bar"] as VenueType[];
       if (v && validVenues.includes(v)) {
         setVenueType(v);
+      } else if (allowedVenues.length > 0) {
+        setVenueType(allowedVenues[0] as VenueType);
       }
     }
-  }, []);
-  const [date, setDate] = useState<Date>(new Date());
+  }, [allowedVenues]);
+  const [date, setDate] = useState<Date>(() => {
+    const d = new Date();
+    if (d.getHours() >= 12) {
+      d.setDate(d.getDate() + 1);
+    }
+    return d;
+  });
   const [time, setTime] = useState<string>("19:00");
-  const [guests, setGuests] = useState<number>(2);
+  const [guests, setGuests] = useState<number>(1);
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
   const availableTimes = ["18:00", "18:30", "19:00", "19:30", "20:00"];
   const venue = VENUE_META[venueType];
   const canSubmit = !loading && !!venueType;
+  const maxGuests = membership?.plan.guest_passes_per_visit ?? 20;
 
   const handleConfirmBooking = async () => {
     if (!user) {
@@ -166,7 +199,7 @@ export default function CreateMemberReservationPage() {
 
         <div className="text-center">
           <p className="text-gold-light/50 text-[9px] font-bold uppercase tracking-[0.25em] leading-none mb-0.5">
-            Coastal Club Member
+            Estrella del Mar Member
           </p>
           <h1 className="text-white font-semibold text-[15px] leading-none">
             New Reservation
@@ -192,7 +225,11 @@ export default function CreateMemberReservationPage() {
           <div className="lg:col-span-7 flex flex-col gap-5">
 
             {/* 1. Venue hero picker */}
-            <ExperienceSelector value={venueType} onChange={setVenueType} />
+            <ExperienceSelector 
+              value={venueType} 
+              onChange={setVenueType} 
+              validVenues={allowedVenues.length > 0 ? (allowedVenues as VenueType[]) : undefined}
+            />
 
             {/* 2. Date & Time */}
             <FormSection
@@ -200,7 +237,7 @@ export default function CreateMemberReservationPage() {
               title="Date & Time"
             >
               <div className="flex flex-col gap-5">
-                <DatePicker value={date} onChange={setDate} />
+                <DatePicker value={date} onChange={setDate} disableSameDayIfPastNoon={true} />
                 <TimePicker
                   value={time}
                   onChange={setTime}
@@ -215,7 +252,7 @@ export default function CreateMemberReservationPage() {
               title="Booking Details"
             >
               <div className="flex flex-col gap-5">
-                <GuestSelector value={guests} onChange={setGuests} />
+                <GuestSelector value={guests} onChange={setGuests} maxGuests={maxGuests} />
 
                 <div>
                   <label

@@ -81,7 +81,7 @@ export default function VerifyOtpPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaienLFT5eqymFHGYCcsUqY9kMDYXaWwisWIi5P1HUOMoAoKZBcKhrlc3q3jz2UntYHe1xlxasg0ihVTIxaI7onQSEViG9ZVH9yK8eswxWIPN5-SVU5q4uM7YYYbO-0WV90v3r8Gp4KHRn_7ONSnSYNDMAHyvQxU5SyFOlsqKTNM5MULh84rMIKUVfktKPS3MkdlIgYM6X7E0TpTliT2IQg4fb7QpOHs7O1hodEe7UGqP2WF0DLJx-rhbzBwyXCKXBCiN2Gw4"
-                alt="Coastal Club interior"
+                alt="Estrella del Mar interior"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -91,7 +91,7 @@ export default function VerifyOtpPage() {
                 className="text-6xl font-bold italic tracking-tight drop-shadow-lg mb-6 text-gold-light hover:opacity-80 transition-opacity"
                 style={{ fontFamily: "var(--font-playfair)" }}
               >
-                Coastal Club
+                Estrella del Mar
               </Link>
               <div className="w-24 h-px mb-6 bg-gold-muted/50" />
               <p
@@ -115,7 +115,7 @@ export default function VerifyOtpPage() {
                   className="text-4xl font-bold tracking-tight mb-2 text-primary hover:opacity-80 transition-opacity"
                   style={{ fontFamily: "var(--font-playfair)" }}
                 >
-                  Coastal Club
+                  Estrella del Mar
                 </Link>
                 <p className="text-base italic text-gold-muted" style={{ fontFamily: "var(--font-inter)" }}>
                   Exclusive Access Awaits You
@@ -212,7 +212,7 @@ export default function VerifyOtpPage() {
               From Entry
             </p>
             <p className="mt-4 text-sm text-gold-light/60 max-w-xs" style={{ fontFamily: "var(--font-inter)" }}>
-              Verify your identity to unlock exclusive access to Coastal Club membership benefits.
+              Verify your identity to unlock exclusive access to Estrella del Mar membership benefits.
             </p>
           </div>
 
@@ -229,7 +229,7 @@ export default function VerifyOtpPage() {
                 className="text-4xl font-bold tracking-tight mb-2 text-primary hover:opacity-80 transition-opacity"
                 style={{ fontFamily: "var(--font-playfair)" }}
               >
-                Coastal Club
+                Estrella del Mar
               </Link>
               <p className="text-base italic text-gold-muted" style={{ fontFamily: "var(--font-inter)" }}>
                 Exclusive Access Awaits You

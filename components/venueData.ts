@@ -29,11 +29,9 @@ export const VENUES: Venue[] = [
     icon: "restaurant",
     description: "Our flagship chef's table destination — 7-course tasting menus, hyper-seasonal coastal sourcing, and a 1,500-vintage cellar.",
     images: [
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining1_bmcrtp.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining2_mluv5r.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining3_ulq0dx.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761393/FineDining6_hwvzt2.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining5_dzbvnr.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining1_eielrg.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining2_i5qhaz.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining3_zpycce.png",
     ],
   },
   {
@@ -43,9 +41,9 @@ export const VENUES: Venue[] = [
     icon: "diamond",
     description: "A private sanctum reserved exclusively for distinguished members. Rare pre-prohibition spirits, live acoustics, and plush velvet surrounds.",
     images: [
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining2_mluv5r.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787757507/Skybar3_cudwrl.png",
-      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758507/PrivateRoom1_eihid3.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925665/ExecutiveLounge1_zsodlx.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925665/ExecutiveLounge2_cmkkyt.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925667/ExecutiveLounge3_lzweye.png",
     ],
   },
   {
@@ -58,6 +56,18 @@ export const VENUES: Venue[] = [
       "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758507/PrivateRoom1_eihid3.png",
       "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758506/PrivateRoom2_gcowvn.png",
       "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787758506/PrivateRoom3_cvokpc.png",
+    ],
+  },
+  {
+    title: "Sunset Bar",
+    tag: "Glass-Canopied Rooftop",
+    route: "/sunset-bar",
+    icon: "local_bar",
+    description: "A glass-canopied rooftop sanctuary offering panoramic city views at dusk, complete with crafted cocktails and rattan furnishings.",
+    images: [
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789927332/SunsetBar1_yuqcpe.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789927333/SunsetBar2_bgk0fk.png",
+      "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789927332/SunsetBar3_hmuhvc.png",
     ],
   },
 ];

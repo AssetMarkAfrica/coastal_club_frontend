@@ -7,14 +7,14 @@ import type { Metadata } from 'next';
 // ─────────────────────────────────────────────────────────────────────────────
 //  MEDIA ASSETS
 // ─────────────────────────────────────────────────────────────────────────────
-const BG_VIDEO_URL = "https://res.cloudinary.com/dqwub0fhb/video/upload/v1787759440/FineDiningVideo_a6wgj6.mp4";
+const BG_VIDEO_URL = "https://res.cloudinary.com/dqwub0fhb/video/upload/v1789925589/Fine_Dining_sonwgo.mp4";
 
 const FINE_DINING_IMAGES = {
-    philosophy: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining1_bmcrtp.png",
-    dishes: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759412/FineDining2_mluv5r.png",
-    banner: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining3_ulq0dx.png",
-    wineCellar: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787761393/FineDining6_hwvzt2.png",
-    atmosphere: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1787759411/FineDining5_dzbvnr.png",
+    philosophy: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining1_eielrg.png",
+    dishes: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining2_i5qhaz.png",
+    banner: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining3_zpycce.png",
+    wineCellar: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining2_i5qhaz.png",
+    atmosphere: "https://res.cloudinary.com/dqwub0fhb/image/upload/v1789925574/FineDining3_zpycce.png",
 };
 
 export const metadata: Metadata = {

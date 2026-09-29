@@ -8,8 +8,8 @@ import type {
   AcceptMembershipContractPayload,
   ApproveMembershipApplicationPayload,
   SubmitMembershipApplicationPayload,
-  CheckoutMaintenanceFeePayload,
-  VerifyMaintenanceFeePayload
+  AssignAccountManagerPayload,
+  CreateBlackoutPeriodPayload,
 } from "../../types/membership";
 
 const getErrorMessage = (error: unknown, fallback: string) => {
@@ -274,29 +274,86 @@ export const fetchAdminLatePayments = createAsyncThunk(
   }
 );
 
-export const checkoutMaintenanceFee = createAsyncThunk(
-  "membership/checkoutMaintenanceFee",
-  async (payload: CheckoutMaintenanceFeePayload, { rejectWithValue }) => {
+// ---------------------------------------------------------------------------
+// Swag & Account Manager thunks
+// ---------------------------------------------------------------------------
+
+export const fulfillSwag = createAsyncThunk(
+  "membership/fulfillSwag",
+  async (subscriptionId: string, { rejectWithValue }) => {
     try {
-      const { data } = await membershipService.checkoutMaintenanceFee(payload);
+      const { data } = await membershipService.fulfillSwag(subscriptionId);
       return data.data;
     } catch (error) {
       return rejectWithValue(
-        getErrorMessage(error, "Failed to initialize maintenance fee payment.")
+        getErrorMessage(error, "Failed to mark swag as fulfilled.")
       );
     }
   }
 );
 
-export const verifyMaintenanceFee = createAsyncThunk(
-  "membership/verifyMaintenanceFee",
-  async (payload: VerifyMaintenanceFeePayload, { rejectWithValue }) => {
+export const assignAccountManager = createAsyncThunk(
+  "membership/assignAccountManager",
+  async (
+    { subscriptionId, payload }: { subscriptionId: string; payload: AssignAccountManagerPayload },
+    { rejectWithValue }
+  ) => {
     try {
-      const { data } = await membershipService.verifyMaintenanceFee(payload);
+      const { data } = await membershipService.assignAccountManager(subscriptionId, payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(
-        getErrorMessage(error, "Failed to verify maintenance fee payment.")
+        getErrorMessage(error, "Failed to assign account manager.")
+      );
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Blackout period thunks
+// ---------------------------------------------------------------------------
+
+export const fetchBlackoutPeriods = createAsyncThunk(
+  "membership/fetchBlackoutPeriods",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getBlackoutPeriods();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch blackout periods.")
+      );
+    }
+  }
+);
+
+export const createBlackoutPeriod = createAsyncThunk(
+  "membership/createBlackoutPeriod",
+  async (payload: CreateBlackoutPeriodPayload, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.createBlackoutPeriod(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to create blackout period.")
+      );
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Allowed venues thunk
+// ---------------------------------------------------------------------------
+
+export const fetchMyAllowedVenues = createAsyncThunk(
+  "membership/fetchMyAllowedVenues",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await membershipService.getMyAllowedVenues();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Failed to fetch allowed venues.")
       );
     }
   }

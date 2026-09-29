@@ -19,7 +19,7 @@ import { selectPendingPayment } from "@/store/payment/paymentSelectors";
 import { TShirtSize, type MembershipPlan } from "@/types/membership";
 
 const formatMoney = (pesewas: number) =>
-  `GHc${(pesewas / 100).toLocaleString(undefined, {
+  `$${(pesewas / 100).toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   })}`;
@@ -49,11 +49,9 @@ const buildPlanHighlights = (plan: MembershipPlan) => {
   const highlights = [
     `${plan.guest_passes_per_visit} guest pass${plan.guest_passes_per_visit === 1 ? "" : "es"
     } per visit`,
-    `Points multiplier: x${plan.points_multiplier}`,
-    `Monthly maintenance fee: ${formatMoney(plan.club_maintenance_fee_pesewas)}`,
-    `Signup bonus credit: ${formatMoney(plan.signup_bonus_spend_credit_pesewas)}`,
+
     plan.fb_minimum_pesewas > 0
-      ? `F&B minimum: ${formatMoney(plan.fb_minimum_pesewas)}`
+      ? `Monthly Membership Quota: ${formatMoney(plan.fb_minimum_pesewas)}`
       : "No food and beverage minimum",
   ];
 
@@ -106,8 +104,8 @@ export default function MembershipPlansPage() {
     try {
       const callbackUrl = `${window.location.origin}/payment/callback`;
       const response = await dispatch(
-        submitMembershipApplication({ 
-          plan_tier: planTier, 
+        submitMembershipApplication({
+          plan_tier: planTier,
           callback_url: callbackUrl,
           t_shirt_size: selectedTShirtSize as TShirtSize
         })

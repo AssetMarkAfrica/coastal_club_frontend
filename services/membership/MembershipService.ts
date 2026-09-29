@@ -12,17 +12,19 @@ import type {
   MyMembershipStatusResponse,
   SubmitMembershipApplicationPayload,
   SubmitMembershipApplicationResponse,
-
   SubscriptionDetailResponse,
   SubscriptionsListResponse,
   SuspendSubscriptionResponse,
   ReactivateSubscriptionResponse,
   AdminPaymentHistoryResponse,
   AdminLatePaymentsResponse,
-  CheckoutMaintenanceFeePayload,
-  CheckoutMaintenanceFeeData,
-  CheckoutMaintenanceFeeResponse,
-  VerifyMaintenanceFeePayload
+  AdminFulfillSwagResponse,
+  AdminAssignAccountManagerResponse,
+  AssignAccountManagerPayload,
+  BlackoutPeriodsResponse,
+  CreateBlackoutPeriodResponse,
+  CreateBlackoutPeriodPayload,
+  AllowedVenuesResponse,
 } from "../../types/membership";
 
 export type {
@@ -54,10 +56,19 @@ export type {
   MembershipPaymentHistory,
   AdminPaymentHistoryResponse,
   AdminLatePaymentsData,
-  AdminLatePaymentsResponse
+  AdminLatePaymentsResponse,
+  BookingBlackoutPeriod,
+  BlackoutPeriodsResponse,
+  CreateBlackoutPeriodPayload,
+  CreateBlackoutPeriodResponse,
+  AllowedVenuesResponse,
+  AssignAccountManagerPayload,
+  AdminFulfillSwagResponse,
+  AdminAssignAccountManagerResponse,
 } from "../../types/membership";
 
 const BASE = process.env.NEXT_PUBLIC_MEMBERSHIP_API;
+const BOOKING_BASE = process.env.NEXT_PUBLIC_BOOKING_API;
 
 export const getMembershipPlans = () =>
   api.get<MembershipPlansResponse>(`${BASE}/plans/`);
@@ -100,17 +111,8 @@ export const acceptMembershipContract = (
     payload
   );
 
-export const checkoutMaintenanceFee = (payload: CheckoutMaintenanceFeePayload) =>
-  api.post<CheckoutMaintenanceFeeResponse>(`${BASE}/maintenance-fee/checkout/`, payload);
-
-export const verifyMaintenanceFee = (payload: VerifyMaintenanceFeePayload) =>
-  api.get<MyMembershipResponse>(`${BASE}/maintenance-fee/verify/`, {
-    params: { reference: payload.reference },
-  });
-
 export const getSubscriptions = () =>
   api.get<SubscriptionsListResponse>(`${BASE}/staff/subscriptions/`);
-
 
 export const getSubscriptionDetail = (subscriptionId: string) =>
   api.get<SubscriptionDetailResponse>(`${BASE}/staff/subscriptions/${subscriptionId}/`);
@@ -126,3 +128,36 @@ export const getAdminPaymentHistory = () =>
 
 export const getAdminLatePayments = () =>
   api.get<AdminLatePaymentsResponse>(`${BASE}/admin/late-payments/`);
+
+// ---------------------------------------------------------------------------
+// Swag & Account Manager (new endpoints)
+// ---------------------------------------------------------------------------
+
+export const fulfillSwag = (subscriptionId: string) =>
+  api.patch<AdminFulfillSwagResponse>(`${BASE}/admin/subscriptions/${subscriptionId}/fulfill-swag/`);
+
+export const assignAccountManager = (
+  subscriptionId: string,
+  payload: AssignAccountManagerPayload
+) =>
+  api.patch<AdminAssignAccountManagerResponse>(
+    `${BASE}/admin/subscriptions/${subscriptionId}/assign-account-manager/`,
+    payload
+  );
+
+// ---------------------------------------------------------------------------
+// Blackout Periods (new endpoints)
+// ---------------------------------------------------------------------------
+
+export const getBlackoutPeriods = () =>
+  api.get<BlackoutPeriodsResponse>(`${BOOKING_BASE}/staff/blackout-periods/`);
+
+export const createBlackoutPeriod = (payload: CreateBlackoutPeriodPayload) =>
+  api.post<CreateBlackoutPeriodResponse>(`${BOOKING_BASE}/staff/blackout-periods/`, payload);
+
+// ---------------------------------------------------------------------------
+// Allowed Venues (new endpoint)
+// ---------------------------------------------------------------------------
+
+export const getMyAllowedVenues = () =>
+  api.get<AllowedVenuesResponse>(`${BOOKING_BASE}/members/me/allowed-venues/`);
